@@ -1,0 +1,6 @@
+{
+  "bracketSpacing": true,
+  "embeddedLanguageFormatting": "auto",
+  "singleQuote": true,
+  "jsxBracketSameLine": true
+}
