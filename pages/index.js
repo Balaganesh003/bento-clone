@@ -50,13 +50,12 @@ export default function Home({ data }) {
       return;
     }
 
-    if (type == 'group') {
-      const newContentList = Array.from(contentList);
-      const [removed] = newContentList.splice(source.index, 1);
-      newContentList.splice(destination.index, 0, removed);
+    if (type === 'group') {
+      const newContent = Array.from(content);
+      const [removed] = newContent.splice(source.index, 1);
+      newContent.splice(destination.index, 0, removed);
 
-      console.log(newContentList);
-      setContent(newContentList);
+      setContent(newContent);
     }
   };
 
@@ -65,8 +64,8 @@ export default function Home({ data }) {
       <div className="bg-gray-500 flex-1 mr-[5rem] h-fit w-full min-h-[calc(100vh-8rem)]">
         <h1>Balaganesh</h1>
       </div>
-      <div className="max-w-[820px] w-[820px] min-h-[calc(100vh-8rem)]">
-        <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="max-w-[820px] w-[820px] flex  min-h-[calc(100vh-8rem)] ">
           <Droppable droppableId="ROOT" type="group">
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
@@ -81,7 +80,7 @@ export default function Home({ data }) {
                           ref={provided.innerRef}
                           {...provided.dragHandleProps}
                           {...provided.draggableProps}>
-                          <div>{item.content}</div>
+                          <div className="w-full">{item.content}</div>
                         </div>
                       )}
                     </Draggable>
@@ -90,8 +89,8 @@ export default function Home({ data }) {
               </div>
             )}
           </Droppable>
-        </DragDropContext>
-      </div>
+        </div>
+      </DragDropContext>
     </main>
   );
 }
