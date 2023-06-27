@@ -15,6 +15,7 @@
     "next": "13.4.7",
     "postcss": "8.4.24",
     "react": "18.2.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "18.2.0",
     "react-icons": "^4.10.1",
     "react-resizable": "^3.0.5",

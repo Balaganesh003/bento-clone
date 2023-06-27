@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import ResizingContainer from './ResizingContainer';
 
-const TextBox = () => {
+const TextBox = ({ value, setValue }) => {
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
 
@@ -9,10 +9,6 @@ const TextBox = () => {
     setWidth(width);
     setHeight(height);
   };
-
-  const [value, setValue] = useState(
-    'Lorem ipsum dolor sit amet consectetur adipisicing elitRepellat delectus sequi modi velit distinctio fugit ipsam ipsa animi id excepturi iste ratione ex officiis deserunt blanditiis, repellendus,et cupiditate. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis consequatur, vero adipisci nesciunt aspernatur ipsam eum at maiores tenetur. Accusantium, repellendus quisquam ut optio numquam mollitia repellat placeat ab voluptate?'
-  );
 
   const textareaRef = useRef(null);
 
