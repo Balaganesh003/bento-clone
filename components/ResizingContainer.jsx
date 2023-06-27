@@ -1,14 +1,6 @@
 import React, { useState } from 'react';
 
-const ResizingContainer = () => {
-  const [width, setWidth] = useState(3);
-  const [height, setHeight] = useState(2);
-
-  const handleResize = (width, height) => {
-    setWidth(width);
-    setHeight(height);
-  };
-
+const ResizingContainer = ({ children, width, height, handleResize }) => {
   return (
     <div
       className={`${
@@ -17,23 +9,8 @@ const ResizingContainer = () => {
         (height === 4 || height === 5) && 'h-[388px]'
       } ${
         height === 2 && 'h-[65px]'
-      } bg-green-400 relative rounded-lg border shadow-lg transition-all duration-500 group p-2`}>
-      <div className="h-full w-full overflow-hidden ">
-        <p
-          className={`w-full  px-2 pt-2 mb-2 leading-snug  text-[1.25rem] ${
-            (height == 1 || height == 3) && 'line-clamp-5'
-          } ${(height == 4 || height == 5) && 'line-clamp-[13]'} ${
-            height == 2 && 'line-clamp-1'
-          } text-ellipsis`}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat, aut
-          delectus sequi modi velit distinctio fugit ipsam ipsa animi id
-          excepturi iste ratione ex officiis deserunt blanditiis, repellendus,
-          et cupiditate. Lorem ipsum dolor sit, amet consectetur adipisicing
-          elit. Officiis consequatur, vero adipisci nesciunt aspernatur ipsam
-          eum at maiores tenetur. Accusantium, repellendus quisquam ut optio
-          numquam mollitia repellat placeat ab voluptate?
-        </p>
-      </div>
+      } bg-white relative rounded-lg border shadow-lg transition-all duration-500 group p-3`}>
+      {children}
       <div className="absolute hidden bottom-[-30px] group-hover:flex w-fit left-[50%] -translate-x-1/2 bg-black shadow-lg rounded-[8px] transition-all duration-300 items-center p-2 gap-2">
         <div
           onClick={() => handleResize(1, 1)}

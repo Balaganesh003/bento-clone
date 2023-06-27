@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import TextBox from '@/components/TextBox';
 import { Inter } from 'next/font/google';
 import ResizingContainer from '@/components/ResizingContainer';
 
@@ -14,7 +15,7 @@ export default function Home() {
       </div>
       <div className=" w-[820px]">
         <div className="flex flex-wrap max-w-[100%] gap-[40px]">
-          <ResizingContainer />
+          <TextBox />
 
           <div className="w-[175px] h-[175px]  bg-red-400"></div>
 
