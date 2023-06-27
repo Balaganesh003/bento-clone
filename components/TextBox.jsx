@@ -66,7 +66,7 @@ const TextBox = () => {
             (height === 1 || height === 3) && 'line-clamp-5'
           } ${(height === 4 || height === 5) && 'line-clamp-[13]'} ${
             height === 2 && 'line-clamp-1 '
-          }   text-[1.25rem] leading-[135%] focus:line-clamp-none`}
+          }   text-[1.25rem] leading-[132%] focus:line-clamp-none`}
         />
       </div>
     </ResizingContainer>
