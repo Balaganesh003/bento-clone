@@ -16,7 +16,7 @@ const ResizingContainer = ({ children, width, height, handleResize }) => {
       } bg-white relative rounded-lg border shadow-lg transition-all duration-500 group p-3 ${
         isDeleting && 'hidden'
       }`}>
-      {children}
+      <div className="w-full h-full">{children}</div>
       {/* Delete options */}
       <div
         onClick={() => setIsDeleting(true)}
