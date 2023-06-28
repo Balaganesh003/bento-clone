@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Map, { GeolocateControl, Marker } from 'react-map-gl';
+import Map, { GeolocateControl, Marker, NavigationControl } from 'react-map-gl';
 import ResizingContainer from '@/components/ResizingContainer';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 
@@ -13,6 +13,11 @@ const MapboxMap = () => {
   const [value, setValue] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [mapViewport, setMapViewport] = useState({
+    longitude: 80.2337,
+    latitude: 12.9915,
+    zoom: 12,
+  });
 
   const handleResize = (width, height) => {
     setWidth(width);
@@ -52,6 +57,11 @@ const MapboxMap = () => {
 
   const handleSelectLocation = (location) => {
     setSelectedLocation(location);
+    setMapViewport({
+      longitude: location.center[0],
+      latitude: location.center[1],
+      zoom: 14,
+    });
     setValue('');
     setSearchResults([]);
   };
@@ -83,12 +93,10 @@ const MapboxMap = () => {
         width="100%"
         height="100%"
         mapboxAccessToken={Token}
-        initialViewState={{
-          longitude: 80.2337,
-          latitude: 12.9915,
-          zoom: 14,
-        }}
-        mapStyle="mapbox://styles/mapbox/streets-v12">
+        mapStyle="mapbox://styles/mapbox/streets-v12"
+        {...mapViewport}
+        onViewportChange={setMapViewport}>
+        <NavigationControl />
         <GeolocateControl
           positionOptions={{ enableHighAccuracy: true }}
           trackUserLocation={true}
