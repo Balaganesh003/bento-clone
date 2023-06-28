@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { AiOutlineDelete } from 'react-icons/ai';
 
-const ResizingContainer = ({ children, width, height, handleResize }) => {
+const ResizingContainer = ({ children, width, height, handleResize, type }) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   return (
@@ -11,9 +11,9 @@ const ResizingContainer = ({ children, width, height, handleResize }) => {
         width === 2 || width === 3 || width === 5 ? 'w-[388px]' : 'w-[175px]'
       } ${(height === 1 || height === 3) && 'h-[175px]'} ${
         (height === 4 || height === 5) && 'h-[388px]'
-      } ${
-        height === 2 && 'h-[65px]'
-      } bg-white relative rounded-lg border shadow-lg transition-all duration-500 group p-3 ${
+      } ${height === 2 && 'h-[65px]'} bg-white relative rounded-lg border ${
+        type == 'text' && 'p-3'
+      } shadow-lg transition-all duration-500 group  ${
         isDeleting && 'hidden'
       }`}>
       <div className="w-full h-full">{children}</div>
