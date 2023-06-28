@@ -60,7 +60,7 @@ const MapboxMap = () => {
     setMapViewport({
       longitude: location.center[0],
       latitude: location.center[1],
-      zoom: 14,
+      zoom: 12,
     });
     setValue('');
     setSearchResults([]);
@@ -101,14 +101,13 @@ const MapboxMap = () => {
           positionOptions={{ enableHighAccuracy: true }}
           trackUserLocation={true}
         />
-        {selectedLocation && (
-          <Marker
-            longitude={selectedLocation.center[0]}
-            latitude={selectedLocation.center[1]}
-            anchor="bottom">
-            <FaMapMarkerAlt size={30} className="text-red-500" />
-          </Marker>
-        )}
+
+        <Marker
+          longitude={selectedLocation?.center[0] || mapViewport.longitude}
+          latitude={selectedLocation?.center[1] || mapViewport.latitude}
+          anchor="bottom">
+          <FaMapMarkerAlt size={30} className="text-red-500" />
+        </Marker>
       </Map>
     </ResizingContainer>
   );
