@@ -6,8 +6,8 @@ import { FaMapMarkerAlt } from 'react-icons/fa';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MapboxMap = () => {
-  const [width, setWidth] = useState(1);
-  const [height, setHeight] = useState(1);
+  const [width, setWidth] = useState(5);
+  const [height, setHeight] = useState(5);
   const [renderKey, setRenderKey] = useState(0);
 
   const [value, setValue] = useState('');
@@ -92,7 +92,7 @@ const MapboxMap = () => {
       handleResize={handleResize}>
       <div className="absolute bottom-[-3rem] left-0 z-[100] ">
         <input
-          className="w-[12rem] bg-black text-white p-2 rounded-lg placeholder:text-white"
+          className="w-[12rem] hidden bg-black text-white p-2 rounded-lg placeholder:text-white"
           type="text"
           value={value}
           onChange={(e) => setValue(e.target.value)}

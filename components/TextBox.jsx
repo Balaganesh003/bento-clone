@@ -52,14 +52,14 @@ const TextBox = ({ value, setValue }) => {
       height={height}
       type={'text'}
       handleResize={handleResize}>
-      <div className="h-full w-full overflow-hidden p-2 group-hover:bg-gray-200 group rounded-lg">
+      <div className="h-full w-full overflow-hidden p-2 group-hover:bg-[#f5f5f5] group rounded-lg">
         <textarea
           ref={textareaRef}
           onFocus={handleFocus}
           onBlur={handleBlur}
           onChange={(e) => setValue(e.target.value)}
           value={value}
-          className={`w-full h-full  scrollbar-hide focus:outline-none group-hover:bg-gray-200 leading-snug resize-none rounded overflow-y-auto ${
+          className={`w-full h-full  scrollbar-hide focus:outline-none group-hover:bg-[#f5f5f5] leading-snug resize-none rounded overflow-y-auto ${
             (height === 1 || height === 3) && 'line-clamp-5'
           } ${(height === 4 || height === 5) && 'line-clamp-[13]'} ${
             height === 2 && 'line-clamp-1 '
