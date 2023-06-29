@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaGoogle } from 'react-icons/fa';
+import { HiArrowNarrowLeft } from 'react-icons/hi';
 
 export default function SignUpMail({
   email,
@@ -12,10 +13,11 @@ export default function SignUpMail({
   prevPanel,
 }) {
   return (
-    <>
-      <p onClick={prevPanel} className="mb-4 cursor-pointer">
-        Back
-      </p>
+    <React.Fragment>
+      <HiArrowNarrowLeft
+        onClick={prevPanel}
+        className="text-[28px] cursor-pointer text-[#6c6c6c] "
+      />
       <p className="mt-[1rem] font-normal text-[16px] text-[#6c6c6c]">
         <span>bento.me/</span>
         <span>{name}</span>
@@ -69,6 +71,6 @@ export default function SignUpMail({
           )}
         </div>
       </div>
-    </>
+    </React.Fragment>
   );
 }

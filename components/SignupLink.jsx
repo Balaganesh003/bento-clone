@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 const SignupLink = ({ name, setName, nextPanel }) => {
   return (
-    <>
+    <React.Fragment>
       <h1 className="font-bold text-[32px] leading-[40px]">
         First, claim your unique link
       </h1>
@@ -42,7 +42,7 @@ const SignupLink = ({ name, setName, nextPanel }) => {
         className="text-[#6c6c6c] mt-[2rem] inline-block text-[12px] leading-4">
         or Log in
       </Link>
-    </>
+    </React.Fragment>
   );
 };
 
