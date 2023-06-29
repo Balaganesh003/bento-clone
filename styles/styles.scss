@@ -1,0 +1,78 @@
+@keyframes randomMove {
+  0% {
+    transform: translate(20, 20);
+  }
+  50% {
+    transform: translate(
+      calc((var(--random-x) - 0.2) * 50px),
+      calc((var(--random-y) - 0.8) * 80px)
+    );
+  }
+  100% {
+    transform: translate(20, 20);
+  }
+}
+
+.signup .moving-image {
+  --random-x: var(--random-x-value);
+  --random-y: var(--random-y-value);
+  animation-name: randomMove;
+  animation-duration: 5s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.signup .moving-image:nth-child(1) {
+  animation-duration: 10000ms;
+}
+.signup .moving-image:nth-child(2) {
+  animation-duration: 11000ms;
+}
+
+.signup .moving-image:nth-child(3) {
+  animation-duration: 9000ms;
+}
+
+.signup .moving-image:nth-child(4) {
+  animation-duration: 20000ms;
+}
+
+.signup .moving-image:nth-child(5) {
+  animation-duration: 14000ms;
+}
+
+.signup .moving-image:nth-child(6) {
+  animation-duration: 10000ms;
+}
+
+.signup .moving-image:nth-child(7) {
+  animation-duration: 15000ms;
+}
+
+.signup .moving-image:nth-child(8) {
+  animation-duration: 20000ms;
+}
+
+@keyframes randomMove2 {
+  0% {
+    transform: translate(20, 20);
+  }
+  50% {
+    transform: translate(
+      calc((var(--random-x) - 0.7) * 50px),
+      calc((var(--random-y) - 0.2) * 80px)
+    );
+  }
+  100% {
+    transform: translate(20, 20);
+  }
+}
+
+.moving-image {
+  --random-x: var(--random-x-value);
+  --random-y: var(--random-y-value);
+  animation-name: randomMove;
+  animation-duration: 8s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
