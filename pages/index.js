@@ -96,7 +96,7 @@ export default function Home({ data }) {
 
   return (
     <main
-      className={`${inter.className} p-[4rem] flex overflow-x-hidden gap-[4rem]`}>
+      className={`${inter.className} p-[4rem] flex overflow-x-hidden gap-[3rem]`}>
       <div className=" flex  h-fit min-h-[calc(100vh-8rem)]  flex-1 flex-col ">
         <div className="w-fit">
           <Avatar avatarSrc={avatarSrc} handleFileSelect={handleFileSelect} />
