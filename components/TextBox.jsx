@@ -4,6 +4,7 @@ import ResizingContainer from './ResizingContainer';
 const TextBox = ({ value, setValue }) => {
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
+  const [textareaValue, setTextareaValue] = useState(value); // Store textarea value separately
 
   const handleResize = (width, height) => {
     setWidth(width);
@@ -43,7 +44,13 @@ const TextBox = ({ value, setValue }) => {
       textareaRef.current.selectionEnd = 0;
       // Scroll to the top
       textareaRef.current.scrollTop = 0;
+      // Update the main value prop
     }
+  };
+
+  const handleChange = (e) => {
+    setTextareaValue(e.target.value); // Update the separate textarea value
+    setValue(e.target.value); // Update the main value prop
   };
 
   return (
@@ -57,8 +64,8 @@ const TextBox = ({ value, setValue }) => {
           ref={textareaRef}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          onChange={(e) => setValue(e.target.value)}
-          value={value}
+          onChange={handleChange}
+          value={textareaValue} // Use the separate textarea value
           className={`w-full h-full  scrollbar-hide focus:outline-none group-hover:bg-[#f5f5f5] leading-snug resize-none rounded overflow-y-auto ${
             (height === 1 || height === 3) && 'line-clamp-5'
           } ${(height === 4 || height === 5) && 'line-clamp-[13]'} ${

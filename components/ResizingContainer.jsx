@@ -6,25 +6,31 @@ const ResizingContainer = ({ children, width, height, handleResize, type }) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   return (
-    <div
-      className={`${
-        width === 2 || width === 3 || width === 5 ? 'w-[388px]' : 'w-[175px]'
-      } ${(height === 1 || height === 3) && 'h-[175px]'} ${
-        (height === 4 || height === 5) && 'h-[388px]'
-      } ${height === 2 && 'h-[65px]'} bg-white relative rounded-lg border ${
-        type == 'text' && 'p-3'
-      } shadow-lg transition-all duration-500 group  ${
-        isDeleting && 'hidden'
-      }`}>
-      <div className="w-full h-full">{children}</div>
-      {/* Delete options */}
+    <div className="relative   group">
+      <div
+        className={`${
+          width === 2 || width === 3 || width === 5
+            ? 'w-[377px] xl:w-[388px]'
+            : 'w-[175px]'
+        } ${(height === 1 || height === 3) && 'h-[175px]'} ${
+          (height === 4 || height === 5) && 'h-[377px] xl:h-[388px]'
+        } ${
+          height === 2 && 'h-[65px]'
+        } bg-white relative rounded-[24px] border ${
+          type == 'text' && 'p-3'
+        } shadow-lg transition-all duration-500 group overflow-hidden  ${
+          isDeleting && 'hidden'
+        }`}>
+        {children}
+        {/* Delete options */}
+      </div>
       <div
         onClick={() => setIsDeleting(true)}
         className="absolute hidden group-hover:flex items-center justify-center -top-4 -left-4 w-9 h-9 rounded-full bg-white shadow-lg cursor-pointer hover:bg-gray-100">
         <AiOutlineDelete className="w-5 h-5 text-black" />
       </div>
       {/* Resizing options */}
-      <div className="absolute hidden bottom-[-30px] group-hover:flex w-fit left-[50%] -translate-x-1/2 bg-black shadow-lg rounded-[8px] transition-all duration-300 items-center p-2 gap-2">
+      <div className="absolute hidden bottom-[-30px] group-hover:flex w-fit left-[50%] -translate-x-1/2 bg-black shadow-lg rounded-[8px] transition-all duration-300 items-center p-2 gap-2 z-10">
         <div
           onClick={() => handleResize(1, 1)}
           className={`w-7 h-7 ${

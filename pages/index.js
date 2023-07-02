@@ -15,14 +15,17 @@ import MobileWhite from '@/assets/mobilewhite.svg';
 import LaptopBlack from '@/assets/laptopblack.svg';
 import Avatar from '@/components/Avatar';
 import MapboxMap from '@/components/MapBox';
+import { useRef } from 'react';
 
 const inter = Inter({
   subsets: ['latin'],
 });
 
 export default function Home({ data }) {
+  const targetRef = useRef(null);
+
   const [textBox1, setTextBox1] = useState(
-    'lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos?'
+    'lorem ipsum dolor sit amet consectetur adipisicing elit.Quisquam, quos?'
   );
   const [textBox2, setTextBox2] = useState(
     'sssssssssssssssssssssssssssssssssssssssssssssssssssss'
@@ -96,62 +99,77 @@ export default function Home({ data }) {
 
   return (
     <main
-      className={`${inter.className} p-[4rem] flex overflow-x-hidden gap-[3rem]`}>
-      <div className=" flex  h-fit min-h-[calc(100vh-8rem)]  flex-1 flex-col ">
-        <div className="w-fit">
-          <Avatar avatarSrc={avatarSrc} handleFileSelect={handleFileSelect} />
-        </div>
-
-        <input
-          type="text"
-          placeholder="Your Name"
-          className="text-[42px] mt-[32px] ml-2 min-w-[5rem] max-w-[calc(100vw-64rem)]  focus:outline-none text-[#6c6c6c] placeholder:text-[#a2a2a2] -tracking-[2px] leading-[120%] font-bold break-words whitespace-normal"
-        />
-
-        <div className="mt-3 ml-2  xl:text-xl w-full">
-          <textarea
-            placeholder="Your Bio..."
-            className="focus:outline-none resize-none w-full  text-[#565656]  min-h-[calc(100vh-26rem)] scrollbar-hide"></textarea>
-        </div>
-      </div>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <div className="max-w-[820px] min-w-[820px] w-[820px]   min-h-[calc(100vh-8rem)] ">
-          <Droppable droppableId="ROOT" type="group">
-            {(provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
-                <div className="flex gap-[40px] flex-wrap last:pb-[6rem]">
-                  {content.map((item, index) => (
-                    <Draggable
-                      key={item.id}
-                      draggableId={item.id}
-                      index={index}>
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.dragHandleProps}
-                          {...provided.draggableProps}>
-                          <div className="w-full">{item.content}</div>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                </div>
+      className={`${inter.className}    overflow-x-hidden flex justify-center xl:justify-normal`}>
+      <div className=" xl:max-w-none max-w-[428px] xl:w-full flex-col xl:flex-row flex xl:gap-[2.5rem] xl:p-[4rem] ">
+        <div className="flex xl:min-w-[278px]  xl:max-w-[calc(100vw-64rem)]  h-fit xl:min-h-[calc(100vh-8rem)]  flex-col px-6 pt-12 xl:p-0 ">
+          <div className="px-4 xl:p-0">
+            <div className="flex justify-between w-full ">
+              <Avatar
+                avatarSrc={avatarSrc}
+                handleFileSelect={handleFileSelect}
+              />
+              <div className="flex h-fit xl:hidden rounded-lg mt-2 border shadow-sm  items-center justify-center">
+                <button className="text-[0.87rem] transition-all duration-200 font-bold w-full py-2 px-[10px] hover:bg-[#FBFBFB]">
+                  Share my Bento
+                </button>
               </div>
-            )}
-          </Droppable>
+            </div>
+            <div className="mt-8 ml-2 ">
+              <div
+                contentEditable="true"
+                translate="no"
+                className="relative tracking-[-2px] text-[32px] xl:text-[44px] font-bold  focus:outline-none leading-[120%] text-[#565656]">
+                <p className="">Balaganesh K</p>
+              </div>
+
+              <div
+                contentEditable="true"
+                translate="no"
+                className="mt-3   xl:text-xl  focus:outline-none  relative  text-[#565656] ">
+                <p>bbbbbbbb</p>
+              </div>
+            </div>
+          </div>
         </div>
-      </DragDropContext>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div className="xl:max-w-[820px]  xl:min-w-[820px] xl:w-[820px] px-6 pb-6 pt-12 xl:p-0 xl:min-h-[calc(100vh-8rem)] ">
+            <Droppable droppableId="ROOT" type="group">
+              {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  <div className="flex gap-[24px] xl:gap-[39px] flex-wrap last:pb-[6rem]">
+                    {content.map((item, index) => (
+                      <Draggable
+                        key={item.id}
+                        draggableId={item.id}
+                        index={index}>
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.dragHandleProps}
+                            {...provided.draggableProps}>
+                            <div className="w-full">{item.content}</div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </Droppable>
+          </div>
+        </DragDropContext>
+      </div>
       {/* Fixed bar */}
-      <div className="fixed bottom-[2.5rem] bg-white left-1/2 -translate-x-1/2 p-3 rounded-2xl flex items-center shadow-xl  ">
-        <div className="h-[33px] hidden lg:flex rounded-md w-[127px] bg-green-500 text-white  items-center justify-center">
+      <div className="fixed bottom-[2.5rem]  backdrop-blur-lg  bg-blend-multiply  bg-white/50  left-1/2 -translate-x-1/2 p-3 rounded-2xl flex items-center shadow-xl  ">
+        <div className="h-[33px] hidden xl:flex rounded-md w-[127px] bg-green-500 text-white  items-center justify-center">
           <button className="text-[0.87rem] font-bold w-full">
             Share my Bento
           </button>
         </div>
-        <div className="mx-4 w-[2px] h-[16px] bg-gray-300 hidden lg:block"></div>
-        <div className="h-[32px] flex gap-3 lg:gap-1 ">
+        <div className="mx-4 w-[2px] h-[16px] bg-gray-300 hidden xl:block"></div>
+        <div className="h-[32px] flex gap-3 xl:gap-1  mix-blend-none">
           <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer ">
-            <div className="w-[24px] h-[24px] rounded-md flex items-center justify-center border hover:shadow-lg">
+            <div className="w-[24px] h-[24px] rounded-md flex items-center justify-center border hover:shadow-xl">
               <Image
                 src={LinkLogo}
                 alt="link"
@@ -160,7 +178,7 @@ export default function Home({ data }) {
             </div>
           </div>
           <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
-            <div className=" rounded-md flex items-center justify-center border hover:shadow-lg">
+            <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
               <Image
                 src={ImageLogo}
                 className=" rounded-md object-cover w-[24px] h-[24px]"
@@ -169,7 +187,7 @@ export default function Home({ data }) {
             </div>
           </div>
           <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
-            <div className=" rounded-md flex items-center justify-center border hover:shadow-lg">
+            <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
               <Image
                 src={TextLogo}
                 className="rounded-md object-cover w-[24px] h-[24px]"
@@ -178,7 +196,7 @@ export default function Home({ data }) {
             </div>
           </div>
           <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
-            <div className=" rounded-md flex items-center justify-center border hover:shadow-lg">
+            <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
               <Image
                 src={MapLogo}
                 className="object-cover rounded-md w-[24px] h-[24px]"
@@ -187,7 +205,7 @@ export default function Home({ data }) {
             </div>
           </div>
           <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
-            <div className=" rounded-md flex items-center justify-center border hover:shadow-lg">
+            <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
               <Image
                 src={TitleLogo}
                 className="object-cover rounded-md w-[24px] h-[24px]"
@@ -196,8 +214,8 @@ export default function Home({ data }) {
             </div>
           </div>
         </div>
-        <div className="mx-4 w-[2px] h-[16px] bg-gray-300 hidden lg:block"></div>
-        <div className="h-[33px] w-[104px]  gap-1 hidden lg:flex">
+        <div className="mx-4 w-[2px] h-[16px] bg-gray-300 hidden xl:block"></div>
+        <div className="h-[33px] w-[104px]  gap-1 hidden xl:flex">
           <button
             onClick={() => setIsLaptop(true)}
             className={`px-[10px] py-2 w-[50px] ${

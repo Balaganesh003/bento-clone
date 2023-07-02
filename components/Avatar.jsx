@@ -5,7 +5,7 @@ import { BiUpArrowCircle } from 'react-icons/bi';
 const Avatar = ({ handleFileSelect, avatarSrc }) => {
   return (
     <div
-      className={`flex-shrink-0 border-gray-border  w-[11.25rem] h-[11.25rem]  text-center cursor-pointer relative rounded-full border-dashed ${
+      className={`flex-shrink-0 border-gray-border w-[7.5rem] h-[7.5rem] xl:w-[11.5rem] xl:h-[11.5rem]  text-center cursor-pointer relative rounded-full border-dashed ${
         !avatarSrc && 'border-2'
       } bg-[#f7f7f7]`}>
       <div className="w-full h-full flex items-center  justify-center absolute top-0 left-0">

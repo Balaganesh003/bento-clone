@@ -111,6 +111,7 @@ const MapboxMap = () => {
           </ul>
         )}
       </div>
+
       <Map
         width="100%"
         height="100%"
@@ -119,6 +120,7 @@ const MapboxMap = () => {
         {...(isViewportFixed && { ...mapViewport })}
         onViewportChange={handleViewportChange}>
         <NavigationControl />
+
         <GeolocateControl
           positionOptions={{ enableHighAccuracy: true }}
           trackUserLocation={true}
