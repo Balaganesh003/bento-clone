@@ -15,7 +15,6 @@ import MobileWhite from '@/assets/mobilewhite.svg';
 import LaptopBlack from '@/assets/laptopblack.svg';
 import Avatar from '@/components/Avatar';
 import MapboxMap from '@/components/MapBox';
-import { useRef } from 'react';
 import AddSocialLinks from '@/components/AddSocialLinks';
 import { motion, AnimatePresence } from 'framer-motion';
 import GotoProfile from '@/components/GotoProfile';

@@ -14,7 +14,7 @@ const GotoProfile = () => {
       <div className="text-2xl break-words">
         You can keep customizing your page and then share with world!
       </div>
-      <button className="mt-[2.5rem] py-[0.5rem] px-[0.625rem] text-[0.875rem] font-bold leading-5 h-[57px] xl:h-[44px] w-[190px] bg-black text-white rounded-lg">
+      <button className="mt-[2.5rem] py-[0.5rem] px-[0.625rem] text-[0.875rem] font-bold leading-5 h-[57px] xl:h-[44px] w-[190px] bg-black hover:bg-black/[85%] transition-all duration-150 text-white rounded-lg">
         Go to Profile
       </button>
     </div>
