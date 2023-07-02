@@ -16,14 +16,64 @@ import LaptopBlack from '@/assets/laptopblack.svg';
 import Avatar from '@/components/Avatar';
 import MapboxMap from '@/components/MapBox';
 import { useRef } from 'react';
+import AddSocialLinkCard from '@/components/AddSocialLinkCard';
+
+const socialLinks = [
+  {
+    baseUrl: 'twitter',
+    userName: '@balaganeshhhhhhhhhhhhhhhhhhhh',
+  },
+  {
+    baseUrl: 'instagram',
+    userName: '',
+  },
+  {
+    baseUrl: 'twitter',
+    userName: '@balaganeshhhhhhhhhhhhhhhhhhhh',
+  },
+  {
+    baseUrl: 'instagram',
+    userName: '',
+  },
+  {
+    baseUrl: 'twitter',
+    userName: '@balaganeshhhhhhhhhhhhhhhhhhhh',
+  },
+  {
+    baseUrl: 'instagram',
+    userName: '',
+  },
+  {
+    baseUrl: 'twitter',
+    userName: '@balaganeshhhhhhhhhhhhhhhhhhhh',
+  },
+  {
+    baseUrl: 'instagram',
+    userName: '',
+  },
+  {
+    baseUrl: 'twitter',
+    userName: '@balaganeshhhhhhhhhhhhhhhhhhhh',
+  },
+  {
+    baseUrl: 'instagram',
+    userName: '',
+  },
+  {
+    baseUrl: 'twitter',
+    userName: '@balaganeshhhhhhhhhhhhhhhhhhhh',
+  },
+  {
+    baseUrl: 'instagram',
+    userName: '',
+  },
+];
 
 const inter = Inter({
   subsets: ['latin'],
 });
 
 export default function Home({ data }) {
-  const targetRef = useRef(null);
-
   const [textBox1, setTextBox1] = useState(
     'lorem ipsum dolor sit amet consectetur adipisicing elit.Quisquam, quos?'
   );
@@ -58,6 +108,8 @@ export default function Home({ data }) {
   ];
 
   const [isLaptop, setIsLaptop] = useState(true);
+
+  const [isFirst, setIsFirst] = useState(true);
 
   const [avatarSrc, setAvatarSrc] = useState('');
 
@@ -101,36 +153,54 @@ export default function Home({ data }) {
     <main
       className={`${inter.className}    overflow-x-hidden flex justify-center xl:justify-normal`}>
       <div className=" xl:max-w-none max-w-[428px] xl:w-full flex-col xl:flex-row flex xl:gap-[2.5rem] xl:p-[4rem] ">
-        <div className="flex xl:min-w-[278px]  xl:max-w-[calc(100vw-64rem)]  h-fit xl:min-h-[calc(100vh-8rem)]  flex-col px-6 pt-12 xl:p-0 ">
-          <div className="px-4 xl:p-0">
-            <div className="flex justify-between w-full ">
-              <Avatar
-                avatarSrc={avatarSrc}
-                handleFileSelect={handleFileSelect}
-              />
-              <div className="flex h-fit xl:hidden rounded-lg mt-2 border shadow-sm  items-center justify-center">
-                <button className="text-[0.87rem] transition-all duration-200 font-bold w-full py-2 px-[10px] hover:bg-[#FBFBFB]">
-                  Share my Bento
-                </button>
+        <div className="flex xl:min-w-[278px] xl:max-w-[calc(100vw-64rem)]   xl:max-h-[calc(100vh-8rem)]  flex-col px-6 pt-12 xl:p-0 ">
+          {!isFirst && (
+            <div className="px-4 xl:p-0">
+              <div className="flex justify-between w-full ">
+                <Avatar
+                  avatarSrc={avatarSrc}
+                  handleFileSelect={handleFileSelect}
+                />
+                <div className="flex h-fit xl:hidden rounded-lg mt-2 border shadow-sm  items-center justify-center">
+                  <button className="text-[0.87rem] transition-all duration-200 font-bold w-full py-2 px-[10px] hover:bg-[#FBFBFB]">
+                    Share my Bento
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="mt-8 ml-2 ">
-              <div
-                contentEditable="true"
-                translate="no"
-                className="relative tracking-[-2px] text-[32px] xl:text-[44px] font-bold  focus:outline-none leading-[120%] text-[#565656]">
-                <p className="">Balaganesh K</p>
-              </div>
+              <div className="mt-8 ml-2 ">
+                <div
+                  contentEditable="true"
+                  translate="no"
+                  className="relative tracking-[-2px] text-[32px] xl:text-[44px] font-bold  focus:outline-none leading-[120%] text-[#565656]">
+                  <p className="">Balaganesh K</p>
+                </div>
 
-              <div
-                contentEditable="true"
-                translate="no"
-                className="mt-3   xl:text-xl  focus:outline-none  relative  text-[#565656] ">
-                <p>bbbbbbbb</p>
+                <div
+                  contentEditable="true"
+                  translate="no"
+                  className="mt-3   xl:text-xl  focus:outline-none  relative  text-[#565656] ">
+                  <p>bbbbbbbb</p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
+          {isFirst && (
+            <div className="px-3 xl:p-0  w-[23.5rem]   z-10">
+              <h1 className="font-bold  text-2xl mb-10 break-words">
+                Now, let’s add your social media accounts to your page.
+              </h1>
+              <div className="relative rounded-lg">
+                <div className="w-full xl:max-h-[calc(100vh-21rem)] scrollbar-hide  overflow-y-scroll z-0 relative ">
+                  {socialLinks.map((link, index) => (
+                    <AddSocialLinkCard key={index} link={link} />
+                  ))}
+                </div>
+                <div className="bg-white  z-[1000] w-full h-6 -mt-[1rem] absolute bottom-0  blur-lg"></div>
+              </div>
+            </div>
+          )}
         </div>
+
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="xl:max-w-[820px]  xl:min-w-[820px] xl:w-[820px] px-6 pb-6 pt-12 xl:p-0 xl:min-h-[calc(100vh-8rem)] ">
             <Droppable droppableId="ROOT" type="group">

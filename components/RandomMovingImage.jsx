@@ -7,7 +7,7 @@ const RandomMovingImage = ({ cols, rows, imageSrc }) => {
 
   return (
     <div
-      className={`moving-image col-span-${cols} transition-all duration-300 w-full h-full  row-span-${rows} rounded-lg overflow-hidden`}
+      className={`moving-image ${`col-span-${cols}`} transition-all duration-300 w-full h-full  ${`row-span-${rows}`} rounded-lg overflow-hidden`}
       style={{ '--random-x-value': randomX, '--random-y-value': randomY }}>
       <Image
         src={imageSrc}
