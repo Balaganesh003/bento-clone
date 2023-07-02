@@ -28,43 +28,19 @@ const socialLinks = [
     userName: '',
   },
   {
-    baseUrl: 'twitter',
-    userName: '@balaganeshhhhhhhhhhhhhhhhhhhh',
+    baseUrl: 'github',
+    userName: '@balaganesh003',
   },
   {
-    baseUrl: 'instagram',
+    baseUrl: 'linkedin',
     userName: '',
   },
   {
-    baseUrl: 'twitter',
-    userName: '@balaganeshhhhhhhhhhhhhhhhhhhh',
-  },
-  {
-    baseUrl: 'instagram',
+    baseUrl: 'dribbble',
     userName: '',
   },
   {
-    baseUrl: 'twitter',
-    userName: '@balaganeshhhhhhhhhhhhhhhhhhhh',
-  },
-  {
-    baseUrl: 'instagram',
-    userName: '',
-  },
-  {
-    baseUrl: 'twitter',
-    userName: '@balaganeshhhhhhhhhhhhhhhhhhhh',
-  },
-  {
-    baseUrl: 'instagram',
-    userName: '',
-  },
-  {
-    baseUrl: 'twitter',
-    userName: '@balaganeshhhhhhhhhhhhhhhhhhhh',
-  },
-  {
-    baseUrl: 'instagram',
+    baseUrl: 'buymeacoffee',
     userName: '',
   },
 ];
@@ -186,16 +162,24 @@ export default function Home({ data }) {
           )}
           {isFirst && (
             <div className="px-3 xl:p-0  w-[23.5rem]   z-10">
-              <h1 className="font-bold  text-2xl mb-10 break-words">
+              <h1 className="font-bold  text-2xl mb-5 xl:mb-10 break-words">
                 Now, let’s add your social media accounts to your page.
               </h1>
               <div className="relative rounded-lg">
-                <div className="w-full xl:max-h-[calc(100vh-21rem)] scrollbar-hide  overflow-y-scroll z-0 relative ">
+                <div className="w-full max-h-[calc(100vh-20.5rem)] pb-8 scrollbar-hide  overflow-y-scroll z-0 relative ">
                   {socialLinks.map((link, index) => (
                     <AddSocialLinkCard key={index} link={link} />
                   ))}
                 </div>
-                <div className="bg-white  z-[1000] w-full h-6 -mt-[1rem] absolute bottom-0  blur-lg"></div>
+                <div className="bg-white/90  z-[1000] w-full h-[3rem] -mt-[1rem] absolute bottom-[-1rem]  blur"></div>
+              </div>
+              <div className="flex mt-10 gap-3">
+                <button className="bg-black text-white px-[10px] py-2 rounded-lg w-[190px] h-[41px] hover:bg-black/[85%] transition-colors duration-150">
+                  <span className="inline-block w-[170px] h-[25px] ">Next</span>
+                </button>
+                <button className="w-[100px] h-[41px] hover:bg-[#f7f7f7] rounded-lg flex items-center justify-center transition-colors duration-150">
+                  Skip
+                </button>
               </div>
             </div>
           )}
