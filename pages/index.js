@@ -16,34 +16,9 @@ import LaptopBlack from '@/assets/laptopblack.svg';
 import Avatar from '@/components/Avatar';
 import MapboxMap from '@/components/MapBox';
 import { useRef } from 'react';
-import AddSocialLinkCard from '@/components/AddSocialLinkCard';
-
-const socialLinks = [
-  {
-    baseUrl: 'twitter',
-    userName: '@balaganeshhhhhhhhhhhhhhhhhhhh',
-  },
-  {
-    baseUrl: 'instagram',
-    userName: '',
-  },
-  {
-    baseUrl: 'github',
-    userName: '@balaganesh003',
-  },
-  {
-    baseUrl: 'linkedin',
-    userName: '',
-  },
-  {
-    baseUrl: 'dribbble',
-    userName: '',
-  },
-  {
-    baseUrl: 'buymeacoffee',
-    userName: '',
-  },
-];
+import AddSocialLinks from '@/components/AddSocialLinks';
+import { motion, AnimatePresence } from 'framer-motion';
+import GotoProfile from '@/components/GotoProfile';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -59,6 +34,9 @@ export default function Home({ data }) {
   const [textBox3, setTextBox3] = useState(
     'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
   );
+
+  const [index, setIndex] = useState(0);
+  const [direction, setDirection] = useState(1);
 
   const contentList = [
     {
@@ -125,6 +103,22 @@ export default function Home({ data }) {
     }
   };
 
+  const nextPanel = (e) => {
+    e.preventDefault();
+
+    if (index < 2) {
+      setIndex(index + 1);
+      setDirection(1);
+    }
+  };
+
+  const prevPanel = () => {
+    if (index > 0) {
+      setIndex(index - 1);
+      setDirection(-1);
+    }
+  };
+
   return (
     <main
       className={`${inter.className}    overflow-x-hidden flex justify-center xl:justify-normal`}>
@@ -161,27 +155,34 @@ export default function Home({ data }) {
             </div>
           )}
           {isFirst && (
-            <div className="px-3 xl:p-0  w-[23.5rem]   z-10">
-              <h1 className="font-bold  text-2xl mb-5 xl:mb-10 break-words">
-                Now, let’s add your social media accounts to your page.
-              </h1>
-              <div className="relative rounded-lg">
-                <div className="w-full max-h-[calc(100vh-20.5rem)] pb-8 scrollbar-hide  overflow-y-scroll z-0 relative ">
-                  {socialLinks.map((link, index) => (
-                    <AddSocialLinkCard key={index} link={link} />
-                  ))}
+            <AnimatePresence initial={false} custom={index} mode={`wait`}>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: 100 * direction }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4 }}>
+                {index === 0 && <AddSocialLinks />}
+                {index === 1 && <AddSocialLinks />}
+                {index === 2 && <GotoProfile />}
+              </motion.div>
+              {index < 2 && (
+                <div className="flex mt-10 gap-3">
+                  <button
+                    onClick={nextPanel}
+                    className="bg-black text-white px-[10px] py-2 rounded-lg w-[190px] h-[41px] hover:bg-black/[85%] transition-colors duration-150">
+                    <span className="inline-block w-[170px] h-[25px] ">
+                      Next
+                    </span>
+                  </button>
+                  <button
+                    onClick={prevPanel}
+                    className="w-[100px] h-[41px] hover:bg-[#f7f7f7] rounded-lg flex items-center justify-center transition-colors duration-150">
+                    Skip
+                  </button>
                 </div>
-                <div className="bg-white/90  z-[1000] w-full h-[3rem] -mt-[1rem] absolute bottom-[-1rem]  blur"></div>
-              </div>
-              <div className="flex mt-10 gap-3">
-                <button className="bg-black text-white px-[10px] py-2 rounded-lg w-[190px] h-[41px] hover:bg-black/[85%] transition-colors duration-150">
-                  <span className="inline-block w-[170px] h-[25px] ">Next</span>
-                </button>
-                <button className="w-[100px] h-[41px] hover:bg-[#f7f7f7] rounded-lg flex items-center justify-center transition-colors duration-150">
-                  Skip
-                </button>
-              </div>
-            </div>
+              )}
+            </AnimatePresence>
           )}
         </div>
 
