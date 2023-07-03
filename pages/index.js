@@ -163,7 +163,7 @@ export default function Home({ data }) {
                 transition={{ duration: 0.4 }}>
                 {index === 0 && <AddSocialLinks />}
                 {index === 1 && <AddSocialLinks />}
-                {index === 2 && <GotoProfile />}
+                {index === 2 && <GotoProfile setIsFirst={setIsFirst} />}
               </motion.div>
               {index < 2 && (
                 <div className="flex mt-10 gap-3">
