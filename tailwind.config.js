@@ -10,6 +10,7 @@ module.exports = {
       screens: {
         xs: '440px',
       },
+      backgroundImage: {},
     },
   },
   plugins: [require('tailwind-scrollbar-hide')],
