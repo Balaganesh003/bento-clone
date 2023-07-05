@@ -54,7 +54,7 @@ const User = () => {
           <div className="grid grid-cols-2 gap-[1.6rem]">
             <div className="flex flex-col">
               <h1 className="uppercase">
-                <span className="bg-[url('https://uploads-ssl.webflow.com/624c34ee1eb3ec0fbbc365fc/63eca0bab64b8651def357a9_foil.jpg')] bg-clip-text  text-transparent text-[3.8rem] font-black leading-[0.9] tracking-[-0.01em] whitespace-nowrap object-cover bg-[50%]">
+                <span className="bg-[url('../assets/textbg.jpg')] bg-clip-text  text-transparent text-[3.8rem] font-black leading-[0.9] tracking-[-0.01em] whitespace-nowrap object-cover bg-[50%]">
                   Time-Saving
                 </span>
                 <span className="text-[3.8rem] block font-black leading-[0.9] tracking-[-0.01em]  text-white">
