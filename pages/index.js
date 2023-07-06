@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TextBox from '@/components/TextBox';
 import { Inter } from 'next/font/google';
 import { resetServerContext } from 'react-beautiful-dnd';
@@ -18,12 +18,17 @@ import MapboxMap from '@/components/MapBox';
 import AddSocialLinks from '@/components/AddSocialLinks';
 import { motion, AnimatePresence } from 'framer-motion';
 import GotoProfile from '@/components/GotoProfile';
+import { useSelector, useDispatch } from 'react-redux';
+import SocialLinkCard from '@/components/SocialLinkCard';
+import { profileActions } from '@/store/profile-slice';
 
 const inter = Inter({
   subsets: ['latin'],
 });
 
 export default function Home({ data }) {
+  const dispatch = useDispatch();
+
   const [textBox1, setTextBox1] = useState(
     'lorem ipsum dolor sit amet consectetur adipisicing elit.Quisquam, quos?'
   );
@@ -36,6 +41,8 @@ export default function Home({ data }) {
 
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
+
+  const { profileDetails } = useSelector((state) => state.profile);
 
   const contentList = [
     {
@@ -54,10 +61,6 @@ export default function Home({ data }) {
       id: '3333333333333333333333',
       content: <TextBox value={textBox3} setValue={setTextBox3} />,
     },
-    {
-      id: '33333333333333333333333',
-      content: <MapboxMap />,
-    },
   ];
 
   const [isLaptop, setIsLaptop] = useState(true);
@@ -65,8 +68,6 @@ export default function Home({ data }) {
   const [isFirst, setIsFirst] = useState(true);
 
   const [avatarSrc, setAvatarSrc] = useState('');
-
-  const [content, setContent] = useState(contentList);
 
   const onDragEnd = (result) => {
     const { source, destination, type } = result;
@@ -82,11 +83,10 @@ export default function Home({ data }) {
     }
 
     if (type === 'group') {
-      const newContent = Array.from(content);
+      const newContent = Array.from(profileDetails);
       const [removed] = newContent.splice(source.index, 1);
       newContent.splice(destination.index, 0, removed);
-
-      setContent(newContent);
+      dispatch(profileActions.setProfileDetails(newContent));
     }
   };
 
@@ -117,6 +117,8 @@ export default function Home({ data }) {
       setDirection(-1);
     }
   };
+
+  useEffect(() => {}, [profileDetails]);
 
   return (
     <main
@@ -190,8 +192,8 @@ export default function Home({ data }) {
             <Droppable droppableId="ROOT" type="group">
               {(provided) => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
-                  <div className="flex gap-[24px] xl:gap-[39px] flex-wrap last:pb-[6rem]">
-                    {content.map((item, index) => (
+                  <div className="flex grid-cols-4 gap-[24px] xl:gap-[39px]  flex-wrap last:pb-[6rem]">
+                    {profileDetails.map((item, index) => (
                       <Draggable
                         key={item.id}
                         draggableId={item.id}
@@ -201,7 +203,11 @@ export default function Home({ data }) {
                             ref={provided.innerRef}
                             {...provided.dragHandleProps}
                             {...provided.draggableProps}>
-                            <div className="w-full">{item.content}</div>
+                            <div className="w-full">
+                              {item.type === 'socialLink' && item.isAdded && (
+                                <SocialLinkCard item={item} />
+                              )}
+                            </div>
                           </div>
                         )}
                       </Draggable>

@@ -1,9 +1,22 @@
 import React, { useState } from 'react';
 
 import { AiOutlineDelete } from 'react-icons/ai';
+import { useDispatch } from 'react-redux';
+import { profileActions } from '@/store/profile-slice';
 
-const ResizingContainer = ({ children, width, height, handleResize, type }) => {
-  const [isDeleting, setIsDeleting] = useState(false);
+const ResizingContainer = ({
+  children,
+  width,
+  height,
+  handleResize,
+  type,
+  item,
+}) => {
+  const dispatch = useDispatch();
+
+  const handelDelete = () => {
+    dispatch(profileActions.removeItem(item.id));
+  };
 
   return (
     <div className="relative   group">
@@ -18,14 +31,12 @@ const ResizingContainer = ({ children, width, height, handleResize, type }) => {
           height === 2 && 'h-[65px]'
         } bg-white relative rounded-[24px] border ${
           type == 'text' && 'p-3'
-        } shadow-lg transition-all duration-500 group overflow-hidden  ${
-          isDeleting && 'hidden'
-        }`}>
+        } shadow-lg transition-all duration-500 group overflow-hidden  `}>
         {children}
         {/* Delete options */}
       </div>
       <div
-        onClick={() => setIsDeleting(true)}
+        onClick={handelDelete}
         className="absolute hidden group-hover:flex items-center justify-center -top-4 -left-4 w-9 h-9 rounded-full bg-white shadow-lg cursor-pointer hover:bg-gray-100">
         <AiOutlineDelete className="w-5 h-5 text-black" />
       </div>
