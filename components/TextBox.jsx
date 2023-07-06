@@ -1,10 +1,13 @@
 import React, { useRef, useState } from 'react';
 import ResizingContainer from './ResizingContainer';
+import { useDispatch } from 'react-redux';
+import { profileActions } from '@/store/profile-slice';
 
-const TextBox = ({ value, setValue, item }) => {
+const TextBox = ({ item }) => {
+  const dispatch = useDispatch();
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
-  const [textareaValue, setTextareaValue] = useState(value); // Store textarea value separately
+  const [textareaValue, setTextareaValue] = useState(item.content); // Store textarea value separately
 
   const handleResize = (width, height) => {
     setWidth(width);
@@ -29,8 +32,8 @@ const TextBox = ({ value, setValue, item }) => {
         textareaRef.current.focus();
 
         // Set cursor position at the end of the last line
-        textareaRef.current.selectionStart = value.length;
-        textareaRef.current.selectionEnd = value.length;
+        textareaRef.current.selectionStart = item?.content?.length;
+        textareaRef.current.selectionEnd = item?.content?.length;
         textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
         textareaRef.current.scrollLeft =
           textareaRef.current.scrollWidth - textareaRef.current.clientWidth;
@@ -50,7 +53,7 @@ const TextBox = ({ value, setValue, item }) => {
 
   const handleChange = (e) => {
     setTextareaValue(e.target.value); // Update the separate textarea value
-    setValue(e.target.value); // Update the main value prop
+    dispatch(profileActions.updateItem({ ...item, content: e.target.value }));
   };
 
   return (
