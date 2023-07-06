@@ -21,6 +21,8 @@ import GotoProfile from '@/components/GotoProfile';
 import { useSelector, useDispatch } from 'react-redux';
 import SocialLinkCard from '@/components/SocialLinkCard';
 import { profileActions } from '@/store/profile-slice';
+import AddOtherDetails from '@/components/AddOtherDetails';
+import ImageCard from '@/components/ImageCard';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -69,6 +71,26 @@ export default function Home({ data }) {
 
   const [avatarSrc, setAvatarSrc] = useState('');
 
+  const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
+
+  const suggestions = [
+    {
+      id: '1111',
+      type: 'image',
+      imgUrl: null,
+    },
+    {
+      id: '2222',
+      type: 'text',
+      content: null,
+    },
+    {
+      id: '3333',
+      type: 'map',
+      location: null,
+    },
+  ];
+
   const onDragEnd = (result) => {
     const { source, destination, type } = result;
     if (!destination) {
@@ -108,6 +130,30 @@ export default function Home({ data }) {
     if (index < 2) {
       setIndex(index + 1);
       setDirection(1);
+    }
+    if (index >= 0 && !isSuggestionsOpen) {
+      setIsSuggestionsOpen(true);
+      console.log('suggestions');
+      dispatch(
+        profileActions.setProfileDetails([
+          ...profileDetails,
+          {
+            id: '1111',
+            type: 'image',
+            imgUrl: null,
+          },
+          {
+            id: '2222',
+            type: 'text',
+            content: null,
+          },
+          {
+            id: '3333',
+            type: 'map',
+            location: null,
+          },
+        ])
+      );
     }
   };
 
@@ -164,7 +210,7 @@ export default function Home({ data }) {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4 }}>
                 {index === 0 && <AddSocialLinks />}
-                {index === 1 && <AddSocialLinks />}
+                {index === 1 && <AddOtherDetails prevPanel={prevPanel} />}
                 {index === 2 && <GotoProfile setIsFirst={setIsFirst} />}
               </motion.div>
               {index < 2 && (
@@ -177,7 +223,7 @@ export default function Home({ data }) {
                     </span>
                   </button>
                   <button
-                    onClick={prevPanel}
+                    onClick={() => setIsFirst(false)}
                     className="w-[100px] h-[41px] hover:bg-[#f7f7f7] rounded-lg flex items-center justify-center transition-colors duration-150">
                     Skip
                   </button>
@@ -206,6 +252,9 @@ export default function Home({ data }) {
                             <div className="w-full">
                               {item.type === 'socialLink' && item.isAdded && (
                                 <SocialLinkCard item={item} />
+                              )}
+                              {item.type === 'image' && (
+                                <ImageCard item={item} />
                               )}
                             </div>
                           </div>

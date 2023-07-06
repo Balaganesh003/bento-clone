@@ -32,6 +32,13 @@ const profileSlice = createSlice({
       );
       state.profileDetails.splice(index, 1);
     },
+
+    updateItem(state, action) {
+      const index = state.profileDetails.findIndex(
+        (item) => item.id == action.payload.id
+      );
+      state.profileDetails[index] = action.payload;
+    },
   },
 });
 
