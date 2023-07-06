@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import ResizingContainer from './ResizingContainer';
 
-const TextBox = ({ value, setValue }) => {
+const TextBox = ({ value, setValue, item }) => {
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
   const [textareaValue, setTextareaValue] = useState(value); // Store textarea value separately
@@ -64,6 +64,7 @@ const TextBox = ({ value, setValue }) => {
           ref={textareaRef}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          placeholder="Add Note"
           onChange={handleChange}
           value={textareaValue} // Use the separate textarea value
           className={`w-full h-full  scrollbar-hide focus:outline-none group-hover:bg-[#f5f5f5] leading-snug resize-none rounded overflow-y-auto ${

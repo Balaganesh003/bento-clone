@@ -256,6 +256,8 @@ export default function Home({ data }) {
                               {item.type === 'image' && (
                                 <ImageCard item={item} />
                               )}
+                              {item.type === 'text' && <TextBox item={item} />}
+                              {item.type === 'map' && <MapboxMap item={item} />}
                             </div>
                           </div>
                         )}
