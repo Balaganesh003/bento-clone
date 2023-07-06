@@ -60,6 +60,7 @@ const TextBox = ({ item }) => {
     <ResizingContainer
       width={width}
       height={height}
+      item={item}
       type={'text'}
       handleResize={handleResize}>
       <div className="h-full w-full overflow-hidden p-2 group-hover:bg-[#f5f5f5] group rounded-lg">

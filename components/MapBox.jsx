@@ -2,22 +2,33 @@ import React, { useEffect, useState } from 'react';
 import Map, { GeolocateControl, Marker, NavigationControl } from 'react-map-gl';
 import ResizingContainer from '@/components/ResizingContainer';
 import { FaMapMarkerAlt } from 'react-icons/fa';
+import Image from 'next/image';
+import MapLogo from '@/assets/map.png';
+import { useDispatch } from 'react-redux';
+import { profileActions } from '@/store/profile-slice';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-const MapboxMap = () => {
-  const [width, setWidth] = useState(5);
-  const [height, setHeight] = useState(5);
+const MapboxMap = ({ item }) => {
+  const dispatch = useDispatch();
+  const [width, setWidth] = useState(1);
+  const [height, setHeight] = useState(1);
   const [renderKey, setRenderKey] = useState(0);
+  const Token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const [value, setValue] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [mapViewport, setMapViewport] = useState({
-    longitude: 80.2337,
-    latitude: 12.9915,
-    zoom: 8,
-  });
+  const [mapViewport, setMapViewport] = useState(
+    item.location || {
+      latitude: 37.7577,
+      longitude: -122.4376,
+      zoom: 8,
+    }
+  );
+
   const [isViewportFixed, setIsViewportFixed] = useState(true);
 
   const handleResize = (width, height) => {
@@ -25,8 +36,6 @@ const MapboxMap = () => {
     setHeight(height);
     setRenderKey((prev) => prev + 1);
   };
-
-  const Token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
   useEffect(() => {
     const searchLocation = async () => {
@@ -63,7 +72,10 @@ const MapboxMap = () => {
         latitude: selectedLocation.center[1],
         zoom: 8,
       });
+
+      handleLocation();
       setIsViewportFixed(true);
+
       setInterval(() => {
         setIsViewportFixed(false);
       }, 1000);
@@ -74,6 +86,7 @@ const MapboxMap = () => {
 
   const handleSelectLocation = (location) => {
     setSelectedLocation(location);
+    setIsSearchOpen(false);
     setValue('');
     setSearchResults([]);
   };
@@ -84,56 +97,91 @@ const MapboxMap = () => {
     }
   };
 
+  const handleLocation = () => {
+    dispatch(profileActions.updateItem({ ...item, location: mapViewport }));
+    setIsViewportFixed(false);
+  };
+
   return (
-    <ResizingContainer
-      width={width}
-      height={height}
-      key={renderKey}
-      handleResize={handleResize}>
-      <div className="absolute bottom-[-3rem] left-0 z-[100] ">
-        <input
-          className="w-[12rem] hidden bg-black text-white p-2 rounded-lg placeholder:text-white"
-          type="text"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder="Search location"
-        />
-        {searchResults.length > 0 && (
-          <ul className="absolute bottom-0 bg-black text-white mb-[2.75rem] ml-[5rem] max-h-[7rem] overflow-y-auto scrollbar-hide w-[12rem] p-2 rounded-lg ">
-            {searchResults.map((result) => (
-              <li
-                className="truncate text-ellipsis p-1 cursor-pointer hover:bg-gray-700 rounded-lg"
-                key={result.id}
-                onClick={() => handleSelectLocation(result)}>
-                {result.place_name}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+    <div>
+      {item.location ? (
+        <ResizingContainer
+          isSearchOpen={isSearchOpen}
+          setIsSearchOpen={setIsSearchOpen}
+          width={width}
+          height={height}
+          item={item}
+          key={renderKey}
+          type={item.type}
+          handleResize={handleResize}>
+          <Map
+            width="100%"
+            height="100%"
+            style={{ borderRadius: '1.5rem' }}
+            mapboxAccessToken={Token}
+            mapStyle="mapbox://styles/mapbox/streets-v12"
+            {...(isViewportFixed && { ...mapViewport })}
+            onViewportChange={handleViewportChange}>
+            <NavigationControl />
 
-      <Map
-        width="100%"
-        height="100%"
-        mapboxAccessToken={Token}
-        mapStyle="mapbox://styles/mapbox/streets-v12"
-        {...(isViewportFixed && { ...mapViewport })}
-        onViewportChange={handleViewportChange}>
-        <NavigationControl />
+            <GeolocateControl
+              positionOptions={{ enableHighAccuracy: true }}
+              trackUserLocation={true}
+            />
 
-        <GeolocateControl
-          positionOptions={{ enableHighAccuracy: true }}
-          trackUserLocation={true}
-        />
-
-        <Marker
-          longitude={selectedLocation?.center[0] || mapViewport.longitude}
-          latitude={selectedLocation?.center[1] || mapViewport.latitude}
-          anchor="bottom">
-          <FaMapMarkerAlt size={30} className="text-red-500" />
-        </Marker>
-      </Map>
-    </ResizingContainer>
+            <Marker
+              longitude={selectedLocation?.center[0] || mapViewport?.longitude}
+              latitude={selectedLocation?.center[1] || mapViewport?.latitude}
+              anchor="bottom">
+              <FaMapMarkerAlt size={30} className="text-red-500" />
+            </Marker>
+          </Map>
+          {isSearchOpen && (
+            <div
+              onBlur={() => setIsSearchOpen(false)}
+              className="absolute bottom-[1rem] left-[7rem] z-[100]  ">
+              {searchResults.length > 0 && (
+                <ul className=" bg-black text-white   max-h-[7rem] overflow-y-auto scrollbar-hide w-[12rem] p-2 rounded-t-lg ">
+                  {searchResults.map((result) => (
+                    <li
+                      className="truncate text-ellipsis p-1 cursor-pointer hover:bg-gray-700 rounded-lg"
+                      key={result.id}
+                      onClick={() => handleSelectLocation(result)}>
+                      {result.place_name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <input
+                className={`w-[12rem]  bg-black text-white p-2 focus:outline-none ${
+                  value.length > 0 ? 'rounded-b-lg' : 'rounded-lg'
+                }  placeholder:text-white`}
+                type="text"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                placeholder="Search location"
+              />
+            </div>
+          )}
+        </ResizingContainer>
+      ) : (
+        <div
+          onClick={handleLocation}
+          className={`flex-shrink-0 bg-[#f7f7f7] h-[175px] w-[175px] border-gray-border rounded-[1.5rem] border-dashed  text-center  cursor-pointer relative border-2 `}>
+          <div className="w-full h-full flex items-center  justify-center absolute top-0 left-0 flex-col">
+            <Image
+              src={MapLogo}
+              alt="Drag and drop"
+              width={64}
+              height={64}
+              className={`
+                   w-[1.5rem] h-[1.5rem] rounded-md `}
+            />
+            <p className={`mt-1 font-bold text-[14px] `}>Add Photo</p>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

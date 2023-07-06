@@ -31,39 +31,10 @@ const inter = Inter({
 export default function Home({ data }) {
   const dispatch = useDispatch();
 
-  const [textBox1, setTextBox1] = useState(
-    'lorem ipsum dolor sit amet consectetur adipisicing elit.Quisquam, quos?'
-  );
-  const [textBox2, setTextBox2] = useState(
-    'sssssssssssssssssssssssssssssssssssssssssssssssssssss'
-  );
-  const [textBox3, setTextBox3] = useState(
-    'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-  );
-
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
 
   const { profileDetails } = useSelector((state) => state.profile);
-
-  const contentList = [
-    {
-      id: '11111111111',
-      content: <TextBox value={textBox1} setValue={setTextBox1} />,
-    },
-    {
-      id: '22222222222222222',
-      content: <TextBox value={textBox2} setValue={setTextBox2} />,
-    },
-    {
-      id: '333333333333333333333333',
-      content: <TextBox value={textBox3} setValue={setTextBox3} />,
-    },
-    {
-      id: '3333333333333333333333',
-      content: <TextBox value={textBox3} setValue={setTextBox3} />,
-    },
-  ];
 
   const [isLaptop, setIsLaptop] = useState(true);
 
@@ -72,24 +43,6 @@ export default function Home({ data }) {
   const [avatarSrc, setAvatarSrc] = useState('');
 
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
-
-  const suggestions = [
-    {
-      id: '1111',
-      type: 'image',
-      imgUrl: null,
-    },
-    {
-      id: '2222',
-      type: 'text',
-      content: null,
-    },
-    {
-      id: '3333',
-      type: 'map',
-      location: null,
-    },
-  ];
 
   const onDragEnd = (result) => {
     const { source, destination, type } = result;
@@ -133,7 +86,6 @@ export default function Home({ data }) {
     }
     if (index >= 0 && !isSuggestionsOpen) {
       setIsSuggestionsOpen(true);
-      console.log('suggestions');
       dispatch(
         profileActions.setProfileDetails([
           ...profileDetails,
