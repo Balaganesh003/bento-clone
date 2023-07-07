@@ -109,11 +109,6 @@ export default function Home({ data }) {
             type: 'map',
             location: null,
           },
-          {
-            id: '4444',
-            type: 'title',
-            content: '',
-          },
         ])
       );
     }
@@ -147,6 +142,39 @@ export default function Home({ data }) {
           id: `${Math.random() * 100}`,
           type: 'map',
           location: { latitude: 20.5937, longitude: 78.9629, zoom: 4 },
+        },
+      ])
+    );
+  };
+
+  const addImage = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        dispatch(
+          profileActions.setProfileDetails([
+            ...profileDetails,
+            {
+              id: `${Math.random() * 100}`,
+              type: 'image',
+              imgUrl: e.target.result,
+            },
+          ])
+        );
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const addTitle = () => {
+    dispatch(
+      profileActions.setProfileDetails([
+        ...profileDetails,
+        {
+          id: `${Math.random() * 100}`,
+          type: 'title',
+          content: '',
         },
       ])
     );
@@ -360,12 +388,19 @@ export default function Home({ data }) {
               </div>
             )}
           </div>
-          <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
-            <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
+          <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer relative">
+            <div className="cursor-pointer rounded-md flex items-center justify-center border hover:shadow-xl">
               <Image
                 src={ImageLogo}
                 className=" rounded-md object-cover w-[24px] h-[24px]"
                 alt="image"
+              />
+            </div>
+            <div className="absolute opacity-0 top-0 left-0 cursor-pointer  w-[28px] h-[28px] rounded-lg">
+              <input
+                type="file"
+                onChange={addImage}
+                className="w-full h-full  cursor-pointer"
               />
             </div>
           </div>
@@ -391,7 +426,9 @@ export default function Home({ data }) {
               />
             </div>
           </div>
-          <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
+          <div
+            onClick={addTitle}
+            className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
             <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
               <Image
                 src={TitleLogo}

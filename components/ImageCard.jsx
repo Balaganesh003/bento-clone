@@ -8,7 +8,7 @@ import { profileActions } from '@/store/profile-slice';
 
 const ImageCard = ({ item }) => {
   const dispatch = useDispatch();
-  const [imageSrc, setImageSrc] = useState(null);
+  const [imageSrc, setImageSrc] = useState(item?.imgUrl || null);
 
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
@@ -41,7 +41,7 @@ const ImageCard = ({ item }) => {
       handleResize={handleResize}>
       <div
         className={` flex-shrink-0 bg-[#f7f7f7] border-gray-border rounded-[1.5rem] border-dashed w-full h-full  text-center  cursor-pointer relative ${
-          !imageSrc && 'border-2 '
+          !imageSrc?.length > 0 && 'border-2 '
         } `}>
         <div className="w-full h-full flex items-center  justify-center absolute top-0 left-0 flex-col">
           <Image
@@ -66,7 +66,7 @@ const ImageCard = ({ item }) => {
         <input
           type="file"
           id="resumeInput"
-          className="w-full h-full  absolute top-0 left-0 cursor-pointer opacity-0"
+          className="w-[80%] h-[60%]  absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 cursor-pointer opacity-0 "
           onChange={handleFileSelect}
         />
       </div>
