@@ -24,6 +24,7 @@ import { profileActions } from '@/store/profile-slice';
 import AddOtherDetails from '@/components/AddOtherDetails';
 import ImageCard from '@/components/ImageCard';
 import OtherLinkCard from '@/components/OtherLinkCard';
+import TitleBox from '@/components/TitleBox';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -107,6 +108,11 @@ export default function Home({ data }) {
             id: '3333',
             type: 'map',
             location: null,
+          },
+          {
+            id: '4444',
+            type: 'title',
+            content: '',
           },
         ])
       );
@@ -290,6 +296,9 @@ export default function Home({ data }) {
                               {item.type === 'map' && <MapboxMap item={item} />}
                               {item.type === 'links' && (
                                 <OtherLinkCard item={item} />
+                              )}
+                              {item.type === 'title' && (
+                                <TitleBox item={item} />
                               )}
                             </div>
                           </div>

@@ -202,7 +202,7 @@ const MapboxMap = ({ item }) => {
               className={`
                    w-[1.5rem] h-[1.5rem] rounded-md `}
             />
-            <p className={`mt-1 font-bold text-[14px] `}>Add Photo</p>
+            <p className={`mt-1 font-bold text-[14px] `}>Add Map</p>
           </div>
         </div>
       )}
