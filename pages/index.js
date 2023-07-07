@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import TextBox from '@/components/TextBox';
 import { Inter } from 'next/font/google';
 import { resetServerContext } from 'react-beautiful-dnd';
@@ -35,6 +35,8 @@ export default function Home({ data }) {
 
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
+
+  const inputRef = useRef(null);
 
   const { profileDetails } = useSelector((state) => state.profile);
 
@@ -128,7 +130,7 @@ export default function Home({ data }) {
         {
           id: `${Math.random() * 100}`,
           type: 'text',
-          content: null,
+          content: '',
         },
       ])
     );
@@ -220,6 +222,14 @@ export default function Home({ data }) {
         handelLink(text);
       }
     }
+  };
+
+  const handelAddLink = () => {
+    setIsUrlOpen(!isUrlOpen);
+    if (isUrlOpen)
+      setInterval(() => {
+        inputRef.current.focus();
+      }, 100);
   };
 
   const handleUrl = () => {
@@ -348,11 +358,13 @@ export default function Home({ data }) {
           </button>
         </div>
         <div className="mx-4 w-[2px] h-[16px] bg-gray-300 hidden xl:block"></div>
-        <div className="h-[32px] flex gap-3 xl:gap-1  mix-blend-none">
-          <div
-            onClick={() => setIsUrlOpen(!isUrlOpen)}
-            className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer relative">
-            <div className="w-[24px] h-[24px] rounded-md flex items-center justify-center border hover:shadow-xl">
+        <div
+          onBlur={() => setIsUrlOpen(false)}
+          className="h-[32px] flex gap-3 xl:gap-1  mix-blend-none">
+          <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer relative">
+            <div
+              onClick={() => setIsUrlOpen(!isUrlOpen)}
+              className="w-[24px] h-[24px] rounded-md flex items-center justify-center border hover:shadow-xl">
               <Image
                 src={LinkLogo}
                 alt="link"
