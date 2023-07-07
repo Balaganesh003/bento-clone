@@ -38,35 +38,46 @@ const AddSocialLinkCard = ({
     });
   };
 
-  const handelOnPaste = (e) => {
-    const paste = e.clipboardData.getData('text');
-    if (paste.includes('http') || paste.includes('https')) {
-      const url = new URL(paste);
-      if (!url) return;
-      const { hostname } = url;
-      const path = url.pathname.split('/');
-      const userName = path[1];
-      console.log(userName);
-      const baseUrl = hostname.split('.')[0];
+  const handelLink = (paste) => {
+    const url = new URL(paste);
+    if (!url) return;
+    const { hostname } = url;
+    const path = url.pathname.split('/');
+    const userName = path[1];
+    console.log(userName);
+    const baseUrl = hostname.split('.')[0];
 
-      setLinkValue({
-        ...linkValue,
-        isAdded: true,
-        userName: userName || e.clipboardData.getData('text'),
-      });
+    setLinkValue({
+      ...linkValue,
+      isAdded: true,
+      userName: userName || e.clipboardData.getData('text'),
+    });
 
-      handelUpdateLink(linkValue.baseUrl, {
-        ...linkValue,
-        isAdded: true,
-        userName: userName || e.clipboardData.getData('text'),
-      });
+    handelUpdateLink(linkValue.baseUrl, {
+      ...linkValue,
+      isAdded: true,
+      userName: userName || e.clipboardData.getData('text'),
+    });
+  };
+
+  const handelOnPaste = async (e) => {
+    if (e.clipboardData?.files?.length > 0) {
+      const paste = e.clipboardData.getData('text');
+      if (paste.includes('http') || paste.includes('https')) {
+        handelLink(paste);
+      }
+    } else {
+      const paste = await navigator.clipboard.readText();
+      if (paste.includes('http') || paste.includes('https')) {
+        handelLink(paste);
+      }
     }
   };
 
   useEffect(() => {}, [link]);
 
   return (
-    <div className="flex items-center gap-3 mt-3 w-fit z-0">
+    <div className="flex items-center gap-3 mt-3 w-fit z-0 group">
       {!isLogo && (
         <Image
           src={
@@ -83,7 +94,9 @@ const AddSocialLinkCard = ({
       )}
 
       <div
-        className={`flex h-[44px] w-[280px] items-center gap-1 ${bgColor}  rounded-lg pl-3  text-white  flex z-[50]`}>
+        className={`flex h-[44px] w-[280px] items-center gap-1 ${
+          isAdded ? bgColor : 'border'
+        }  rounded-lg pl-3  text-white  flex z-[50]`}>
         {linkValue?.userName?.length > 0 && isAdded ? (
           <div className="w-[14px] h-[14px] mt-1">
             <svg
@@ -100,7 +113,12 @@ const AddSocialLinkCard = ({
             </svg>
           </div>
         ) : (
-          <span className="text-[16px] ">@</span>
+          <span
+            className={`text-[16px]  ${
+              isAdded ? 'text-white' : 'text-black'
+            } `}>
+            @
+          </span>
         )}
 
         <input
@@ -110,21 +128,32 @@ const AddSocialLinkCard = ({
           onPaste={handelOnPaste}
           onChange={handelChange}
           contentEditable="true"
-          className={`flex-1 ${bgColor}   whitespace-nowrap focus:outline-none font-medium  text-[20px] text-ellipsis  focus:text-clip truncate focus:overflow-y-clip focus:text-start leading-6 w-[5rem]`}
+          className={`flex-1 ${isAdded && bgColor}  ${
+            isAdded ? 'text-white' : 'text-black'
+          }  whitespace-nowrap focus:outline-none font-medium  text-[20px] text-ellipsis  focus:text-clip truncate focus:overflow-y-clip focus:text-start leading-6 w-[5rem]`}
         />
 
         <div className="flex-shrink-0 w-fit mr-2">
-          {linkValue?.userName?.length > 0 && isAdded ? (
+          {linkValue?.userName?.length > 0 && isAdded && (
             <button
               onClick={removeLink}
               className="flex items-center  hover:bg-black/10 rounded-full justify-center p-2">
               <Image src={crosslogo} width={14} height={14} alt="cross logo" />
             </button>
-          ) : (
+          )}
+
+          {linkValue?.userName?.length > 0 && !isAdded && (
             <button
               onClick={addLink}
               className="text-[0.87rem] px-2 font-bold  py-[6px]  rounded-lg  bg-green-500 text-white  items-center justify-center">
               Add
+            </button>
+          )}
+          {!(linkValue?.userName?.length > 0) && (
+            <button
+              onClick={handelOnPaste}
+              className="bg-[#fafafa] shadow-sm border group-hover:block  hidden text-black px-3 py-1 rounded-lg hover:bg-[#f7f7f7] transition-colors duration-150 h-fit text-[14px]">
+              Paste
             </button>
           )}
         </div>
