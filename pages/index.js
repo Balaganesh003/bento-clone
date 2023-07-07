@@ -164,7 +164,6 @@ export default function Home({ data }) {
           link: text,
           logo,
           hostname,
-          userName,
           baseUrl,
         },
       ])
