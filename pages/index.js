@@ -23,7 +23,7 @@ import SocialLinkCard from '@/components/SocialLinkCard';
 import { profileActions } from '@/store/profile-slice';
 import AddOtherDetails from '@/components/AddOtherDetails';
 import ImageCard from '@/components/ImageCard';
-import AddSocialLinkCard from '@/components/AddSocialLinkCard';
+import OtherLinkCard from '@/components/OtherLinkCard';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -145,6 +145,54 @@ export default function Home({ data }) {
     );
   };
 
+  const handelLink = (text) => {
+    const url = new URL(text);
+    if (!url) return;
+    const { hostname } = url;
+    const path = url.pathname.split('/');
+    const userName = path[1];
+    const baseUrl = hostname.split('.')[0];
+    const logo = null;
+
+    dispatch(
+      profileActions.setProfileDetails([
+        ...profileDetails,
+        {
+          id: `${Math.random() * 1000}`,
+          type: 'links',
+          userName,
+          link: text,
+          logo,
+          hostname,
+          userName,
+          baseUrl,
+        },
+      ])
+    );
+  };
+
+  const handelOnPaste = async (e) => {
+    e.preventDefault();
+    if (e.clipboardData?.files?.length > 0) {
+      const text = e.clipboardData.getData('text');
+      if (text.includes('http') || text.includes('https')) {
+        handelLink(text);
+      }
+    } else {
+      const text = await navigator.clipboard.readText();
+      if (text.includes('http') || text.includes('https')) {
+        handelLink(text);
+      }
+    }
+  };
+
+  const handleUrl = () => {
+    if (url.includes('http') || url.includes('https')) {
+      handelLink(url);
+    }
+    setUrl('');
+  };
+
   useEffect(() => {}, [profileDetails]);
 
   return (
@@ -239,6 +287,9 @@ export default function Home({ data }) {
                               )}
                               {item.type === 'text' && <TextBox item={item} />}
                               {item.type === 'map' && <MapboxMap item={item} />}
+                              {item.type === 'links' && (
+                                <OtherLinkCard item={item} />
+                              )}
                             </div>
                           </div>
                         )}
@@ -272,6 +323,7 @@ export default function Home({ data }) {
             <div className="h-10 w-[16rem] bg-white border absolute bottom-[3rem] shadow-lg rounded-lg left-[-4rem] cursor-text  ">
               <div className="h-full w-full flex gap-2 items-center px-1 group">
                 <input
+                  onPaste={handelOnPaste}
                   type="text"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
@@ -279,11 +331,15 @@ export default function Home({ data }) {
                   className="w-full h-full bg-transparent px-1 py-1 text-black focus:outline-none "
                 />
                 {url.length > 0 ? (
-                  <button className="bg-green-500 cursor-pointer text-white px-3 py-1 rounded-lg hover:bg-green-600 transition-colors duration-150 h-fit ">
+                  <button
+                    onClick={handleUrl}
+                    className="bg-green-500 cursor-pointer text-white px-3 py-1 rounded-lg hover:bg-green-600 transition-colors duration-150 h-fit text-[14px]">
                     Add
                   </button>
                 ) : (
-                  <button className="bg-[#fafafa] shadow-sm border group-hover:opacity-[100%]  opacity-0 text-black px-3 py-1 rounded-lg hover:bg-[#f7f7f7] transition-colors duration-150 h-fit text-[14px]">
+                  <button
+                    onClick={handelOnPaste}
+                    className="bg-[#fafafa] shadow-sm border group-hover:opacity-[100%]  opacity-0 text-black px-3 py-1 rounded-lg hover:bg-[#f7f7f7] transition-colors duration-150 h-fit text-[14px]">
                     Paste
                   </button>
                 )}

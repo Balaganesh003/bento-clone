@@ -46,13 +46,20 @@ const AddSocialLinkCard = ({
       const { hostname } = url;
       const path = url.pathname.split('/');
       const userName = path[1];
+      console.log(userName);
       const baseUrl = hostname.split('.')[0];
-      setLinkValue((prev) => ({
-        ...prev,
-        userName: userName || e.clipboardData.getData('text'),
-      }));
 
-      addLink();
+      setLinkValue({
+        ...linkValue,
+        isAdded: true,
+        userName: userName || e.clipboardData.getData('text'),
+      });
+
+      handelUpdateLink(linkValue.baseUrl, {
+        ...linkValue,
+        isAdded: true,
+        userName: userName || e.clipboardData.getData('text'),
+      });
     }
   };
 
@@ -77,7 +84,7 @@ const AddSocialLinkCard = ({
 
       <div
         className={`flex h-[44px] w-[280px] items-center gap-1 ${bgColor}  rounded-lg pl-3  text-white  flex z-[50]`}>
-        {linkValue?.userName.length > 0 && isAdded ? (
+        {linkValue?.userName?.length > 0 && isAdded ? (
           <div className="w-[14px] h-[14px] mt-1">
             <svg
               width="14"
@@ -107,7 +114,7 @@ const AddSocialLinkCard = ({
         />
 
         <div className="flex-shrink-0 w-fit mr-2">
-          {linkValue?.userName.length > 0 && isAdded ? (
+          {linkValue?.userName?.length > 0 && isAdded ? (
             <button
               onClick={removeLink}
               className="flex items-center  hover:bg-black/10 rounded-full justify-center p-2">
