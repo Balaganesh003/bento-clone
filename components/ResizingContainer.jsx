@@ -21,19 +21,23 @@ const ResizingContainer = ({
   };
 
   return (
-    <div className="relative   group">
+    <div className="relative flex-1 group">
       <div
         className={`${
           width === 2 || width === 3 || width === 5
-            ? 'w-[377px] xl:w-[388px]'
-            : 'w-[175px]'
-        } ${(height === 1 || height === 3) && 'h-[175px]'} ${
-          (height === 4 || height === 5) && 'h-[377px] xl:h-[388px]'
+            ? 'xs:w-[377px] xl:w-[388px] w-[calc(100vw-2rem)]'
+            : 'xs:w-[175px] w-[calc(100vw/2-2rem)]'
         } ${
-          height === 2 && 'h-[65px]'
+          (height === 1 || height === 3) &&
+          'h-[calc(100vw/2-2rem)] xs:h-[175px] '
+        } ${
+          (height === 4 || height === 5) &&
+          'h-[calc(100vw-2rem)] xs:h-[377px] xl:h-[388px]'
+        } ${
+          height === 2 && ' h-[65px]'
         } bg-white relative rounded-[24px] border ${
           type == 'text' && 'p-3'
-        } shadow-lg transition-all duration-500 group  `}>
+        } shadow-lg transition-all duration-500 group `}>
         {children}
         {/* Delete options */}
       </div>

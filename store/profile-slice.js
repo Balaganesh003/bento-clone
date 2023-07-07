@@ -39,6 +39,16 @@ const profileSlice = createSlice({
       );
       state.profileDetails[index] = action.payload;
     },
+
+    removeSuggestion(state, action) {
+      state.profileDetails = state.profileDetails.filter(
+        (item) =>
+          item?.content !== null &&
+          item?.userName !== null &&
+          item?.location !== null &&
+          item?.imgUrl !== null
+      );
+    },
   },
 });
 

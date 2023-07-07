@@ -25,6 +25,7 @@ import AddOtherDetails from '@/components/AddOtherDetails';
 import ImageCard from '@/components/ImageCard';
 import OtherLinkCard from '@/components/OtherLinkCard';
 import TitleBox from '@/components/TitleBox';
+import { MdOutlineDelete } from 'react-icons/md';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -35,6 +36,8 @@ export default function Home({ data }) {
 
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
+
+  const [removeSuggestions, setRemoveSuggestions] = useState(true);
 
   const inputRef = useRef(null);
 
@@ -224,29 +227,26 @@ export default function Home({ data }) {
     }
   };
 
-  const handelAddLink = () => {
-    setIsUrlOpen(!isUrlOpen);
-    if (isUrlOpen)
-      setInterval(() => {
-        inputRef.current.focus();
-      }, 100);
-  };
-
   const handleUrl = () => {
     if (url.includes('http') || url.includes('https')) {
       handelLink(url);
     }
   };
 
+  const removeSuggestion = () => {
+    dispatch(profileActions.removeSuggestion());
+    setRemoveSuggestions(false);
+  };
+
   useEffect(() => {}, [profileDetails]);
 
   return (
     <main
-      className={`${inter.className}    overflow-x-hidden flex justify-center xl:justify-normal`}>
+      className={`${inter.className} overflow-x-hidden flex justify-center xl:justify-normal`}>
       <div className=" xl:max-w-none max-w-[428px] xl:w-full flex-col xl:flex-row flex xl:gap-[2.5rem] xl:p-[4rem] ">
-        <div className="flex xl:min-w-[278px] xl:max-w-[calc(100vw-64rem)]   xl:max-h-[calc(100vh-8rem)]  flex-col px-6 pt-12 xl:p-0 ">
+        <div className="flex xl:min-w-[278px] xl:max-w-[calc(100vw-64rem)]   xl:max-h-[calc(100vh-8rem)] flex-1 flex-col px-6 pt-12 xl:p-0 ">
           {!isFirst && (
-            <div className="px-4 xl:p-0">
+            <div className="px-4 xl:p-0 ">
               <div className="flex justify-between w-full ">
                 <Avatar
                   avatarSrc={avatarSrc}
@@ -308,11 +308,11 @@ export default function Home({ data }) {
         </div>
 
         <DragDropContext onDragEnd={onDragEnd}>
-          <div className="xl:max-w-[820px]  xl:min-w-[820px] xl:w-[820px] px-6 pb-6 pt-12 xl:p-0 xl:min-h-[calc(100vh-8rem)] ">
+          <div className="xl:max-w-[820px]  xl:min-w-[820px] xl:w-[820px] px-6 pb-6 pt-12 xl:p-0 xl:min-h-[calc(100vh-8rem)] w-full h-full flex">
             <Droppable droppableId="ROOT" type="group">
               {(provided) => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
-                  <div className="flex grid-cols-4 gap-[24px] xl:gap-[39px]  flex-wrap last:pb-[6rem]">
+                  <div className=" flex  gap-[24px] xl:gap-[39px]  flex-wrap last:pb-[6rem]">
                     {profileDetails.map((item, index) => (
                       <Draggable
                         key={item.id}
@@ -468,6 +468,15 @@ export default function Home({ data }) {
           </button>
         </div>
       </div>
+      {/* Remove suggestions */}
+      {removeSuggestions && !isFirst && (
+        <div
+          onClick={removeSuggestion}
+          className="fixed right-5 bottom-[5rem] shadow-lg flex gap-2 items-center rounded-lg bg-white border p-2 text-[14px] font-bold cursor-pointer">
+          <MdOutlineDelete className="ml-2 cursor-pointer text-xl" />
+          Remove suggestions
+        </div>
+      )}
     </main>
   );
 }

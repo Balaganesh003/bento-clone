@@ -10,7 +10,7 @@ const AddOtherDetails = ({ prevPanel }) => {
         <FaArrowLeftLong className="text-gray-900 text-xl cursor-pointer" />
       </div>
       <div>
-        <div className="text-2xl mt-[1.5rem] mb-[2.5rem] font-semibold -mr-[10rem]">
+        <div className="text-2xl mt-[1.5rem] mb-[2.5rem] font-semibold ">
           You can also add photos, video, maps, and notes.
         </div>
         <div>
