@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import Link from 'next/link';
 import { FaGoogle } from 'react-icons/fa';
 import RandomMovingImage from '@/components/RandomMovingImage';
