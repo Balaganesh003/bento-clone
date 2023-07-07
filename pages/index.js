@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import TextBox from '@/components/TextBox';
 import { Inter } from 'next/font/google';
 import { resetServerContext } from 'react-beautiful-dnd';
@@ -33,24 +33,14 @@ const inter = Inter({
 
 export default function Home({ data }) {
   const dispatch = useDispatch();
-
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
-
   const [removeSuggestions, setRemoveSuggestions] = useState(true);
-
-  const inputRef = useRef(null);
-
   const { profileDetails } = useSelector((state) => state.profile);
-
   const [isLaptop, setIsLaptop] = useState(true);
-
   const [isFirst, setIsFirst] = useState(true);
-
   const [avatarSrc, setAvatarSrc] = useState('');
-
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
-
   const [url, setUrl] = useState('');
   const [isUrlOpen, setIsUrlOpen] = useState(false);
 

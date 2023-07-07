@@ -44,7 +44,6 @@ const AddSocialLinkCard = ({
     const { hostname } = url;
     const path = url.pathname.split('/');
     const userName = path[1];
-    console.log(userName);
     const baseUrl = hostname.split('.')[0];
 
     setLinkValue({
