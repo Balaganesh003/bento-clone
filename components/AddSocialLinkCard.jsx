@@ -8,6 +8,7 @@ const AddSocialLinkCard = ({
   bgColor,
   logo,
   isAdded,
+  isLogo,
 }) => {
   const [linkValue, setLinkValue] = useState(link);
 
@@ -59,22 +60,24 @@ const AddSocialLinkCard = ({
 
   return (
     <div className="flex items-center gap-3 mt-3 w-fit z-0">
-      <Image
-        src={
-          logo ||
-          `https://www.google.com/s2/favicons?domain=${
-            linkValue.baseUrl
-          }&sz=${256}`
-        }
-        width={44}
-        height={44}
-        className="w-[2.75rem] h-[2.75rem] rounded-lg"
-        alt="logo"
-      />
+      {!isLogo && (
+        <Image
+          src={
+            logo ||
+            `https://www.google.com/s2/favicons?domain=${
+              linkValue?.baseUrl
+            }&sz=${256}`
+          }
+          width={44}
+          height={44}
+          className="w-[2.75rem] h-[2.75rem] rounded-lg"
+          alt="logo"
+        />
+      )}
 
       <div
         className={`flex h-[44px] w-[280px] items-center gap-1 ${bgColor}  rounded-lg pl-3  text-white  flex z-[50]`}>
-        {linkValue.userName.length > 0 && isAdded ? (
+        {linkValue?.userName.length > 0 && isAdded ? (
           <div className="w-[14px] h-[14px] mt-1">
             <svg
               width="14"
@@ -96,7 +99,7 @@ const AddSocialLinkCard = ({
         <input
           type="text"
           readOnly={isAdded}
-          value={`${isAdded ? `@${linkValue.userName}` : linkValue.userName}`}
+          value={`${isAdded ? `@${linkValue?.userName}` : linkValue?.userName}`}
           onPaste={handelOnPaste}
           onChange={handelChange}
           contentEditable="true"
@@ -104,7 +107,7 @@ const AddSocialLinkCard = ({
         />
 
         <div className="flex-shrink-0 w-fit mr-2">
-          {linkValue.userName.length > 0 && isAdded ? (
+          {linkValue?.userName.length > 0 && isAdded ? (
             <button
               onClick={removeLink}
               className="flex items-center  hover:bg-black/10 rounded-full justify-center p-2">

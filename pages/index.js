@@ -23,6 +23,7 @@ import SocialLinkCard from '@/components/SocialLinkCard';
 import { profileActions } from '@/store/profile-slice';
 import AddOtherDetails from '@/components/AddOtherDetails';
 import ImageCard from '@/components/ImageCard';
+import AddSocialLinkCard from '@/components/AddSocialLinkCard';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -43,6 +44,8 @@ export default function Home({ data }) {
   const [avatarSrc, setAvatarSrc] = useState('');
 
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
+
+  const [url, setUrl] = useState('');
 
   const onDragEnd = (result) => {
     const { source, destination, type } = result;
@@ -114,6 +117,32 @@ export default function Home({ data }) {
       setIndex(index - 1);
       setDirection(-1);
     }
+  };
+
+  const addNote = () => {
+    dispatch(
+      profileActions.setProfileDetails([
+        ...profileDetails,
+        {
+          id: `${Math.random() * 100}`,
+          type: 'text',
+          content: null,
+        },
+      ])
+    );
+  };
+
+  const addMap = () => {
+    dispatch(
+      profileActions.setProfileDetails([
+        ...profileDetails,
+        {
+          id: `${Math.random() * 100}`,
+          type: 'map',
+          location: { latitude: 20.5937, longitude: 78.9629, zoom: 4 },
+        },
+      ])
+    );
   };
 
   useEffect(() => {}, [profileDetails]);
@@ -231,13 +260,34 @@ export default function Home({ data }) {
         </div>
         <div className="mx-4 w-[2px] h-[16px] bg-gray-300 hidden xl:block"></div>
         <div className="h-[32px] flex gap-3 xl:gap-1  mix-blend-none">
-          <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer ">
+          <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer relative">
             <div className="w-[24px] h-[24px] rounded-md flex items-center justify-center border hover:shadow-xl">
               <Image
                 src={LinkLogo}
                 alt="link"
-                className="rounded-md object-cover "
+                className="rounded-md object-cover"
               />
+            </div>
+            {/* Add Link */}
+            <div className="h-10 w-[16rem] bg-white border absolute bottom-[3rem] shadow-lg rounded-lg left-[-4rem] cursor-text  ">
+              <div className="h-full w-full flex gap-2 items-center px-1 group">
+                <input
+                  type="text"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder="Enter link"
+                  className="w-full h-full bg-transparent px-1 py-1 text-black focus:outline-none "
+                />
+                {url.length > 0 ? (
+                  <button className="bg-green-500 cursor-pointer text-white px-3 py-1 rounded-lg hover:bg-green-600 transition-colors duration-150 h-fit ">
+                    Add
+                  </button>
+                ) : (
+                  <button className="bg-[#fafafa] shadow-sm border group-hover:opacity-[100%]  opacity-0 text-black px-3 py-1 rounded-lg hover:bg-[#f7f7f7] transition-colors duration-150 h-fit text-[14px]">
+                    Paste
+                  </button>
+                )}
+              </div>
             </div>
           </div>
           <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
@@ -249,7 +299,9 @@ export default function Home({ data }) {
               />
             </div>
           </div>
-          <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
+          <div
+            onClick={addNote}
+            className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
             <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
               <Image
                 src={TextLogo}
@@ -258,7 +310,9 @@ export default function Home({ data }) {
               />
             </div>
           </div>
-          <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
+          <div
+            onClick={addMap}
+            className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
             <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
               <Image
                 src={MapLogo}

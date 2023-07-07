@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-
+import React from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
@@ -40,11 +39,12 @@ const ResizingContainer = ({
       </div>
       <div
         onClick={handelDelete}
-        className="absolute hidden group-hover:flex items-center justify-center -top-4 -left-4 w-9 h-9 rounded-full bg-white shadow-lg  cursor-pointer hover:bg-gray-100">
+        className="absolute hidden group-hover:flex  items-center justify-center -top-4 -left-4 w-9 h-9 rounded-full bg-white shadow-lg  cursor-pointer hover:bg-gray-100">
         <AiOutlineDelete className="w-5 h-5 text-black" />
       </div>
       {/* Resizing options */}
-      <div className="absolute hidden bottom-[-30px] group-hover:flex w-fit left-[50%] -translate-x-1/2 bg-black shadow-lg rounded-[8px] transition-all duration-300 items-center p-2 gap-2 z-10">
+      <div
+        className={`absolute hidden bottom-[-30px] group-hover:flex  w-fit left-[50%] -translate-x-1/2 bg-black shadow-lg rounded-[8px] transition-all duration-300 items-center p-2 gap-2 z-10`}>
         <div
           onClick={() => handleResize(1, 1)}
           className={`w-7 h-7 ${

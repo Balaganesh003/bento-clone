@@ -11,8 +11,8 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MapboxMap = ({ item }) => {
   const dispatch = useDispatch();
-  const [width, setWidth] = useState(1);
-  const [height, setHeight] = useState(1);
+  const [width, setWidth] = useState(5);
+  const [height, setHeight] = useState(5);
   const [renderKey, setRenderKey] = useState(0);
   const Token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -21,13 +21,6 @@ const MapboxMap = ({ item }) => {
   const [value, setValue] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [mapViewport, setMapViewport] = useState(
-    item.location || {
-      latitude: 37.7577,
-      longitude: -122.4376,
-      zoom: 8,
-    }
-  );
 
   const [isViewportFixed, setIsViewportFixed] = useState(true);
 
@@ -67,13 +60,18 @@ const MapboxMap = ({ item }) => {
 
   useEffect(() => {
     if (selectedLocation) {
-      setMapViewport({
-        longitude: selectedLocation.center[0],
-        latitude: selectedLocation.center[1],
-        zoom: 8,
-      });
+      console.log(selectedLocation.center[0], selectedLocation.center[1]);
+      dispatch(
+        profileActions.updateItem({
+          ...item,
+          location: {
+            longitude: selectedLocation.center[0],
+            latitude: selectedLocation.center[1],
+            zoom: 4,
+          },
+        })
+      );
 
-      handleLocation();
       setIsViewportFixed(true);
 
       setInterval(() => {
@@ -91,16 +89,41 @@ const MapboxMap = ({ item }) => {
     setSearchResults([]);
   };
 
+  const handleLocation = () => {
+    dispatch(
+      profileActions.updateItem({
+        ...item,
+        location: {
+          latitude: 20.5937,
+          longitude: 78.9629,
+          zoom: 4,
+        },
+      })
+    );
+    setIsViewportFixed(true);
+
+    setInterval(() => {
+      setIsViewportFixed(false);
+    }, 1000);
+  };
+
   const handleViewportChange = (newViewport) => {
     if (!selectedLocation) {
-      setMapViewport(newViewport);
+      dispatch(profileActions.updateItem({ ...item, location: newViewport }));
     }
   };
 
-  const handleLocation = () => {
-    dispatch(profileActions.updateItem({ ...item, location: mapViewport }));
-    setIsViewportFixed(false);
-  };
+  useEffect(() => {
+    if (item.location) {
+      dispatch(profileActions.updateItem({ ...item, location: item.location }));
+    }
+
+    setIsViewportFixed(true);
+
+    setInterval(() => {
+      setIsViewportFixed(false);
+    }, 1000);
+  }, [renderKey]);
 
   return (
     <div>
@@ -111,8 +134,8 @@ const MapboxMap = ({ item }) => {
           width={width}
           height={height}
           item={item}
-          key={renderKey}
           type={item.type}
+          key={renderKey}
           handleResize={handleResize}>
           <Map
             width="100%"
@@ -120,7 +143,7 @@ const MapboxMap = ({ item }) => {
             style={{ borderRadius: '1.5rem' }}
             mapboxAccessToken={Token}
             mapStyle="mapbox://styles/mapbox/streets-v12"
-            {...(isViewportFixed && { ...mapViewport })}
+            {...(isViewportFixed && { ...item.location })}
             onViewportChange={handleViewportChange}>
             <NavigationControl />
 
@@ -130,8 +153,10 @@ const MapboxMap = ({ item }) => {
             />
 
             <Marker
-              longitude={selectedLocation?.center[0] || mapViewport?.longitude}
-              latitude={selectedLocation?.center[1] || mapViewport?.latitude}
+              longitude={
+                selectedLocation?.center[0] || item.location?.longitude
+              }
+              latitude={selectedLocation?.center[1] || item.location?.latitude}
               anchor="bottom">
               <FaMapMarkerAlt size={30} className="text-red-500" />
             </Marker>
