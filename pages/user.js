@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SpinnerLogo from '@/assets/spinner.gif';
 import Image from 'next/image';
 import LogoCard from '@/components/LogoCard';
@@ -24,6 +24,7 @@ import LogoZoom from '@/assets/users/LogoZoom.svg';
 import logoGoogleCalendar from '@/assets/users/logoGoogleCalendar.svg';
 import LogoAsana from '@/assets/users/LogoAsana.svg';
 import logoHangout from '@/assets/users/logoHangout.svg';
+import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
 
 const logoData1 = [
   { id: 6, logo: LogoTeams },
@@ -132,6 +133,7 @@ const User = () => {
   const [active, setActive] = useState(1);
 
   const [scrollPosition, setScrollPosition] = useState(420);
+  const scrollRef = useRef(null);
 
   const [width, setWidth] = useState(0);
 
@@ -144,6 +146,10 @@ const User = () => {
     const currentWidth = window.innerWidth;
     setWidth(currentWidth);
   };
+
+  useEffect(() => {
+    handleResize();
+  }, []);
 
   useEffect(() => {
     window.addEventListener('resize', handleResize);
@@ -170,11 +176,33 @@ const User = () => {
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      handelAutoChange();
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [active]);
+    if (width > 1024) {
+      const interval = setInterval(() => {
+        handelAutoChange();
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [active, width]);
+
+  const handleNext = () => {
+    if (active < data.length) {
+      setActive(active + 1);
+      scrollRef.current.scrollBy({
+        left: scrollRef.current.offsetWidth - 32,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+  const handlePrev = () => {
+    if (active > 1) {
+      setActive(active - 1);
+      scrollRef.current.scrollBy({
+        left: -(scrollRef.current.offsetWidth - 32),
+        behavior: 'smooth',
+      });
+    }
+  };
 
   return (
     <>
@@ -241,11 +269,11 @@ const User = () => {
       {/* swapper */}
       <section class="pt-[3rem] pb-[5rem]  relative overflow-hidden lg:overflow-visible bg-purple-200">
         <div class="mb-10 lg:mb-18 relative z-2 max-w-[90rem] mx-auto">
-          <h2 class="text-center text-[#391952] text-[4.0625rem] font-semibold tracking-[-0.02em] leading-[.9230769230769231]">
+          <h2 class="text-center text-[#391952] text-[2.5rem] lg:text-[4.0625rem] font-semibold tracking-[-0.02em] leading-[.9230769230769231]">
             The world loves Swag
           </h2>
         </div>
-        <div className="xl:px-[5.25rem] lg:px-[1.875rem] max-w-[90rem] flex gap-7 mx-auto">
+        <div className="hidden xl:px-[5.25rem] lg:px-[1.875rem] max-w-[90rem] lg:flex gap-7 mx-auto">
           <div className="px-[0.75rem] w-[33.333333%] flex-shrink-0">
             <div className="flex flex-col gap-y-4 rounded-xl p-7 bg-white justify-center">
               {data.map((item) => (
@@ -288,6 +316,60 @@ const User = () => {
                 </span>
               </div>
             </div>
+          </div>
+        </div>
+        {/* Mobile view */}
+        <div className="flex flex-col lg:hidden w-full h-full">
+          <div
+            ref={scrollRef}
+            className={`flex w-full overflow-x-auto scrollbar-hide space-x-4 px-6 h-full last:mr-6 `}>
+            {data.map((item) => (
+              <div
+                key={item.id}
+                className={`flex-shrink-0 w-[calc(100vw-4rem)]`}>
+                <div className="p-7 h-full flex flex-col items-center bg-slate-50 rounded-[12px]">
+                  <p className="text-[#391952] text-[1.25rem] text-center leading-[1.25rem] font-bold">
+                    {item.name}
+                  </p>
+                  <p className="font-bold mt-2 text-[5.75rem] leading-[72px] tracking-[-0.01rem] text-center text-[#BA80E6]">
+                    {item.value}
+                  </p>
+                  <p className="font-bold mt-3 text-[1.25rem] leading-[1.2] tracking-[-0.01rem] text-center text-[#BA80E6]">
+                    {item.basis}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 w-full h-[44px] flex justify-between px-4">
+            <button
+              onClick={handlePrev}
+              disabled={active === 1}
+              className={`w-[44px] h-[44px] rounded-full border flex justify-center items-center border-[#391952] ${
+                active === 1 && 'opacity-40'
+              }`}>
+              <BsChevronLeft className="text-[#391952] text-[0.875rem]" />
+            </button>
+
+            <div className="py-[9px] px-[20px] w-fit border flex gap-1 border-[#391952] h-[44px] rounded-lg">
+              <span className="text-[0.875rem] leading-6 tracking-[-0.02rem]">
+                {active}
+              </span>
+              <span className="text-[0.875rem] leading-6 tracking-[-0.02rem]">
+                /
+              </span>
+              <span className="text-[0.875rem] leading-6 tracking-[-0.02rem]">
+                {data.length}
+              </span>
+            </div>
+            <button
+              onClick={handleNext}
+              disabled={active === data.length}
+              className={`w-[44px] h-[44px] rounded-full border flex justify-center items-center border-[#391952] ${
+                active === data.length && 'opacity-40'
+              }`}>
+              <BsChevronRight className="text-[#391952] text-[0.875rem] " />
+            </button>
           </div>
         </div>
       </section>
