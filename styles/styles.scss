@@ -76,3 +76,50 @@
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
 }
+
+.hero {
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    white 20%,
+    white 80%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    white 20%,
+    white 80%,
+    transparent 100%
+  );
+}
+
+.logo::after {
+  content: '';
+  position: absolute;
+  border-radius: inherit;
+  inset: 0;
+  z-index: 3;
+  box-sizing: border-box;
+  pointer-events: none;
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  border-style: solid;
+  border-color: #d17fa2;
+  border-width: 1px;
+  -webkit-mask-image: linear-gradient(
+    to bottom right,
+    black 0%,
+    transparent 40%,
+    transparent 60%,
+    black 100%
+  );
+  mask-image: linear-gradient(
+    to bottom right,
+    black 0%,
+    transparent 40%,
+    transparent 60%,
+    black 100%
+  );
+}
