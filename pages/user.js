@@ -188,7 +188,7 @@ const User = () => {
     if (active < data.length) {
       setActive(active + 1);
       scrollRef.current.scrollBy({
-        left: scrollRef.current.offsetWidth - 32,
+        left: document.body.offsetWidth - 42,
         behavior: 'smooth',
       });
     }
@@ -198,7 +198,7 @@ const User = () => {
     if (active > 1) {
       setActive(active - 1);
       scrollRef.current.scrollBy({
-        left: -(scrollRef.current.offsetWidth - 32),
+        left: -(document.body.offsetWidth - 42),
         behavior: 'smooth',
       });
     }
@@ -319,15 +319,17 @@ const User = () => {
           </div>
         </div>
         {/* Mobile view */}
-        <div className="flex flex-col lg:hidden w-full h-full">
+        <div
+          style={{ scrollbarGutter: 'stable' }}
+          className="flex flex-col lg:hidden w-full h-full">
           <div
             ref={scrollRef}
             className={`flex w-full overflow-x-auto scrollbar-hide space-x-4 px-6 h-full last:mr-6 `}>
             {data.map((item) => (
               <div
                 key={item.id}
-                className={`flex-shrink-0 w-[calc(100vw-4rem)]`}>
-                <div className="p-7 h-full flex flex-col items-center bg-slate-50 rounded-[12px]">
+                className={`flex-shrink-0 w-[calc(100%-0.5rem)]`}>
+                <div className="p-7 h-full flex flex-col items-center bg-slate-50 rounded-2xl">
                   <p className="text-[#391952] text-[1.25rem] text-center leading-[1.25rem] font-bold">
                     {item.name}
                   </p>
