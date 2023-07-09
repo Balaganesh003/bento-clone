@@ -25,24 +25,25 @@ import logoGoogleCalendar from '@/assets/users/logoGoogleCalendar.svg';
 import LogoAsana from '@/assets/users/LogoAsana.svg';
 import logoHangout from '@/assets/users/logoHangout.svg';
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
+import Community from '@/components/Community';
 
 const logoData1 = [
-  { id: 6, logo: LogoTeams },
-  { id: 0, logo: GoogleSlidesLogo },
-  { id: 1, logo: DriveLogo },
-  { id: 2, logo: LogoConfluence },
-  { id: 3, logo: LogoGmail },
-  { id: 4, logo: LogoAtlassian },
-  { id: 5, logo: LogoTeams },
-  { id: 6, logo: GoogleSlidesLogo },
-  { id: 7, logo: DriveLogo },
-  { id: 8, logo: LogoConfluence },
+  { id: 23, logo: LogoTeams },
+  { id: 24, logo: GoogleSlidesLogo },
+  { id: 25, logo: DriveLogo },
+  { id: 26, logo: LogoConfluence },
+  { id: 27, logo: LogoGmail },
+  { id: 28, logo: LogoAtlassian },
+  { id: 29, logo: LogoTeams },
+  { id: 30, logo: GoogleSlidesLogo },
+  { id: 31, logo: DriveLogo },
+  { id: 32, logo: LogoConfluence },
 ];
 
 const logoData2 = [
   { id: 11, logo: logoHangout },
   { id: 10, logo: logoGoogleCalendar },
-  { id: 0, logo: LogoSlack },
+  { id: 8, logo: LogoSlack },
   { id: 1, logo: LogoDiscord },
   { id: 2, logo: LogoFigma },
   { id: 3, logo: LogoNotion },
@@ -55,74 +56,74 @@ const logoData2 = [
 
 const logoData3 = [
   {
-    id: 10,
+    id: 12,
     logo: LogoTrello,
   },
   {
-    id: 0,
+    id: 13,
     logo: LogoGithub,
   },
 
   {
-    id: 1,
+    id: 14,
     logo: LogoDocs,
   },
   {
-    id: 2,
+    id: 15,
     logo: LogoTrello,
   },
   {
-    id: 3,
+    id: 16,
     logo: LogoLinear,
   },
   {
-    id: 4,
+    id: 17,
     logo: LogoZoom,
   },
   {
-    id: 5,
+    id: 18,
     logo: LogoAtlassian,
   },
   {
-    id: 111,
+    id: 19,
     logo: LogoGithub,
   },
 
   {
-    id: 222,
+    id: 20,
     logo: LogoDocs,
   },
   {
-    id: 22,
+    id: 21,
     logo: LogoTrello,
   },
   {
-    id: 33,
+    id: 22,
     logo: LogoLinear,
   },
 ];
 
 const data = [
   {
-    id: 1,
+    id: 11111,
     name: 'Organisations',
     value: '200K+',
     basis: 'worldwide',
   },
   {
-    id: 2,
+    id: 2222,
     name: 'Employees',
     value: '1M+',
     basis: 'worldwide',
   },
   {
-    id: 3,
+    id: 3333,
     name: 'Research & Development',
     value: '$30M+',
     basis: 'per year',
   },
   {
-    id: 4,
+    id: 4444,
     name: 'Cut work admin',
     value: '42%',
     basis: 'average time saved',
@@ -267,9 +268,9 @@ const User = () => {
         </div>
       </section>
       {/* swapper */}
-      <section class="pt-[3rem] pb-[5rem]  relative overflow-hidden lg:overflow-visible bg-purple-200">
-        <div class="mb-10 lg:mb-18 relative z-2 max-w-[90rem] mx-auto">
-          <h2 class="text-center text-[#391952] text-[2.5rem] lg:text-[4.0625rem] font-semibold tracking-[-0.02em] leading-[.9230769230769231]">
+      <section className="hidden pt-[3rem] pb-[5rem]  relative overflow-hidden lg:overflow-visible bg-purple-200">
+        <div className="mb-10 lg:mb-18 relative z-2 max-w-[90rem] mx-auto">
+          <h2 className="text-center text-[#391952] text-[2.5rem] lg:text-[4.0625rem] font-semibold tracking-[-0.02em] leading-[.9230769230769231]">
             The world loves Swag
           </h2>
         </div>
@@ -374,6 +375,9 @@ const User = () => {
             </button>
           </div>
         </div>
+      </section>
+      <section className="my-[5rem]">
+        <Community />
       </section>
     </>
   );

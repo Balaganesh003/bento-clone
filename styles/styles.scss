@@ -123,3 +123,16 @@
     black 100%
   );
 }
+
+.tile {
+  transform: slideIn 1s ease-in-out;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(-10%);
+  }
+  100% {
+    transform: translatey(100%);
+  }
+}

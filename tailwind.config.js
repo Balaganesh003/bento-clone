@@ -17,6 +17,7 @@ module.exports = {
       backgroundImage: {},
       gridTemplateColumns: {
         '1/2': '1.5fr 1fr',
+        auto: 'auto 1fr',
       },
       backgroundImage: {
         primary:
