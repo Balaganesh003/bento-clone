@@ -36,7 +36,7 @@ export default function Home({ data }) {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [removeSuggestions, setRemoveSuggestions] = useState(true);
-  const { profileDetails } = useSelector((state) => state.profile);
+  const { profileDetails, socialLinks } = useSelector((state) => state.profile);
   const [isLaptop, setIsLaptop] = useState(true);
   const [isFirst, setIsFirst] = useState(true);
   const [avatarSrc, setAvatarSrc] = useState('');
@@ -184,20 +184,42 @@ export default function Home({ data }) {
     const baseUrl = hostname.split('.')[0];
     const logo = null;
 
-    dispatch(
-      profileActions.setProfileDetails([
-        ...profileDetails,
-        {
-          id: `${Math.random() * 1000}`,
-          type: 'links',
-          userName,
-          link: text,
-          logo,
-          hostname,
-          baseUrl,
-        },
-      ])
-    );
+    const allSocialLinks = socialLinks.map((link) => link.id);
+
+    if (allSocialLinks.includes(baseUrl)) {
+      const link = socialLinks.find((link) => link.id === baseUrl);
+
+      dispatch(
+        profileActions.addItem({
+          ...link,
+          userName: userName,
+          isAdded: true,
+        })
+      );
+
+      dispatch(
+        profileActions.updateSocialLinks({
+          ...link,
+          userName: userName,
+          isAdded: true,
+        })
+      );
+    } else {
+      dispatch(
+        profileActions.setProfileDetails([
+          ...profileDetails,
+          {
+            id: `${Math.random() * 1000}`,
+            type: 'links',
+            userName,
+            link: text,
+            logo,
+            hostname,
+            baseUrl,
+          },
+        ])
+      );
+    }
     setUrl('');
     setIsUrlOpen(false);
   };
@@ -251,6 +273,7 @@ export default function Home({ data }) {
               <div className="mt-8 ml-2 ">
                 <div
                   contentEditable="true"
+                  suppressContentEditableWarning={true}
                   translate="no"
                   className="relative tracking-[-2px] text-[32px] xl:text-[44px] font-bold  focus:outline-none leading-[120%] text-[#565656]">
                   <p className="">Balaganesh K</p>
@@ -258,6 +281,7 @@ export default function Home({ data }) {
 
                 <div
                   contentEditable="true"
+                  suppressContentEditableWarning={true}
                   translate="no"
                   className="mt-3   xl:text-xl  focus:outline-none  relative  text-[#565656] ">
                   <p>bbbbbbbb</p>

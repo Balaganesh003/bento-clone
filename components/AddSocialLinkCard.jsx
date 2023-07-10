@@ -139,6 +139,7 @@ const AddSocialLinkCard = ({ link, bgColor, logo, isAdded, isLogo }) => {
           onPaste={handelOnPaste}
           onChange={handelChange}
           contentEditable="true"
+          suppressContentEditableWarning={true}
           className={`flex-1 ${isAdded && bgColor}  ${
             isAdded ? 'text-white' : 'text-black'
           }  whitespace-nowrap focus:outline-none font-medium  text-[20px] text-ellipsis  focus:text-clip truncate focus:overflow-y-clip focus:text-start leading-6 w-[5rem]`}
