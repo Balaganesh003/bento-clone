@@ -17,6 +17,15 @@ const ResizingContainer = ({
   const dispatch = useDispatch();
 
   const handelDelete = () => {
+    if (item.type === 'socialLink') {
+      dispatch(
+        profileActions.updateSocialLinks({
+          ...item,
+          isAdded: false,
+          userName: '',
+        })
+      );
+    }
     dispatch(profileActions.removeItem(item.id));
   };
 

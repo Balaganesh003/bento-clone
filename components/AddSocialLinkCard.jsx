@@ -1,41 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import crosslogo from '@/assets/whitecloselogo.svg';
+import { useDispatch } from 'react-redux';
+import { profileActions } from '@/store/profile-slice';
 
-const AddSocialLinkCard = ({
-  link,
-  handelUpdateLink,
-  bgColor,
-  logo,
-  isAdded,
-  isLogo,
-}) => {
-  const [linkValue, setLinkValue] = useState(link);
+const AddSocialLinkCard = ({ link, bgColor, logo, isAdded, isLogo }) => {
+  const dispatch = useDispatch();
+
+  const [linkValue, setLinkValue] = useState(link.userName);
 
   const handelChange = (e) => {
-    const { value } = e.target;
-    setLinkValue((prev) => ({ ...prev, userName: value }));
+    setLinkValue(e.target.value);
   };
 
   const addLink = () => {
-    handelUpdateLink(linkValue.baseUrl, {
-      ...linkValue,
-      isAdded: true,
-    });
+    dispatch(
+      profileActions.addItem({
+        ...link,
+        userName: linkValue,
+        isAdded: true,
+      })
+    );
+
+    dispatch(
+      profileActions.updateSocialLinks({
+        ...link,
+        userName: linkValue,
+        isAdded: true,
+      })
+    );
+    setLinkValue('');
   };
 
   const removeLink = () => {
-    handelChange({
-      target: {
-        value: '',
-      },
-    });
+    dispatch(profileActions.removeItem(link.id));
 
-    handelUpdateLink(linkValue.baseUrl, {
-      ...linkValue,
-      userName: '',
-      isAdded: false,
-    });
+    dispatch(
+      profileActions.updateSocialLinks({
+        ...link,
+        userName: '',
+        isAdded: false,
+      })
+    );
+    setLinkValue('');
   };
 
   const handelLink = (paste) => {
@@ -46,17 +53,22 @@ const AddSocialLinkCard = ({
     const userName = path[1];
     const baseUrl = hostname.split('.')[0];
 
-    setLinkValue({
-      ...linkValue,
-      isAdded: true,
-      userName: userName || e.clipboardData.getData('text'),
-    });
+    dispatch(
+      profileActions.updateSocialLinks({
+        ...link,
+        userName,
+        isAdded: true,
+      })
+    );
 
-    handelUpdateLink(linkValue.baseUrl, {
-      ...linkValue,
-      isAdded: true,
-      userName: userName || e.clipboardData.getData('text'),
-    });
+    dispatch(
+      profileActions.addItem({
+        ...link,
+        userName,
+        isAdded: true,
+      })
+    );
+    setLinkValue('');
   };
 
   const handelOnPaste = async (e) => {
@@ -96,7 +108,7 @@ const AddSocialLinkCard = ({
         className={`flex h-[44px] w-[280px] items-center gap-1 ${
           isAdded ? bgColor : 'border'
         }  rounded-lg pl-3  text-white  flex z-[50]`}>
-        {linkValue?.userName?.length > 0 && isAdded ? (
+        {isAdded ? (
           <div className="w-[14px] h-[14px] mt-1">
             <svg
               width="14"
@@ -123,7 +135,7 @@ const AddSocialLinkCard = ({
         <input
           type="text"
           readOnly={isAdded}
-          value={`${isAdded ? `@${linkValue?.userName}` : linkValue?.userName}`}
+          value={`${isAdded ? `@${link.userName}` : linkValue}`}
           onPaste={handelOnPaste}
           onChange={handelChange}
           contentEditable="true"
@@ -133,7 +145,7 @@ const AddSocialLinkCard = ({
         />
 
         <div className="flex-shrink-0 w-fit mr-2">
-          {linkValue?.userName?.length > 0 && isAdded && (
+          {link.userName?.length > 0 && isAdded && (
             <button
               onClick={removeLink}
               className="flex items-center  hover:bg-black/10 rounded-full justify-center p-2">
@@ -141,14 +153,14 @@ const AddSocialLinkCard = ({
             </button>
           )}
 
-          {linkValue?.userName?.length > 0 && !isAdded && (
+          {linkValue?.length > 0 && !isAdded && (
             <button
               onClick={addLink}
               className="text-[0.87rem] px-2 font-bold  py-[6px]  rounded-lg  bg-green-500 text-white  items-center justify-center">
               Add
             </button>
           )}
-          {!(linkValue?.userName?.length > 0) && (
+          {!isAdded && linkValue?.length == 0 && (
             <button
               onClick={handelOnPaste}
               className="bg-[#fafafa] shadow-sm border group-hover:block  hidden text-black px-3 py-1 rounded-lg hover:bg-[#f7f7f7] transition-colors duration-150 h-fit text-[14px]">

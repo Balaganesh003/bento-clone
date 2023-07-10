@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 const AddOtherDetails = ({ prevPanel }) => {
   return (
-    <div>
+    <div className="px-3 xl:p-0 flex-grow-0  max-w-[23.5rem]  xs:w-[23.5rem]  z-10">
       <div onClick={prevPanel}>
         <FaArrowLeftLong className="text-gray-900 text-xl cursor-pointer" />
       </div>
