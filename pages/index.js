@@ -26,6 +26,7 @@ import ImageCard from '@/components/ImageCard';
 import OtherLinkCard from '@/components/OtherLinkCard';
 import TitleBox from '@/components/TitleBox';
 import { MdOutlineDelete } from 'react-icons/md';
+import NameBio from '@/components/NameBio';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -38,7 +39,7 @@ export default function Home({ data }) {
   const [removeSuggestions, setRemoveSuggestions] = useState(true);
   const { profileDetails, socialLinks } = useSelector((state) => state.profile);
   const [isLaptop, setIsLaptop] = useState(true);
-  const [isFirst, setIsFirst] = useState(true);
+  const [isFirst, setIsFirst] = useState(false);
   const [avatarSrc, setAvatarSrc] = useState('');
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
   const [url, setUrl] = useState('');
@@ -271,21 +272,7 @@ export default function Home({ data }) {
                 </div>
               </div>
               <div className="mt-8 ml-2 ">
-                <div
-                  contentEditable="true"
-                  suppressContentEditableWarning={true}
-                  translate="no"
-                  className="relative tracking-[-2px] text-[32px] xl:text-[44px] font-bold  focus:outline-none leading-[120%] text-[#565656]">
-                  <p className="">Balaganesh K</p>
-                </div>
-
-                <div
-                  contentEditable="true"
-                  suppressContentEditableWarning={true}
-                  translate="no"
-                  className="mt-3   xl:text-xl  focus:outline-none  relative  text-[#565656] ">
-                  <p>bbbbbbbb</p>
-                </div>
+                <NameBio />
               </div>
             </div>
           )}
