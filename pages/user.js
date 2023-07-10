@@ -25,7 +25,7 @@ import logoGoogleCalendar from '@/assets/users/logoGoogleCalendar.svg';
 import LogoAsana from '@/assets/users/LogoAsana.svg';
 import logoHangout from '@/assets/users/logoHangout.svg';
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
-import Community from '@/components/Community';
+import CommunityClone from '@/components/CommunitClone';
 
 const logoData1 = [
   { id: 23, logo: LogoTeams },
@@ -105,25 +105,25 @@ const logoData3 = [
 
 const data = [
   {
-    id: 11111,
+    id: 1,
     name: 'Organisations',
     value: '200K+',
     basis: 'worldwide',
   },
   {
-    id: 2222,
+    id: 2,
     name: 'Employees',
     value: '1M+',
     basis: 'worldwide',
   },
   {
-    id: 3333,
+    id: 3,
     name: 'Research & Development',
     value: '$30M+',
     basis: 'per year',
   },
   {
-    id: 4444,
+    id: 4,
     name: 'Cut work admin',
     value: '42%',
     basis: 'average time saved',
@@ -268,7 +268,7 @@ const User = () => {
         </div>
       </section>
       {/* swapper */}
-      <section className="hidden pt-[3rem] pb-[5rem]  relative overflow-hidden lg:overflow-visible bg-purple-200">
+      <section className="pt-[3rem] pb-[5rem]  relative overflow-hidden lg:overflow-visible bg-purple-200">
         <div className="mb-10 lg:mb-18 relative z-2 max-w-[90rem] mx-auto">
           <h2 className="text-center text-[#391952] text-[2.5rem] lg:text-[4.0625rem] font-semibold tracking-[-0.02em] leading-[.9230769230769231]">
             The world loves Swag
@@ -377,7 +377,7 @@ const User = () => {
         </div>
       </section>
       <section className="my-[5rem]">
-        <Community />
+        <CommunityClone />
       </section>
     </>
   );

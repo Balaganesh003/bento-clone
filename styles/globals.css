@@ -44,3 +44,13 @@
     clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0);
   }
 }
+
+/* html {
+  font-size: 62.5% !important;
+}
+
+@media screen and (max-width: 1520px) and (min-width: 992px) {
+  html {
+    font-size: calc(0.16781567489114657rem + 0.43541364296081275vw) !important;
+  }
+} */

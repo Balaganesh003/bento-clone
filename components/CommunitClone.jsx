@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React, { useEffect, useRef } from 'react';
 import { BsArrowRight } from 'react-icons/bs';
 
-const Community = () => {
+const CommunityClone = () => {
   const swapperRef = useRef(null);
 
   useEffect(() => {
@@ -19,172 +19,132 @@ const Community = () => {
     const scrollInterval = setInterval(() => {
       if (count === -1) {
         count = list.length - 1;
+        list[0].style.transform = `translateY(${-100}%)`;
+        list[0].style.transition =
+          'opacity 500ms ease-out, transform 500ms ease-out';
+
+        setTimeout(() => {
+          list[0].style.opacity = 0;
+          list[0].style.transition = 'none';
+          list[0].style.transform = `translateY(${600}%)`;
+        }, 200);
+      } else {
+        list[0].style.transform = `translateY(${count * 100}%)`;
+        list[0].style.transition =
+          'opacity 500ms ease-out, transform 500ms ease-out';
       }
+
       if (count2 === -2) {
         count2 = list.length - 2;
+        list[1].style.transform = `translateY(${-200}%)`;
+        list[1].style.transition =
+          'opacity 500ms ease-out, transform 500ms ease-out';
+
+        setTimeout(() => {
+          list[1].style.opacity = 0;
+          list[1].style.transition = 'none';
+
+          list[1].style.transform = `translateY(${500}%)`;
+        }, 200);
+      } else {
+        list[1].style.transform = `translateY(${count2 * 100}%)`;
+        list[1].style.transition =
+          'opacity 500ms ease-out, transform 500ms ease-out';
       }
 
       if (count3 === -3) {
-        list[2].style.transform = `translateY(${-100}%)`;
-
         count3 = list.length - 3;
-        list[2].style.willChange = 'transform, opacity';
-        list[2].style.transition = 'none';
+        list[2].style.transition =
+          'opacity 500ms ease-out, transform 500ms ease-out';
+
+        list[2].style.transform = `translateY(${-300}%)`;
+
+        setTimeout(() => {
+          list[2].style.opacity = 0;
+          list[2].style.transition = 'none';
+
+          list[2].style.transform = `translateY(${400}%)`;
+        }, 200);
+      } else {
+        list[2].style.transform = `translateY(${count3 * 100}%)`;
+        list[2].style.transition =
+          'opacity 500ms ease-out, transform 500ms ease-out';
       }
 
       if (count4 === -4) {
         count4 = list.length - 4;
-        list[3].style.willChange = 'transform, opacity';
-        list[3].style.transition = 'none';
+        list[3].style.transform = `translateY(${-400}%)`;
+        list[3].style.transition =
+          'opacity 500ms ease-out, transform 500ms ease-out';
+
+        setTimeout(() => {
+          list[3].style.opacity = 0;
+          list[3].style.transition = 'none';
+
+          list[3].style.transform = `translateY(${300}%)`;
+        }, 200);
+      } else {
+        list[3].style.transform = `translateY(${count4 * 100}%)`;
+        list[3].style.transition =
+          'opacity 500ms ease-out, transform 500ms ease-out';
       }
 
       if (count5 === -5) {
         count5 = list.length - 5;
-        list[4].style.willChange = 'transform, opacity';
-        list[4].style.transition = 'none';
+        list[4].style.transition =
+          'opacity 500ms ease-out, transform 500ms ease-out';
+
+        list[4].style.transform = `translateY(${-500}%)`;
+
+        setTimeout(() => {
+          list[4].style.opacity = 0;
+          list[4].style.transition = 'none';
+
+          list[4].style.transform = `translateY(${200}%)`;
+        }, 200);
+      } else {
+        list[4].style.transform = `translateY(${count5 * 100}%)`;
+        list[4].style.transition =
+          'opacity 500ms ease-out, transform 500ms ease-out';
       }
 
       if (count6 === -6) {
         count6 = list.length - 6;
-        list[5].style.willChange = 'transform, opacity';
-        list[5].style.transition = 'none';
+        list[5].style.transition =
+          'opacity 500ms ease-out, transform 500ms ease-out';
+
+        list[5].style.transform = `translateY(${-600}%)`;
+
+        setTimeout(() => {
+          list[5].style.opacity = 0;
+          list[5].style.transition = 'none';
+
+          list[5].style.transform = `translateY(${100}%)`;
+        }, 200);
+      } else {
+        list[5].style.transform = `translateY(${count6 * 100}%)`;
+        list[5].style.transition =
+          'opacity 500ms ease-out, transform 500ms ease-out';
       }
 
       if (count7 === -7) {
         count7 = list.length - 7;
-        list[6].style.willChange = 'transform, opacity';
-        list[6].style.transition = 'none';
+
+        list[6].style.transform = `translateY(${-700}%)`;
+        list[6].style.transition =
+          'opacity 500ms ease-out, transform 500ms ease-out';
+
+        setTimeout(() => {
+          list[6].style.opacity = 0;
+          list[6].style.transition = 'none';
+
+          list[6].style.transform = `translateY(${0}%)`;
+        }, 200);
+      } else {
+        list[6].style.transform = `translateY(${count7 * 100}%)`;
+        list[6].style.transition =
+          'opacity 500ms ease-out, transform 500ms ease-out';
       }
-
-      list[0].style.transform = `translateY(${count * 100}%)`;
-      list[0].style.transition = 'transform 1s ease-in-out';
-      list[0].style.opacity = `${
-        count === 0
-          ? 1
-          : count === 1
-          ? 0.5
-          : count === 2
-          ? 0.65
-          : count === 3
-          ? 0.5
-          : count === 4
-          ? 0.35
-          : count === 5
-          ? 0.2
-          : 0
-      }`;
-
-      list[1].style.transform = `translateY(${count2 * 100}%)`;
-      list[1].style.transition = 'transform 1s ease-in-out';
-      list[1].style.opacity = `${
-        count2 === -1
-          ? 0.3
-          : count2 === 0
-          ? 1
-          : count2 === 1
-          ? 0.65
-          : count2 === 2
-          ? 0.5
-          : count2 === 3
-          ? 0.35
-          : count2 === 4
-          ? 0.2
-          : 0
-      }`;
-
-      list[2].style.transform = `translateY(${count3 * 100}%)`;
-      list[2].style.transition = 'transform 1s ease-in-out';
-
-      list[2].style.opacity = `${
-        count3 === -2
-          ? 0.3
-          : count3 === -1
-          ? 1
-          : count3 === 0
-          ? 0.65
-          : count3 === 1
-          ? 0.5
-          : count3 === 2
-          ? 0.35
-          : count3 === 3
-          ? 0.2
-          : 0
-      }`;
-
-      list[3].style.transform = `translateY(${count4 * 100}%)`;
-      list[3].style.transition = 'transform 1s ease-in-out';
-
-      list[3].style.opacity = `${
-        count4 === -3
-          ? 0.3
-          : count4 === -2
-          ? 1
-          : count4 === -1
-          ? 0.65
-          : count4 === 0
-          ? 0.5
-          : count4 === 1
-          ? 0.35
-          : count4 === 2
-          ? 0.2
-          : 0
-      }`;
-
-      list[4].style.transform = `translateY(${count5 * 100}%)`;
-      list[4].style.transition = 'transform 1s ease-in-out';
-
-      list[4].style.opacity = `${
-        count5 === -4
-          ? 0.3
-          : count5 === -3
-          ? 1
-          : count5 === -2
-          ? 0.65
-          : count5 === -1
-          ? 0.5
-          : count5 === 0
-          ? 0.35
-          : count5 === 1
-          ? 0.2
-          : 0
-      }`;
-
-      list[5].style.transform = `translateY(${count6 * 100}%)`;
-      list[5].style.transition = 'transform 1s ease-in-out';
-
-      list[5].style.opacity = `${
-        count6 === -5
-          ? 0.3
-          : count6 === -4
-          ? 1
-          : count5 === -3
-          ? 0.65
-          : count6 === -2
-          ? 0.5
-          : count6 === -1
-          ? 0.35
-          : count6 === 0
-          ? 0.2
-          : 0
-      }`;
-
-      list[6].style.transform = `translateY(${count7 * 100}%)`;
-      list[6].style.transition = 'transform 1s ease-in-out';
-      list[6].style.opacity = `${
-        count7 === -6
-          ? 0.3
-          : count7 === -5
-          ? 1
-          : count7 === -4
-          ? 0.65
-          : count7 === -3
-          ? 0.5
-          : count7 === -2
-          ? 0.35
-          : count7 === -1
-          ? 0.2
-          : 0
-      }`;
 
       count--;
       count2--;
@@ -193,6 +153,132 @@ const Community = () => {
       count5--;
       count6--;
       count7--;
+
+      list[0].style.opacity = `${
+        count === -1
+          ? 0.2
+          : count === 0
+          ? 1
+          : count === 1
+          ? 0.4
+          : count === 2
+          ? 0.2
+          : count === 3
+          ? 0.1
+          : count === 4
+          ? 0.05
+          : count === 5
+          ? 0.05
+          : 0
+      }`;
+
+      list[1].style.opacity = `${
+        count2 === -2
+          ? 0.2
+          : count2 === -1
+          ? 1
+          : count2 === 0
+          ? 0.4
+          : count2 === 1
+          ? 0.2
+          : count2 === 2
+          ? 0.1
+          : count2 === 3
+          ? 0.05
+          : count2 === 4
+          ? 0.05
+          : 0
+      }`;
+
+      list[2].style.opacity = `${
+        count3 === -3
+          ? 0.2
+          : count3 === -2
+          ? 1
+          : count3 === -1
+          ? 0.4
+          : count3 === 0
+          ? 0.2
+          : count3 === 1
+          ? 0.1
+          : count3 === 2
+          ? 0.05
+          : count3 === 3
+          ? 0.05
+          : 0
+      }`;
+
+      list[3].style.opacity = `${
+        count4 === -4
+          ? 0.2
+          : count4 === -3
+          ? 1
+          : count4 === -2
+          ? 0.4
+          : count4 === -1
+          ? 0.2
+          : count4 === 0
+          ? 0.1
+          : count4 === 1
+          ? 0.05
+          : count4 === 2
+          ? 0.05
+          : 0
+      }`;
+
+      list[4].style.opacity = `${
+        count5 === -5
+          ? 0.2
+          : count5 === -4
+          ? 1
+          : count5 === -3
+          ? 0.4
+          : count5 === -2
+          ? 0.2
+          : count5 === -1
+          ? 0.1
+          : count5 === 0
+          ? 0.05
+          : count5 === 1
+          ? 0.05
+          : 0
+      }`;
+
+      list[5].style.opacity = `${
+        count6 === -6
+          ? 0.2
+          : count6 === -5
+          ? 1
+          : count6 === -4
+          ? 0.4
+          : count6 === -3
+          ? 0.2
+          : count6 === -2
+          ? 0.1
+          : count6 === -1
+          ? 0.05
+          : count6 === 0
+          ? 0.05
+          : 0
+      }`;
+
+      list[6].style.opacity = `${
+        count7 === -7
+          ? 0.2
+          : count7 === -6
+          ? 1
+          : count7 === -5
+          ? 0.4
+          : count7 === -4
+          ? 0.2
+          : count7 === -3
+          ? 0.1
+          : count7 === -2
+          ? 0.05
+          : count7 === -1
+          ? 0.05
+          : 0
+      }`;
 
       if (count === list.length + 1) {
         count = 0;
@@ -221,7 +307,7 @@ const Community = () => {
       if (count7 === list.length + -5) {
         count7 = 0;
       }
-    }, 2000);
+    }, 2500);
 
     return () => {
       clearInterval(scrollInterval);
@@ -277,4 +363,4 @@ const Community = () => {
   );
 };
 
-export default Community;
+export default CommunityClone;
