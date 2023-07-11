@@ -2,6 +2,16 @@ import Link from 'next/link';
 import React, { useEffect, useRef } from 'react';
 import { BsArrowRight } from 'react-icons/bs';
 
+const data = [
+  'writers',
+  'tweeters',
+  'podcasters',
+  'discordists',
+  'streamers',
+  'communiteers',
+  'nfteers',
+];
+
 const CommunityClone = () => {
   const swapperRef = useRef(null);
 
@@ -315,27 +325,61 @@ const CommunityClone = () => {
   }, []);
 
   return (
-    <div className="bg-[#150f04]  overflow-hidden px-[3%] relative">
-      <div className="pt-[6.4rem] pb-[1.6rem] w-full max-w-[1280px] mx-auto">
+    <div className="bg-[#150f04]  overflow-hidden  small-lg:px-[3%] relative">
+      <div className="py-[4rem] small-lg:pt-[6.4rem] small-lg:pb-[1.6rem] w-full small-lg:max-w-[1280px] max-w-none mx-auto">
         {/* Heading */}
-        <div className="text-white text-center mb-[4rem]">
+        <div className="text-white small-lg:text-center mb-[1.5rem] max-w-[640px] small-lg:max-w-none mx-auto small-lg:mx-auto px-[5%] small-lg:px-[0%] small-lg:mb-[4rem]">
           <div className="text-[1rem] uppercase font-medium leading-[1.2] break-words">
             Communities come in all shapes and sizes
           </div>
         </div>
         {/* Swipper */}
         <div className="w-full">
-          <div className="grid text-[#deb556] grid-cols-auto  gap-[48px]">
+          <div className="small-lg:grid text-[#deb556] grid-cols-auto w-full gap-[48px]">
             {/* Left */}
-            <div className="max-w-[420px] flex flex-col gap-[36px] text-right items-end justify-start">
-              <div className="max-w-[5ch] text-[104px] break-words text-right leading-[1.1]">
-                Built for
+            <div className="small-lg:max-w-[420px]  flex flex-col gap-[36px] small-lg:text-right small-lg:items-end justify-start">
+              <div className="relative">
+                <div className="small-lg:max-w-[5ch] max-w-[640px] mx-auto small-lg:mx-auto px-[5%] small-lg:px-[0%] text-[104px] break-words small-lg:text-right leading-[1.1] ">
+                  Built for
+                </div>
+                {/* marquee */}
+                <div className="flex small-lg:hidden absolute bottom-[-64px]">
+                  <div className="flex flex-shrink-0 items-center justify-around whitespace-nowrap  animate-fade-out1 gap-[1rem] pr-4 ">
+                    {data.map((item, index) => (
+                      <div
+                        key={index * 99}
+                        className={`text-[52px] leading-[1.1] ${
+                          index % 2 === 0 && 'opacity-50'
+                        } `}>
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-shrink-0 items-center justify-around animate-fade-out2 whitespace-nowrap   gap-[1rem] pr-4 ">
+                    {data.map((item, index) => (
+                      <div
+                        key={index * 99}
+                        className={`text-[52px] leading-[1.1] ${
+                          index % 2 === 1 && 'opacity-50'
+                        }`}>
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col text-white items-end justify-start leading-[1.7] text-[20px] gap-[24px]">
-                <div className="text-right text-[20px]">
+              {/* Marquee ends */}
+              <div className="flex flex-col text-white small-lg:items-end small-lg:justify-start leading-[1.7] text-[20px] gap-[24px] mt-[4rem] small-lg:mt-0 max-w-[640px] mx-auto w-full px-[5%] small-lg:px-[0%]">
+                <div className="small-lg:flex hidden text-right text-[20px]">
                   You&lsquo;ve built a thriving community. Pallet helps you
                   support their careers, land great new roles, and get paid, all
                   in one product.
+                </div>
+                <div className="small-lg:hidden flex   text-[20px]">
+                  You&lsquo;ve already done the work building a thriving
+                  community. Pallet helps you connect people who have the skills
+                  and passion with companies that are ready to hire them.
                 </div>
                 <Link href="/community" target="_blank">
                   <div className="py-1 flex gap-3 font-medium text-[20px] items-center">
@@ -345,7 +389,7 @@ const CommunityClone = () => {
                 </Link>
               </div>
             </div>
-            <div className="w-full h-full relative overflow-visible text-[#deb566]">
+            <div className="small-lg:block hidden w-full h-full relative overflow-visible text-[#deb566]">
               <div ref={swapperRef} className="h-[792px] relative">
                 <div className="text-[104px] leading-[1.1]">writers</div>
                 <div className="text-[104px] leading-[1.1]">tweeters</div>

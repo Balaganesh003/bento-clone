@@ -13,6 +13,7 @@ module.exports = {
         xr: '580px',
         xv: '520px',
         xh: '390px',
+        'small-lg': '992px',
       },
       backgroundImage: {},
       gridTemplateColumns: {
@@ -25,6 +26,32 @@ module.exports = {
       },
       boxShadow: {
         logocard: '0 0 0 1px rgba(255, 255, 255, 0.12)',
+      },
+
+      animation: {
+        'fade-out1': 'fade-out1 40s linear infinite',
+        'fade-out2': 'fade-out2 40s linear infinite',
+      },
+
+      keyframes: {
+        'fade-out1': {
+          '0%': { transform: 'translateX(0%)' },
+
+          '50%': { transform: 'translateX(-100%)' },
+          '50.000001%': { transform: 'translateX(100%)' },
+
+          '100%': {
+            transform: 'translateX(0%)',
+          },
+        },
+        'fade-out2': {
+          '0%': {
+            transform: 'translateX(0%)',
+          },
+          '100%': {
+            transform: 'translateX(-200%)',
+          },
+        },
       },
     },
   },
