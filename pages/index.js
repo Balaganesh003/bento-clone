@@ -39,7 +39,7 @@ export default function Home({ data }) {
   const [removeSuggestions, setRemoveSuggestions] = useState(true);
   const { profileDetails, socialLinks } = useSelector((state) => state.profile);
   const [isLaptop, setIsLaptop] = useState(true);
-  const [isFirst, setIsFirst] = useState(false);
+  const [isFirst, setIsFirst] = useState(true);
   const [avatarSrc, setAvatarSrc] = useState('');
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
   const [url, setUrl] = useState('');
