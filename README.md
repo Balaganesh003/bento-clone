@@ -6,6 +6,3 @@ https://bento-clone-app.vercel.app/
 
 https://bento-clone-app.vercel.app/signup
 
-### signin
-
-https://bento-clone-app.vercel.app/login
