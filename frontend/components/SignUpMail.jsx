@@ -14,15 +14,7 @@ export default function SignUpMail({
   prevPanel,
 }) {
   const handelGoogleSignIn = () => {
-    axios
-      .get('http://localhost:3000/auth/google')
-      .then((response) => {
-        console.log('API Response:', response.data);
-        // Process the API response data here
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
+    window.open('http://localhost:3000/auth/google/', '_self');
   };
   return (
     <React.Fragment>
