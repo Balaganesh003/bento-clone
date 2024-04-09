@@ -1,27 +1,11 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user.model.js');
-
-const validateEmail = (email) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
+const User = require('../models/user.model');
 
 const register = async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-    const { email, password } = req.body;
-
-    // Validation
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: 'Please provide email and password' });
-    }
-
-    if (!validateEmail(email)) {
-      return res.status(400).json({ message: 'Invalid Email' });
-    }
-
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -36,25 +20,15 @@ const register = async (req, res) => {
 
     res.status(201).json({ user: newUser });
   } catch (error) {
+    console.error('Registration error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
 
 const login = async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-    const { email, password } = req.body;
-
-    // Validation
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: 'Please provide email and password' });
-    }
-
-    if (!validateEmail(email)) {
-      return res.status(400).json({ message: 'Invalid Email' });
-    }
-
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
@@ -62,17 +36,20 @@ const login = async (req, res) => {
     }
 
     // Verify password
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if (!isPasswordCorrect) {
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     // Generate JWT
-    const token = jwt.sign({ id: user._id }, 'secret', { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user._id }, 'your_secret_key', {
+      expiresIn: '1h',
+    });
 
     res.cookie('jwt', token, { httpOnly: true });
     res.status(200).json({ message: 'Logged in successfully', token });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };

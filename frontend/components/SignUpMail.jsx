@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaGoogle } from 'react-icons/fa';
 import { HiArrowNarrowLeft } from 'react-icons/hi';
+import axios from 'axios';
 
 export default function SignUpMail({
   email,
@@ -12,6 +13,11 @@ export default function SignUpMail({
   setShowPassword,
   prevPanel,
 }) {
+  const handelGoogleSignIn = () => {
+    axios.get('http://localhost:5000/auth/google').then((res) => {
+      console.log(res);
+    });
+  };
   return (
     <React.Fragment>
       <HiArrowNarrowLeft
@@ -64,7 +70,9 @@ export default function SignUpMail({
               Create account
             </button>
           ) : (
-            <button className="hover:shadow-lg transition-all duration-150 text-[14px] leading-[1.25rem] font-bold text-white bg-[#1D9BF0] h-full w-full py-2 px-[0.625rem] rounded-xl flex items-center justify-center">
+            <button
+              onClick={handelGoogleSignIn}
+              className="hover:shadow-lg transition-all duration-150 text-[14px] leading-[1.25rem] font-bold text-white bg-[#1D9BF0] h-full w-full py-2 px-[0.625rem] rounded-xl flex items-center justify-center">
               <FaGoogle className="inline-block mr-2 text-[16px]" />
               Sign in with Google
             </button>

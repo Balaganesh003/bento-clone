@@ -1,50 +1,35 @@
 const passport = require('passport');
-const { Strategy: LocalStrategy } = require('passport-local');
 const { Strategy: GoogleStrategy } = require('passport-google-oauth20');
-const bcrypt = require('bcryptjs');
-const User = require('../models/User');
-
-passport.use(
-  new LocalStrategy(
-    {
-      usernameField: 'email',
-      passwordField: 'password',
-    },
-    async (email, password, done) => {
-      try {
-        const user = await User.findOne({ email });
-        if (!user) {
-          return done(null, false, { message: 'Invalid email or password' });
-        }
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-          return done(null, false, { message: 'Invalid email or password' });
-        }
-        return done(null, user);
-      } catch (err) {
-        return done(err);
-      }
-    }
-  )
-);
+const User = require('../models/user.model.js');
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: '/api/auth/google/callback',
+      callbackURL: '/auth/google/callback',
     },
     async (accessToken, refreshToken, profile, done) => {
+      const email = profile.emails[0].value;
+      const googleId = profile.id; // Extract Google ID from profile
+
       try {
-        let user = await User.findOne({ email: profile.emails[0].value });
+        // Check if the user already exists in the database
+        let user = await User.findOne({ email });
+
         if (!user) {
-          const newUser = new User({ email: profile.emails[0].value });
-          user = await newUser.save();
+          // Create a new user with email and Google ID
+          user = await User.create({ email, googleId });
+        } else if (!user.googleId) {
+          // If user exists but does not have a Google ID, update the Google ID
+          user.googleId = googleId;
+          await user.save();
         }
+
         return done(null, user);
-      } catch (err) {
-        return done(err);
+      } catch (error) {
+        console.error('Google OAuth error:', error);
+        return done(error);
       }
     }
   )

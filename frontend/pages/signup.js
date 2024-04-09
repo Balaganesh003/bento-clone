@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import BehanceLogo from '../assets/behance.png';
 import DribbbleLogo from '../assets/dribbble.png';
 import FigmaLogo from '../assets/figma.png';
