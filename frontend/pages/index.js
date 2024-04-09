@@ -482,8 +482,8 @@ export default function Home({ data }) {
   );
 }
 
-export const getServerSideProps = async ({ query }) => {
-  resetServerContext();
+// export const getServerSideProps = async ({ query }) => {
+//   resetServerContext();
 
-  return { props: { data: [] } };
-};
+//   return { props: { data: [] } };
+// };
