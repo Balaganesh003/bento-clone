@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 
 const register = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, username } = req.body;
 
   try {
     // Check if user already exists
@@ -16,7 +16,11 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new user
-    const newUser = await User.create({ email, password: hashedPassword });
+    const newUser = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
 
     res.status(201).json({ user: newUser });
   } catch (error) {
@@ -42,11 +46,16 @@ const login = async (req, res) => {
     }
 
     // Generate JWT
-    const token = jwt.sign({ userId: user._id }, 'your_secret_key', {
+    const token = jwt.sign({ userId: user._id }, 'abcd', {
       expiresIn: '1h',
     });
 
-    res.cookie('jwt', token, { httpOnly: true });
+    // Send token in cookie
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      secure: false, // Set to false for development (http)
+    });
+
     res.status(200).json({ message: 'Logged in successfully', token });
   } catch (error) {
     console.error('Login error:', error);

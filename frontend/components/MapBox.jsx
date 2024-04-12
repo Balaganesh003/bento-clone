@@ -199,8 +199,7 @@ const MapboxMap = ({ item }) => {
               alt="Drag and drop"
               width={64}
               height={64}
-              className={`
-                   w-[1.5rem] h-[1.5rem] rounded-md `}
+              className={`w-[1.5rem] h-[1.5rem] rounded-md `}
             />
             <p className={`mt-1 font-bold text-[14px] `}>Add Map</p>
           </div>

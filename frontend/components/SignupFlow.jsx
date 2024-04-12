@@ -1,11 +1,13 @@
 import React from 'react';
 import { useState } from 'react';
-
+import axios from 'axios';
 import SignUpMail from '@/components/SignUpMail';
 import SignupLink from '@/components/SignupLink';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/router';
 
 const SignupFlow = () => {
+  const router = useRouter();
   const [name, setName] = useState('');
 
   const [email, setEmail] = useState('');
@@ -33,13 +35,20 @@ const SignupFlow = () => {
 
   const handelSignUp = async (e) => {
     e.preventDefault();
+
+    if (!email || !password || !name) {
+      console.log('Please fill all the fields');
+      return;
+    }
+
     try {
-      const res = await axios.post(`${NEXT_PUBLIC_API_URL}/api/auth/signup`, {
+      const res = await axios.post(`http://localhost:3000/auth/signup`, {
         email: email,
         password: password,
         username: name,
       });
       console.log(res.data);
+      router.push('/onboarding');
     } catch (error) {
       console.log(error);
     }
@@ -65,6 +74,7 @@ const SignupFlow = () => {
               showPassword={showPassword}
               setShowPassword={setShowPassword1}
               prevPanel={prevPanel}
+              handelSignUp={handelSignUp}
             />
           )}
           {index === 0 && (
