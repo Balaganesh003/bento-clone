@@ -53,7 +53,7 @@ const login = async (req, res) => {
     // Send token in cookie
     res.cookie('jwt', token, {
       httpOnly: true,
-      secure: false, // Set to false for development (http)
+      secure: false,
     });
 
     res.status(200).json({ message: 'Logged in successfully', token });

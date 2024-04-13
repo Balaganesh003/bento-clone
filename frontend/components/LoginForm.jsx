@@ -20,14 +20,14 @@ const LoginForm = () => {
     }
 
     try {
-      const res = await axios.post(`http://localhost:3000/auth/signin`, {
+      const res = await axios.post(`http://localhost:5000/auth/signin`, {
         email: email,
         password: password,
       });
 
-      document.cookie = `jwt=${res.data.token}`;
+      // document.cookie = `jwt=${res.data.token}`;
       console.log(res.data);
-      router.push('/');
+      // router.push('/');
     } catch (error) {
       console.log(error);
     }

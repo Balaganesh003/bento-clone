@@ -1,14 +1,12 @@
-import React from 'react';
-
 import RandomMovingImage from '@/components/RandomMovingImage';
-import BehanceLogo from '../assets/behance.png';
-import DribbbleLogo from '../assets/dribbble.png';
-import FigmaLogo from '../assets/figma.png';
-import GithubLogo from '../assets/github.png';
-import InstaLogo from '../assets/insta.png';
-import TwitterLogo from '../assets/twitter.png';
-import LinkedinLogo from '../assets/linkedin.png';
-import Photo from '../assets/photo1.png';
+import BehanceLogo from '@/assets/behance.png';
+import DribbbleLogo from '@/assets/dribbble.png';
+import FigmaLogo from '@/assets/figma.png';
+import GithubLogo from '@/assets/github.png';
+import InstaLogo from '@/assets/insta.png';
+import TwitterLogo from '@/assets/twitter.png';
+import LinkedinLogo from '@/assets/linkedin.png';
+import Photo from '@/assets/photo1.png';
 import LoginForm from '@/components/LoginForm';
 
 const Login = () => {
