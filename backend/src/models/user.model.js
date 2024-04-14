@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
     required: false,
   },
   googleId: String,
+  profileDetails: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Profile',
+  },
 });
 
 const User = mongoose.model('User', userSchema);

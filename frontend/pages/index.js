@@ -251,7 +251,9 @@ export default function Home({ data }) {
     setRemoveSuggestions(false);
   };
 
-  useEffect(() => {}, [profileDetails]);
+  useEffect(() => {
+    console.log(profileDetails);
+  }, [profileDetails]);
 
   return (
     <main
@@ -480,4 +482,13 @@ export default function Home({ data }) {
       )}
     </main>
   );
+}
+
+export async function getServerSideProps() {
+  resetServerContext();
+  return {
+    props: {
+      data: 'data',
+    },
+  };
 }

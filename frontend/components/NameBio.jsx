@@ -38,6 +38,7 @@ const NameBio = ({ yourname, yourbio }) => {
         {name}
         <div
           onClick={() => setIsNamePlaceholder(false)}
+          ref={nameRef}
           contentEditable="false"
           suppressContentEditableWarning={true}
           className={` ${
