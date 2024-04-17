@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const authController = require('./auth.controller.js');
 dotenv.config();
 
+authRouter.get('/checkusername/:username', authController.checkUsername);
 authRouter.post('/signup', authController.register);
 authRouter.post('/signin', authController.login);
 authRouter.get('/signout', authController.logout);

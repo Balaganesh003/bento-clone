@@ -68,4 +68,20 @@ const logout = (req, res) => {
   res.status(200).json({ message: 'Logged out successfully' });
 };
 
-module.exports = { register, login, logout };
+const checkUsername = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Username already exists' });
+    } else {
+      return res.status(200).json({ message: 'Username available' });
+    }
+  } catch (error) {
+    console.error('Check username error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = { register, login, logout, checkUsername };
