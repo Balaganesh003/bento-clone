@@ -5,7 +5,7 @@ const passport = require('passport');
 const authRouter = require('./routes/auth.router.js');
 const dotenv = require('dotenv');
 const passportConfig = require('./utils/passport.js');
-// const profileRouter = require('./routes/profile.router.js');
+const profileRouter = require('./routes/profile.router.js');
 const path = require('path');
 const helmet = require('helmet');
 dotenv.config();
@@ -45,7 +45,7 @@ app.use((req, res, next) => {
 app.use(passport.initialize());
 
 app.use('/auth', authRouter);
-// app.use('/profile', profileRouter);
+app.use('/profile', profileRouter);
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 app.get('/', (req, res) => {

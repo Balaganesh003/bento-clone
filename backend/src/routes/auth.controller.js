@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
+const { setInitialProfile } = require('./profile.controller');
 
 const register = async (req, res) => {
   const { email, password, username } = req.body;
@@ -35,6 +36,8 @@ const register = async (req, res) => {
       httpOnly: true, // Cookie accessible only by the web server
       secure: false, // Set to true if using HTTPS
     });
+
+    await setInitialProfile(newUser._id);
 
     // Respond with success message and token
     res.status(201).json({ message: 'User registered successfully', token });
@@ -71,13 +74,11 @@ const login = async (req, res) => {
       secure: false,
     });
 
-    res
-      .status(200)
-      .json({
-        message: 'Logged in successfully',
-        token,
-        username: user.username,
-      });
+    res.status(200).json({
+      message: 'Logged in successfully',
+      token,
+      username: user.username,
+    });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Server error' });

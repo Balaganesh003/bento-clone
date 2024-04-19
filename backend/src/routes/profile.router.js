@@ -1,11 +1,10 @@
-// const express = require('express');
-// const router = express.Router();
-// const profileController = require('./profile.controller');
+const express = require('express');
+const router = express.Router();
+const profileController = require('./profile.controller');
 
-// router.get('/', profileController.getAllProfiles);
-// router.get('/:username', profileController.getProfileByUsername);
-// router.post('/', profileController.createProfile);
-// router.put('/:username', profileController.updateProfile);
-// router.delete('/:username', profileController.deleteProfile);
+router.get('/:username', profileController.getAllProfileObjects);
+router.post('/:username', profileController.addProfileObject);
+router.put('/:username', profileController.updateProfileObject);
+router.delete('/:username/:objectId', profileController.deleteProfileObject);
 
-// module.exports = router;
+module.exports = router;

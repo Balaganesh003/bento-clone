@@ -1,111 +1,240 @@
-// const Profile = require('../models/porfile.model');
+const User = require('../models/user.model');
+const Profile = require('../models/porfile.model');
 
-// // Controller to create a new profile detail
-// exports.createProfileDetail = async (req, res) => {
-//   const { userId } = req.params;
-//   const {
-//     type,
-//     id,
-//     baseUrl,
-//     userName,
-//     logo,
-//     bgColor,
-//     isAdded,
-//     content,
-//     location,
-//     imgUrl,
-//   } = req.body;
+// Controller function to add a profile object to a user's profile details
+const addProfileObject = async (req, res) => {
+  const { username } = req.params;
+  const {
+    type,
+    id,
+    baseUrl,
+    userName,
+    logo,
+    bgColor,
+    content,
+    location,
+    imgUrl,
+  } = req.body;
 
-//   try {
-//     const newProfileDetail = new Profile({
-//       user: userId,
-//       profiles: [
-//         {
-//           type,
-//           id,
-//           baseUrl,
-//           userName,
-//           logo,
-//           bgColor,
-//           isAdded,
-//           content,
-//           location,
-//           imgUrl,
-//         },
-//       ],
-//     });
+  try {
+    // Find the user by username
+    const user = await User.findOne({ username });
 
-//     const savedProfile = await newProfileDetail.save();
-//     res.status(201).json(savedProfile);
-//   } catch (error) {
-//     console.error('Error creating profile detail:', error);
-//     res.status(500).json({ message: 'Failed to create profile detail' });
-//   }
-// };
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
-// // Controller to get all profile details for a user
-// exports.getAllProfileDetails = async (req, res) => {
-//   const { username } = req.params;
+    // Find or create the profile document associated with the user
+    let profile = await Profile.findOne({ user: user._id });
 
-//   try {
-//     const userProfiles = await Profile.findOne({ username });
-//     if (!userProfiles) {
-//       return res.status(404).json({ message: 'User profile not found' });
-//     }
-//     res.json(userProfiles);
-//   } catch (error) {
-//     console.error('Error fetching profile details:', error);
-//     res.status(500).json({ message: 'Failed to fetch profile details' });
-//   }
-// };
+    if (!profile) {
+      // Create a new profile document if none exists
+      profile = await Profile.create({ user: user._id, profiles: [] });
+    }
 
-// // Controller to update a profile detail
-// exports.updateProfileDetail = async (req, res) => {
-//   const { userId, profileId } = req.params;
-//   const updatedProfileData = req.body;
+    // Create the new profile object based on the input data
+    const newProfileObject = {
+      type,
+      id,
+      baseUrl,
+      userName,
+      logo,
+      bgColor,
+      content,
+      location,
+      imgUrl,
+    };
 
-//   try {
-//     const userProfiles = await Profile.findOne({ user: userId });
-//     if (!userProfiles) {
-//       return res.status(404).json({ message: 'User profile not found' });
-//     }
+    // Add the new profile object to the profiles array within the profile document
+    profile.profiles.push(newProfileObject);
 
-//     const profileToUpdate = userProfiles.profiles.find(
-//       (profile) => profile.id === profileId
-//     );
-//     if (!profileToUpdate) {
-//       return res.status(404).json({ message: 'Profile detail not found' });
-//     }
+    // Save the updated profile document
+    await profile.save();
 
-//     // Update profile detail with new data
-//     Object.assign(profileToUpdate, updatedProfileData);
+    res
+      .status(201)
+      .json({ message: 'Profile object added successfully', profile: profile });
+  } catch (error) {
+    console.error('Add profile object error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
-//     const savedProfile = await userProfiles.save();
-//     res.json(savedProfile);
-//   } catch (error) {
-//     console.error('Error updating profile detail:', error);
-//     res.status(500).json({ message: 'Failed to update profile detail' });
-//   }
-// };
+// Controller function to fetch all profile objects associated with a user
+const getAllProfileObjects = async (req, res) => {
+  const { username } = req.params;
 
-// // Controller to delete a profile detail
-// exports.deleteProfileDetail = async (req, res) => {
-//   const { userId, profileId } = req.params;
+  try {
+    // Find the user by username
+    const user = await User.findOne({ username });
 
-//   try {
-//     const userProfiles = await Profile.findOne({ user: userId });
-//     if (!userProfiles) {
-//       return res.status(404).json({ message: 'User profile not found' });
-//     }
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
-//     userProfiles.profiles = userProfiles.profiles.filter(
-//       (profile) => profile.id !== profileId
-//     );
+    // Find the profile document associated with the user
+    const profile = await Profile.findOne({ user: user._id });
 
-//     const savedProfile = await userProfiles.save();
-//     res.json(savedProfile);
-//   } catch (error) {
-//     console.error('Error deleting profile detail:', error);
-//     res.status(500).json({ message: 'Failed to delete profile detail' });
-//   }
-// };
+    if (!profile) {
+      return res
+        .status(404)
+        .json({ message: 'Profile not found for the user' });
+    }
+
+    // Return the profiles array from the profile document
+    const profileObjects = profile.profiles;
+    res.status(200).json({ profiles: profileObjects });
+  } catch (error) {
+    console.error('Fetch profile objects error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const setInitialProfile = async (userId) => {
+  try {
+    // Find the user by their ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Check if the user already has an associated profile
+    const existingProfile = await Profile.findOne({ user: userId });
+
+    if (existingProfile) {
+      console.log('User already has a profile');
+      return;
+    }
+
+    // Create a new profile reference object with default values
+    const defaultProfile = {
+      user: userId,
+      profiles: [], // Set an empty array or add default profile objects here
+    };
+
+    // Create and save the new profile document
+    const newProfile = await Profile.create(defaultProfile);
+    console.log('Initial profile set for user:', user.username);
+
+    // Associate the new profile document with the user
+    user.profileDetails = newProfile._id;
+    await user.save();
+
+    console.log('Profile reference updated for user:', user.username);
+  } catch (error) {
+    console.error('Set initial profile error:', error);
+    throw error;
+  }
+};
+
+const updateProfileObject = async (req, res) => {
+  const { username } = req.params;
+  //   const { updatedObject } = req.body;
+  const {
+    type,
+    id,
+    baseUrl,
+    userName,
+    logo,
+    bgColor,
+    content,
+    location,
+    imgUrl,
+  } = req.body;
+
+  try {
+    // Find the user by their username
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Find the profile document associated with the user
+    const profile = await Profile.findOne({ user: user._id });
+
+    if (!profile) {
+      return res
+        .status(404)
+        .json({ message: 'Profile not found for the user' });
+    }
+
+    // Find the index of the object to be updated within the profiles array
+    const objectIndex = profile.profiles.findIndex(
+      (obj) => obj.id.toString() === id
+    );
+
+    if (objectIndex === -1) {
+      return res
+        .status(404)
+        .json({ message: 'Object not found in the profile' });
+    }
+
+    // Update the specific object using its index
+    profile.profiles[objectIndex] = {
+      ...profile.profiles[objectIndex],
+      ...req.body,
+    };
+
+    // Save the updated profile document
+    await profile.save();
+
+    res.status(200).json({ message: 'Profile object updated successfully' });
+  } catch (error) {
+    console.error('Update profile object error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const deleteProfileObject = async (req, res) => {
+  const { username, objectId } = req.params;
+
+  try {
+    // Find the user by their username
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Find the profile document associated with the user
+    const profile = await Profile.findOne({ user: user._id });
+
+    if (!profile) {
+      return res
+        .status(404)
+        .json({ message: 'Profile not found for the user' });
+    }
+
+    // Find the index of the object to be deleted within the profiles array
+    const objectIndex = profile.profiles.findIndex(
+      (obj) => obj.id.toString() === objectId
+    );
+
+    if (objectIndex === -1) {
+      return res
+        .status(404)
+        .json({ message: 'Object not found in the profile' });
+    }
+
+    // Remove the specific object from the profiles array
+    profile.profiles.splice(objectIndex, 1);
+
+    // Save the updated profile document
+    await profile.save();
+
+    res.status(200).json({ message: 'Profile object deleted successfully' });
+  } catch (error) {
+    console.error('Delete profile object error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = {
+  addProfileObject,
+  getAllProfileObjects,
+  setInitialProfile,
+  updateProfileObject,
+  deleteProfileObject,
+};
