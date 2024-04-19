@@ -1,7 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import axios from 'axios';
 
 const SignupLink = ({ name, setName, nextPanel }) => {
+  const [isAlreadyExist, setIsAlreadyExist] = useState(false);
+
+  useEffect(() => {
+    if (name) {
+      axios
+        .get(`http://localhost:5000/auth/checkusername/${name}`)
+        .then((res) => {
+          if (res.status === 400) {
+            // Username already exists
+            setIsAlreadyExist(true);
+          } else if (res.status === 200) {
+            // Username is available
+            setIsAlreadyExist(false);
+          }
+        })
+        .catch((error) => {
+          // Handle any network errors or other issues
+          if (error.response) {
+            // The request was made and the server responded with a status code
+            if (error.response.status === 400) {
+              setIsAlreadyExist(true); // Username already exists
+            } else {
+              console.log('Server error:', error.response.data.message);
+              // Handle other server errors if needed
+            }
+          } else if (error.request) {
+            // The request was made but no response was received
+            console.log('Network error:', error.request);
+          } else {
+            // Something happened in setting up the request that triggered an error
+            console.log('Error:', error.message);
+          }
+        });
+    }
+  }, [name]);
+
   return (
     <React.Fragment>
       <h1 className="font-bold text-[32px] leading-[40px]">
@@ -28,12 +65,18 @@ const SignupLink = ({ name, setName, nextPanel }) => {
           </div>
         </div>
         <div className="mt-4 h-[58px] sm:h-[48px]">
-          {name && (
+          {name && !isAlreadyExist && (
             <button
               onClick={nextPanel}
               className="hover:shadow-lg transition-all duration-150 text-[0.875rem] leading-[1.25rem] font-bold text-white bg-black hover:bg-black/80 h-full w-full py-2 px-[0.625rem] rounded-xl">
               Grab my Link
             </button>
+          )}
+          {isAlreadyExist && (
+            <p className="text-red-500 text-[14px] mt-2">
+              This username seems to be taken already... <br /> Try something
+              similar.
+            </p>
           )}
         </div>
       </form>
