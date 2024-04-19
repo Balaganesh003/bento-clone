@@ -4,12 +4,17 @@ import { FaGoogle } from 'react-icons/fa';
 import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import toast, { Toaster } from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
+import { profileActions } from '@/store/profile-slice';
+import { uiActions } from '@/store/ui-slice';
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handelLogin = async (e) => {
     e.preventDefault();
@@ -25,16 +30,20 @@ const LoginForm = () => {
         password: password,
       });
 
-      // document.cookie = `jwt=${res.data.token}`;
-      console.log(res.data);
-      // router.push('/');
+      document.cookie = `jwt=${res.data.token}`;
+      toast.success('Logged in successfully');
+      dispatch(uiActions.setFirstTime(false));
+      dispatch(profileActions.setFirstTime(false));
+      router.push(`/${res.data.username}`);
     } catch (error) {
+      toast.error(error.response.data.message || 'Server error ');
       console.log(error);
     }
   };
 
   return (
     <div className="flex flex-col h-fit max-w-[448px] w-full">
+      <Toaster />
       <h1 className="font-bold text-[32px] leading-[40px] mt-2">
         Log in to your Bento
       </h1>

@@ -5,6 +5,7 @@ import SignUpMail from '@/components/SignUpMail';
 import SignupLink from '@/components/SignupLink';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
+import toast, { Toaster } from 'react-hot-toast';
 
 const SignupFlow = () => {
   const router = useRouter();
@@ -42,20 +43,24 @@ const SignupFlow = () => {
     }
 
     try {
-      const res = await axios.post(`http://localhost:3000/auth/signup`, {
+      const res = await axios.post(`http://localhost:5000/auth/signup`, {
         email: email,
         password: password,
         username: name,
       });
-      console.log(res.data);
-      router.push('/onboarding');
+      document.cookie = `jwt=${res.data.token}`;
+
+      toast.success('Signed up successfully');
+      router.push(`/${name}`);
     } catch (error) {
       console.log(error);
+      toast.error(error.response.data.message || 'Server error ');
     }
   };
 
   return (
     <div className="flex flex-col h-fit max-w-[448px]">
+      <Toaster />
       {/* Slides */}
       <AnimatePresence initial={false} custom={index} mode={`wait`}>
         <motion.div

@@ -15,7 +15,7 @@ export default function SignUpMail({
   handelSignUp,
 }) {
   const handelGoogleSignIn = () => {
-    window.open('http://localhost:3000/auth/google/', '_self');
+    window.open(`http://${NEXT_PUBLIC_API_URL}/auth/google/`, '_self');
   };
 
   return (
