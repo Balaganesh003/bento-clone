@@ -30,6 +30,7 @@ import NameBio from '@/components/NameBio';
 import { useRouter } from 'next/router';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
+import toast, { ToastBar } from 'react-hot-toast';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -285,8 +286,16 @@ export default function Home({ data }) {
 
   useEffect(() => {
     const getData = async () => {
-      const res = await axios.get(`http://localhost:5000/profile/${USERNAME}`);
-      dispatch(profileActions.setProfileDetails(res.data.profiles));
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/profile/${USERNAME}`
+        );
+        dispatch(profileActions.setProfileDetails(res.data.profiles));
+      } catch (error) {
+        console.log('error', error);
+        toast.error('Please signup to create your profile');
+        router.push('/signup');
+      }
     };
     getData();
   }, []);
@@ -294,6 +303,7 @@ export default function Home({ data }) {
   return (
     <main
       className={`${inter.className} overflow-x-hidden flex justify-center xl:justify-normal`}>
+      <ToastBar />
       <div className=" xl:max-w-none max-w-[428px] xl:w-full flex-col xl:flex-row flex xl:gap-[2.5rem] xl:p-[4rem] ">
         <div className="flex xl:min-w-[278px] xl:max-w-[calc(100vw-64rem)]   xl:max-h-[calc(100vh-8rem)] flex-1 flex-col px-6 pt-12 xl:p-0 ">
           {!isFirst && (
