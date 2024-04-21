@@ -4,9 +4,13 @@ import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import TextLogo from '@/assets/text.png';
 import Image from 'next/image';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 
-const TextBox = ({ item }) => {
+const TextBox = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
+
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
   const [textareaValue, setTextareaValue] = useState(item.content); // Store textarea value separately
@@ -53,13 +57,31 @@ const TextBox = ({ item }) => {
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     setTextareaValue(e.target.value); // Update the separate textarea value
     dispatch(profileActions.updateItem({ ...item, content: e.target.value }));
+    try {
+      const res = await axios.put(`http://localhost:5000/profile/${USERNAME}`, {
+        ...item,
+        content: e.target.value,
+      });
+      console.log(res.data);
+    } catch (error) {
+      console.log('error', error);
+    }
   };
 
   const handleTextClick = () => {
     dispatch(profileActions.updateItem({ ...item, content: '' }));
+    try {
+      const res = axios.put(`http://localhost:5000/profile/${USERNAME}`, {
+        ...item,
+        content: '',
+      });
+      console.log(res.data);
+    } catch (error) {
+      console.log('error', error);
+    }
   };
 
   return (

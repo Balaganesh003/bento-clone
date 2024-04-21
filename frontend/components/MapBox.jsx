@@ -8,8 +8,9 @@ import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
+import axios from 'axios';
 
-const MapboxMap = ({ item }) => {
+const MapboxMap = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
   const [width, setWidth] = useState(5);
   const [height, setHeight] = useState(5);
@@ -59,27 +60,48 @@ const MapboxMap = ({ item }) => {
   }, [value, Token]);
 
   useEffect(() => {
-    if (selectedLocation) {
-      console.log(selectedLocation.center[0], selectedLocation.center[1]);
-      dispatch(
-        profileActions.updateItem({
-          ...item,
-          location: {
-            longitude: selectedLocation.center[0],
-            latitude: selectedLocation.center[1],
-            zoom: 4,
-          },
-        })
-      );
+    const handelMap = async () => {
+      if (selectedLocation) {
+        console.log(selectedLocation.center[0], selectedLocation.center[1]);
+        dispatch(
+          profileActions.updateItem({
+            ...item,
+            location: {
+              longitude: selectedLocation.center[0],
+              latitude: selectedLocation.center[1],
+              zoom: 4,
+            },
+          })
+        );
 
-      setIsViewportFixed(true);
+        try {
+          const res = await axios.put(
+            `http://localhost:5000/profile/${USERNAME}`,
+            {
+              ...item,
+              location: {
+                longitude: selectedLocation.center[0],
+                latitude: selectedLocation.center[1],
+                zoom: 4,
+              },
+            }
+          );
 
-      setInterval(() => {
+          console.log('res', res.data);
+        } catch (error) {
+          console.log('error', error);
+        }
+
+        setIsViewportFixed(true);
+
+        setInterval(() => {
+          setIsViewportFixed(false);
+        }, 1000);
+      } else {
         setIsViewportFixed(false);
-      }, 1000);
-    } else {
-      setIsViewportFixed(false);
-    }
+      }
+    };
+    handelMap();
   }, [selectedLocation]);
 
   const handleSelectLocation = (location) => {
@@ -110,6 +132,15 @@ const MapboxMap = ({ item }) => {
   const handleViewportChange = (newViewport) => {
     if (!selectedLocation) {
       dispatch(profileActions.updateItem({ ...item, location: newViewport }));
+      try {
+        const res = axios.put(`http://localhost:5000/profile/${USERNAME}`, {
+          ...item,
+          location: newViewport,
+        });
+        console.log(res.data);
+      } catch (error) {
+        console.log('error', error);
+      }
     }
   };
 
@@ -199,8 +230,7 @@ const MapboxMap = ({ item }) => {
               alt="Drag and drop"
               width={64}
               height={64}
-              className={`
-                   w-[1.5rem] h-[1.5rem] rounded-md `}
+              className={`w-[1.5rem] h-[1.5rem] rounded-md `}
             />
             <p className={`mt-1 font-bold text-[14px] `}>Add Map</p>
           </div>

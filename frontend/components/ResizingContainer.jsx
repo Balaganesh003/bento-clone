@@ -3,6 +3,7 @@ import { AiOutlineDelete } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import { BiSearch } from 'react-icons/bi';
+import axios from 'axios';
 
 const ResizingContainer = ({
   children,
@@ -27,6 +28,7 @@ const ResizingContainer = ({
       );
     }
     dispatch(profileActions.removeItem(item.id));
+    const res = axios.delete(`http://localhost:5000/profile/abc/${item.id}`);
   };
 
   return (

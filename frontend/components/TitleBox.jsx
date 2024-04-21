@@ -2,13 +2,18 @@ import React, { useState, useRef, useEffect } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
+import axios from 'axios';
 
-const TitleBox = ({ item }) => {
+const TitleBox = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
-  const [isPlaceholderVisible, setIsPlaceholderVisible] = useState(true);
+  const [isPlaceholderVisible, setIsPlaceholderVisible] = useState(false);
 
-  const handelDelete = () => {
+  const handelDelete = async () => {
     dispatch(profileActions.removeItem(item.id));
+    const res = await axios.delete(
+      `http://localhost:5000/profile/${USERNAME}/${item.id}`
+    );
+    console.log('res', res.data);
   };
 
   const titleRef = useRef();
@@ -18,12 +23,16 @@ const TitleBox = ({ item }) => {
     }
   };
 
+  useEffect(() => {
+    handlePlaceholder();
+  }, []);
+
   const handelFocus = () => {
     setIsPlaceholderVisible(false);
     titleRef?.current?.focus();
   };
 
-  useEffect(() => {
+  const handelTitle = async () => {
     handlePlaceholder();
     dispatch(
       profileActions.updateItem({
@@ -31,7 +40,25 @@ const TitleBox = ({ item }) => {
         content: titleRef?.current?.textContent,
       })
     );
-  }, [titleRef?.current?.textContent]);
+    console.log(titleRef?.current?.textContent);
+    try {
+      const res = await axios.put(`http://localhost:5000/profile/${USERNAME}`, {
+        ...item,
+        content: titleRef?.current?.textContent,
+      });
+      console.log('res', res.status);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  useEffect(() => {
+    titleRef?.current?.addEventListener('blur', handelTitle);
+    handlePlaceholder();
+    return () => {
+      titleRef?.current?.removeEventListener('blur', handelTitle);
+    };
+  }, []);
 
   return (
     <div className="w-[375px] xl:w-[820px]  rounded-[16px] p-2 relative border border-transparent hover:border-[#e3e3e3] hover:shadow-lg group bg-white transition-all duration-200 ease-in-out">
