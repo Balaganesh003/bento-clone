@@ -16,6 +16,20 @@ const addProfileObject = async (req, res) => {
     imgUrl,
   } = req.body;
 
+  console.log(
+    'req.body',
+    type,
+    id,
+    baseUrl,
+    userName,
+    logo,
+    bgColor,
+    content,
+    location,
+    imgUrl
+  );
+  console.log('req.params', req.location);
+
   try {
     // Find the user by username
     const user = await User.findOne({ username });
@@ -187,6 +201,45 @@ const updateProfileObject = async (req, res) => {
   }
 };
 
+const setProfileDetails = async (req, res) => {
+  const { username } = req.params;
+  const { profileDetails } = req.body;
+
+  try {
+    // Find the user by username
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Find the profile document associated with the user
+    let profile = await Profile.findOne({ user: user._id });
+
+    if (!profile) {
+      // Create a new profile document if none exists
+      profile = await Profile.create({ user: user._id, profiles: [] });
+    }
+
+    // Clear existing profile objects
+    profile.profiles = [];
+
+    // Add new profile objects from the request body
+    profile.profiles.push(...profileDetails);
+
+    // Save the updated profile document
+    await profile.save();
+
+    res.status(200).json({
+      message: 'Profile details updated successfully',
+      profile: profile,
+    });
+  } catch (error) {
+    console.error('Set profile details error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 const deleteProfileObject = async (req, res) => {
   const { username, objectId } = req.params;
 
@@ -236,5 +289,6 @@ module.exports = {
   getAllProfileObjects,
   setInitialProfile,
   updateProfileObject,
+  setProfileDetails,
   deleteProfileObject,
 };

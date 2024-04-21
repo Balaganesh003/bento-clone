@@ -28,6 +28,8 @@ import TitleBox from '@/components/TitleBox';
 import { MdOutlineDelete } from 'react-icons/md';
 import NameBio from '@/components/NameBio';
 import { useRouter } from 'next/router';
+import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -47,7 +49,9 @@ export default function Home({ data }) {
   const [url, setUrl] = useState('');
   const [isUrlOpen, setIsUrlOpen] = useState(false);
 
-  const onDragEnd = (result) => {
+  const USERNAME = router.query.id[0];
+
+  const onDragEnd = async (result) => {
     const { source, destination, type } = result;
     if (!destination) {
       return;
@@ -65,6 +69,17 @@ export default function Home({ data }) {
       const [removed] = newContent.splice(source.index, 1);
       newContent.splice(destination.index, 0, removed);
       dispatch(profileActions.setProfileDetails(newContent));
+      try {
+        const res = await axios.put(
+          `http://localhost:5000/profile/replace/${USERNAME}`,
+          {
+            profileDetails: newContent,
+          }
+        );
+        console.log('res', res.data);
+      } catch (error) {
+        console.log('error', error);
+      }
     }
   };
 
@@ -80,8 +95,6 @@ export default function Home({ data }) {
     }
   };
 
-  console.log(router.query.id[0]);
-
   const nextPanel = (e) => {
     e.preventDefault();
 
@@ -95,17 +108,17 @@ export default function Home({ data }) {
         profileActions.setProfileDetails([
           ...profileDetails,
           {
-            id: '1111',
+            id: uuidv4(),
             type: 'image',
             imgUrl: null,
           },
           {
-            id: '2222',
+            id: uuidv4(),
             type: 'text',
             content: null,
           },
           {
-            id: '3333',
+            id: uuidv4(),
             type: 'map',
             location: null,
           },
@@ -121,30 +134,36 @@ export default function Home({ data }) {
     }
   };
 
-  const addNote = () => {
-    dispatch(
-      profileActions.setProfileDetails([
-        ...profileDetails,
-        {
-          id: `${Math.random() * 100}`,
-          type: 'text',
-          content: '',
-        },
-      ])
-    );
+  const addNote = async () => {
+    const Obj = {
+      id: uuidv4(),
+      type: 'text',
+      content: '',
+    };
+
+    dispatch(profileActions.setProfileDetails([...profileDetails, Obj]));
+
+    const res = await axios.post(`http://localhost:5000/profile/${USERNAME}`, {
+      type: Obj.type,
+      id: Obj.id,
+      content: '',
+    });
   };
 
   const addMap = () => {
-    dispatch(
-      profileActions.setProfileDetails([
-        ...profileDetails,
-        {
-          id: `${Math.random() * 100}`,
-          type: 'map',
-          location: { latitude: 20.5937, longitude: 78.9629, zoom: 4 },
-        },
-      ])
-    );
+    const MapObj = {
+      id: uuidv4(),
+      type: 'map',
+      location: { latitude: 20.5937, longitude: 78.9629, zoom: 4 },
+    };
+
+    dispatch(profileActions.setProfileDetails([...profileDetails, MapObj]));
+
+    const res = axios.post(`http://localhost:5000/profile/${USERNAME}`, {
+      type: MapObj.type,
+      id: MapObj.id,
+      location: MapObj.location,
+    });
   };
 
   const addImage = (e) => {
@@ -156,7 +175,7 @@ export default function Home({ data }) {
           profileActions.setProfileDetails([
             ...profileDetails,
             {
-              id: `${Math.random() * 100}`,
+              id: uuidv4(),
               type: 'image',
               imgUrl: e.target.result,
             },
@@ -168,16 +187,21 @@ export default function Home({ data }) {
   };
 
   const addTitle = () => {
-    dispatch(
-      profileActions.setProfileDetails([
-        ...profileDetails,
-        {
-          id: `${Math.random() * 100}`,
-          type: 'title',
-          content: '',
-        },
-      ])
-    );
+    const TitleObj = {
+      id: uuidv4(),
+      type: 'title',
+      content: '',
+    };
+
+    dispatch(profileActions.setProfileDetails([...profileDetails, TitleObj]));
+
+    const res = axios.post(`http://localhost:5000/profile/${USERNAME}`, {
+      type: TitleObj.type,
+      id: TitleObj.id,
+      content: TitleObj.content,
+    });
+
+    console.log(res);
   };
 
   const handelLink = (text) => {
@@ -214,7 +238,7 @@ export default function Home({ data }) {
         profileActions.setProfileDetails([
           ...profileDetails,
           {
-            id: `${Math.random() * 1000}`,
+            id: uuidv4(),
             type: 'links',
             userName,
             link: text,
@@ -258,6 +282,14 @@ export default function Home({ data }) {
   useEffect(() => {
     console.log('Profile Details', profileDetails);
   }, [profileDetails]);
+
+  useEffect(() => {
+    const getData = async () => {
+      const res = await axios.get(`http://localhost:5000/profile/${USERNAME}`);
+      dispatch(profileActions.setProfileDetails(res.data.profiles));
+    };
+    getData();
+  }, []);
 
   return (
     <main
@@ -332,18 +364,28 @@ export default function Home({ data }) {
                             {...provided.draggableProps}>
                             <div className="w-full">
                               {item.type === 'socialLink' && item.isAdded && (
-                                <SocialLinkCard item={item} />
+                                <SocialLinkCard
+                                  item={item}
+                                  USERNAME={USERNAME}
+                                />
                               )}
                               {item.type === 'image' && (
-                                <ImageCard item={item} />
+                                <ImageCard item={item} USERNAME={USERNAME} />
                               )}
-                              {item.type === 'text' && <TextBox item={item} />}
-                              {item.type === 'map' && <MapboxMap item={item} />}
+                              {item.type === 'text' && (
+                                <TextBox item={item} USERNAME={USERNAME} />
+                              )}
+                              {item.type === 'map' && (
+                                <MapboxMap item={item} USERNAME={USERNAME} />
+                              )}
                               {item.type === 'links' && (
-                                <OtherLinkCard item={item} />
+                                <OtherLinkCard
+                                  item={item}
+                                  USERNAME={USERNAME}
+                                />
                               )}
                               {item.type === 'title' && (
-                                <TitleBox item={item} />
+                                <TitleBox item={item} USERNAME={USERNAME} />
                               )}
                             </div>
                           </div>

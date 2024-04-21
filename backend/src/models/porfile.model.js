@@ -25,7 +25,6 @@ const profileSchema = new mongoose.Schema({
       },
       userName: {
         type: String,
-        default: '',
         required: function () {
           return this.type === 'socialLink';
         },
@@ -46,15 +45,35 @@ const profileSchema = new mongoose.Schema({
       content: {
         type: String,
         default: '',
-        required: function () {
-          return ['text', 'title'].includes(this.type);
+        validate: {
+          validator: function (v) {
+            return this.type === 'text' || this.type === 'title'
+              ? v.length >= 0
+              : true;
+          },
+          message: 'Content is required for text and title types',
         },
       },
       location: {
         type: {
-          latitude: Number,
-          longitude: Number,
-          zoom: Number,
+          latitude: {
+            type: Number,
+            required: function () {
+              return this.type === 'map';
+            },
+          },
+          longitude: {
+            type: Number,
+            required: function () {
+              return this.type === 'map';
+            },
+          },
+          zoom: {
+            type: Number,
+            required: function () {
+              return this.type === 'map';
+            },
+          },
         },
         required: function () {
           return this.type === 'map';
