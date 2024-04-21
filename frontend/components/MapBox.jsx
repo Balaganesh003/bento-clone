@@ -147,15 +147,6 @@ const MapboxMap = ({ item, USERNAME }) => {
   useEffect(() => {
     if (item.location) {
       dispatch(profileActions.updateItem({ ...item, location: item.location }));
-      try {
-        const res = axios.put(`http://localhost:5000/profile/${USERNAME}`, {
-          ...item,
-          location: item.location,
-        });
-        console.log(res.data);
-      } catch (error) {
-        console.log('error', error);
-      }
     }
 
     setIsViewportFixed(true);
