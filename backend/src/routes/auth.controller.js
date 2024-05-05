@@ -64,21 +64,28 @@ const login = async (req, res) => {
     }
 
     // Generate JWT
-    const token = jwt.sign({ userId: user._id }, 'abcd', {
-      expiresIn: '1h',
-    });
-
-    // Send token in cookie
-    res.cookie('jwt', token, {
-      httpOnly: true,
-      secure: false,
-    });
-
-    res.status(200).json({
-      message: 'Logged in successfully',
-      token,
-      username: user.username,
-    });
+    const token = jwt.sign(
+      { userId: user._id },
+      'abcd',
+      {
+        expiresIn: '1h',
+      },
+      (err, token) => {
+        // Send token in cookie
+        console.log('Token:', token);
+        res
+          .cookie('jwt', token, {
+            // httpOnly: true,
+            // secure: false,
+          })
+          .status(200)
+          .json({
+            message: 'Logged in successfully',
+            token,
+            username: user.username,
+          });
+      }
+    );
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Server error' });

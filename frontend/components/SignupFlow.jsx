@@ -48,7 +48,8 @@ const SignupFlow = () => {
         password: password,
         username: name,
       });
-      document.cookie = `jwt=${res.data.token}`;
+      // document.cookie = `jwt=${res.data.token}`;
+      console.log(res.data.token);
 
       toast.success('Signed up successfully');
       router.push(`/${name}`);

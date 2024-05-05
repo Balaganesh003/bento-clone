@@ -9,14 +9,14 @@ const profileRouter = require('./routes/profile.router.js');
 const path = require('path');
 const helmet = require('helmet');
 dotenv.config();
-
+const cookieParser = require('cookie-parser');
 const app = express();
-
+app.use(cookieParser());
 app.use(express.json());
 app.use(helmet());
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'https://bento-clone-app.vercel.app'],
+    origin: [process.env.ORIGIN_1, process.env.ORIGIN_2, process.env.ORIGIN_3],
     credentials: true,
   })
 );
