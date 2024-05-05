@@ -32,6 +32,8 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import toast, { ToastBar } from 'react-hot-toast';
 
+axios.defaults.withCredentials = true;
+
 const inter = Inter({
   subsets: ['latin'],
 });

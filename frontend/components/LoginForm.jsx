@@ -29,13 +29,13 @@ const LoginForm = () => {
         password: password,
       });
 
-      document.cookie = `jwt=${res.data.token}`;
+      // document.cookie = `jwt=${res.data.token}`;
       toast.success('Logged in successfully');
       dispatch(uiActions.setFirstTime(false));
       dispatch(profileActions.setFirstTime(false));
       router.push(`/${res.data.username}`);
     } catch (error) {
-      toast.error(error.response.data.message || 'Server error ');
+      // toast.error(error.response.data.message || 'Server error ');
       console.log(error);
     }
   };
