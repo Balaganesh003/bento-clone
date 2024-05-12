@@ -30,7 +30,9 @@ import NameBio from '@/components/NameBio';
 import { useRouter } from 'next/router';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
-import toast, { ToastBar } from 'react-hot-toast';
+
+import { uiActions } from '@/store/ui-slice';
+// import toast, { ToastBar } from 'react-hot-toast';
 
 axios.defaults.withCredentials = true;
 
@@ -43,16 +45,21 @@ export default function Home({ data }) {
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
+  const isFirst = useSelector((state) => state.ui.isfirstTime);
   const [removeSuggestions, setRemoveSuggestions] = useState(true);
   const { profileDetails, socialLinks } = useSelector((state) => state.profile);
   const [isLaptop, setIsLaptop] = useState(true);
-  const [isFirst, setIsFirst] = useState(true);
+
   const [avatarSrc, setAvatarSrc] = useState('');
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
   const [url, setUrl] = useState('');
   const [isUrlOpen, setIsUrlOpen] = useState(false);
 
   const USERNAME = router.query.id[0];
+
+  const handelFirstTime = () => {
+    dispatch(uiActions.setFirstTime(false));
+  };
 
   const onDragEnd = async (result) => {
     const { source, destination, type } = result;
@@ -295,7 +302,7 @@ export default function Home({ data }) {
         dispatch(profileActions.setProfileDetails(res.data.profiles));
       } catch (error) {
         console.log('error', error);
-        toast.error('Please signup to create your profile');
+        // toast.error('Please signup to create your profile');
         router.push('/signup');
       }
     };
@@ -305,7 +312,7 @@ export default function Home({ data }) {
   return (
     <main
       className={`${inter.className} overflow-x-hidden flex justify-center xl:justify-normal`}>
-      <ToastBar />
+      {/* <ToastBar /> */}
       <div className=" xl:max-w-none max-w-[428px] xl:w-full flex-col xl:flex-row flex xl:gap-[2.5rem] xl:p-[4rem] ">
         <div className="flex xl:min-w-[278px] xl:max-w-[calc(100vw-64rem)]   xl:max-h-[calc(100vh-8rem)] flex-1 flex-col px-6 pt-12 xl:p-0 ">
           {!isFirst && (
@@ -336,7 +343,7 @@ export default function Home({ data }) {
                 transition={{ duration: 0.4 }}>
                 {index === 0 && <AddSocialLinks />}
                 {index === 1 && <AddOtherDetails prevPanel={prevPanel} />}
-                {index === 2 && <GotoProfile setIsFirst={setIsFirst} />}
+                {index === 2 && <GotoProfile setIsFirst={handelFirstTime} />}
               </motion.div>
               {index < 2 && (
                 <div className="flex mt-10 gap-3">
@@ -348,7 +355,7 @@ export default function Home({ data }) {
                     </span>
                   </button>
                   <button
-                    onClick={() => setIsFirst(false)}
+                    onClick={() => handelFirstTime()}
                     className="w-[100px] h-[41px] hover:bg-[#f7f7f7] rounded-lg flex items-center justify-center transition-colors duration-150">
                     Skip
                   </button>

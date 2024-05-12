@@ -85,7 +85,7 @@ const AddSocialLinkCard = ({ link, bgColor, logo, isAdded, isLogo }) => {
     }
   };
 
-  useEffect(() => {}, [link]);
+  useEffect(() => {}, [link, linkValue, isAdded]);
 
   return (
     <div className="flex items-center gap-3 mt-3 w-fit z-0 group">
