@@ -5,8 +5,9 @@ import imageLogo from '@/assets/image.png';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
+import axios from 'axios';
 
-const ImageCard = ({ item }) => {
+const ImageCard = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
 
   const [width, setWidth] = useState(1);
@@ -17,15 +18,37 @@ const ImageCard = ({ item }) => {
     setHeight(height);
   };
 
-  const handleFileSelect = (e) => {
+  const handleFileSelect = async (e) => {
     const file = e.target.files[0];
+    const reader = new FileReader();
+
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        dispatch(
-          profileActions.updateItem({ ...item, imgUrl: e.target.result })
-        );
+      reader.onload = async (e) => {
+        try {
+          const imgUrl = e.target.result;
+
+          // Dispatch an action to update the item with the imgUrl
+          dispatch(profileActions.updateItem({ ...item, imgUrl }));
+
+          // Send a PUT request to update the profile with the imgUrl
+          const res = await axios.put(
+            `http://localhost:5000/profile/${USERNAME}`,
+            {
+              ...item,
+              imgUrl,
+            }
+          );
+
+          console.log(res.data); // Log the response data if needed
+        } catch (error) {
+          console.error('Error updating profile:', error.message);
+        }
       };
+
+      reader.onerror = (e) => {
+        console.error('File reading error:', e.target.error);
+      };
+
       reader.readAsDataURL(file);
     }
   };
@@ -44,8 +67,8 @@ const ImageCard = ({ item }) => {
               <Image
                 src={item?.imgUrl}
                 alt="Drag and drop"
-                width={64}
-                height={64}
+                width={1024}
+                height={1024}
                 className={`h-full w-full object-cover  bg-white rounded-[1.5rem]`}
               />
             </div>

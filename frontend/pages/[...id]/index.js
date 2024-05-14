@@ -191,6 +191,22 @@ export default function Home({ data }) {
             },
           ])
         );
+        const res = axios.post(`http://localhost:5000/profile/${USERNAME}`, {
+          type: 'image',
+          id: uuidv4(),
+          imgUrl: e.target.result,
+        });
+        dispatch(
+          profileActions.setProfileDetails([
+            ...profileDetails,
+            {
+              id: uuidv4(),
+              type: 'image',
+              imgUrl: e.target.result,
+            },
+          ])
+        );
+        console.log(res);
       };
       reader.readAsDataURL(file);
     }
