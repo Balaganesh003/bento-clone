@@ -1,5 +1,6 @@
 const User = require('../models/user.model');
 const Profile = require('../models/porfile.model');
+const cloudinary = require('../services/cloudinary');
 
 // Controller function to add a profile object to a user's profile details
 const addProfileObject = async (req, res) => {
@@ -284,6 +285,107 @@ const deleteProfileObject = async (req, res) => {
   }
 };
 
+const updateDisplayName = async (req, res) => {
+  const { username } = req.params;
+  //   const { updatedObject } = req.body;
+  const { displayName } = req.body;
+
+  try {
+    // Find the user by their username
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Find the profile document associated with the user
+    const profile = await Profile.findOne({ user: user._id });
+
+    if (!profile) {
+      return res
+        .status(404)
+        .json({ message: 'Profile not found for the user' });
+    }
+
+    profile.displayName = displayName;
+
+    // Save the updated profile document
+    await profile.save();
+
+    res.status(200).json({ message: 'Profile Name updated successfully' });
+  } catch (error) {
+    console.error('Update profile Name error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const updateBio = async (req, res) => {
+  const { username } = req.params;
+  //   const { updatedObject } = req.body;
+  const { bio } = req.body;
+
+  try {
+    // Find the user by their username
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Find the profile document associated with the user
+    const profile = await Profile.findOne({ user: user._id });
+
+    if (!profile) {
+      return res
+        .status(404)
+        .json({ message: 'Profile not found for the user' });
+    }
+
+    profile.bio = bio;
+
+    // Save the updated profile document
+    await profile.save();
+
+    res.status(200).json({ message: 'Profile Bio updated successfully' });
+  } catch (error) {
+    console.error('Update profile Name error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const uploadAvatar = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Find the profile document associated with the user
+    const profile = await Profile.findOne({ user: user._id });
+
+    if (!profile) {
+      return res.status(404).json({ message: 'Profile not found' });
+    }
+
+    const fileStr = req.body.avatar;
+    const uploadedResponse = await cloudinary.uploader.upload(fileStr, {
+      folder: 'avatars', // Optional folder in Cloudinary
+      public_id: `avatar_${username}`, // Unique ID for avatar
+    });
+
+    profile.avatar = uploadedResponse.secure_url;
+    await profile.save();
+
+    res.status(200).json({ message: 'Avatar uploaded successfully', profile });
+  } catch (error) {
+    console.error('Avatar upload error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 module.exports = {
   addProfileObject,
   getAllProfileObjects,
@@ -291,4 +393,7 @@ module.exports = {
   updateProfileObject,
   setProfileDetails,
   deleteProfileObject,
+  updateDisplayName,
+  updateBio,
+  uploadAvatar,
 };

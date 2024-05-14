@@ -1,6 +1,7 @@
 const express = require('express');
 const cookieSession = require('cookie-session');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const passport = require('passport');
 const authRouter = require('./routes/auth.router.js');
 const dotenv = require('dotenv');
@@ -12,6 +13,7 @@ dotenv.config();
 const cookieParser = require('cookie-parser');
 const app = express();
 app.use(cookieParser());
+app.use(bodyParser.json({ limit: '50mb' }));
 app.use(express.json());
 app.use(helmet());
 app.use(

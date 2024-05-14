@@ -6,9 +6,12 @@ import SignupLink from '@/components/SignupLink';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 import toast, { Toaster } from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
+import { uiActions } from '@/store/ui-slice';
 
 const SignupFlow = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
 
   const [email, setEmail] = useState('');
@@ -48,10 +51,12 @@ const SignupFlow = () => {
         password: password,
         username: name,
       });
-      // document.cookie = `jwt=${res.data.token}`;
+      document.cookie = `jwt=${res.data.token}`;
+      dispatch(uiActions.setFirstTime(true));
       console.log(res.data.token);
 
       toast.success('Signed up successfully');
+
       router.push(`/${name}`);
     } catch (error) {
       console.log(error);

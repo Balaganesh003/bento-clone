@@ -6,6 +6,19 @@ const profileSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  avatar: {
+    type: String,
+    default: '',
+  },
+  displayName: {
+    type: String,
+    default: '',
+  },
+  bio: {
+    type: String,
+    default: '',
+  },
+
   profiles: [
     {
       type: {
