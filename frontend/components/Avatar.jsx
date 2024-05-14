@@ -1,8 +1,40 @@
 import React from 'react';
 import Image from 'next/image';
 import { BiUpArrowCircle } from 'react-icons/bi';
+import axios from 'axios';
 
-const Avatar = ({ handleFileSelect, avatarSrc }) => {
+const Avatar = ({ avatarSrc, setAvatarSrc, username }) => {
+  const handleFileSelect = async (e) => {
+    const file = e.target.files[0];
+    const fileReader = new FileReader();
+
+    fileReader.onloadend = async () => {
+      const fileDataUrl = fileReader.result;
+
+      console.log(fileDataUrl);
+
+      try {
+        const response = await axios.post(
+          `http://localhost:5000/profile/avatar/${username}`,
+          {
+            avatar: fileDataUrl,
+          }
+        );
+
+        const { profile } = response.data;
+        if (profile && profile.avatar) {
+          setAvatarSrc(profile.avatar);
+        }
+      } catch (error) {
+        console.error('Avatar upload error:', error);
+      }
+    };
+
+    if (file) {
+      fileReader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div
       className={`flex-shrink-0 border-gray-border w-[7.5rem] h-[7.5rem] xl:w-[11.5rem] xl:h-[11.5rem]  text-center cursor-pointer relative rounded-full border-dashed ${
@@ -13,8 +45,8 @@ const Avatar = ({ handleFileSelect, avatarSrc }) => {
           <Image
             src={avatarSrc}
             alt="Drag and drop"
-            width={64}
-            height={64}
+            width={1024}
+            height={1024}
             className={`   ${
               avatarSrc
                 ? ' h-full w-full object-cover rounded-full '

@@ -320,7 +320,8 @@ export default function Home({ data }) {
               <div className="flex justify-between w-full ">
                 <Avatar
                   avatarSrc={avatarSrc}
-                  handleFileSelect={handleFileSelect}
+                  setAvatarSrc={setAvatarSrc}
+                  username={'abc'}
                 />
                 <div className="flex h-fit xl:hidden rounded-lg mt-2 border shadow-sm  items-center justify-center">
                   <button className="text-[0.87rem] transition-all duration-200 font-bold w-full py-2 px-[10px] hover:bg-[#FBFBFB]">
