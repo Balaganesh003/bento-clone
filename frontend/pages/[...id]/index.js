@@ -230,14 +230,14 @@ export default function Home({ data }) {
     console.log(res);
   };
 
-  const handelLink = (text) => {
+  const handelLink = async (text) => {
     const url = new URL(text);
     if (!url) return;
     const { hostname } = url;
     const path = url.pathname.split('/');
     const userName = path[1];
     const baseUrl = hostname.split('.')[0];
-    const logo = null;
+    const logo = '';
 
     const allSocialLinks = socialLinks.map((link) => link.id);
 
@@ -250,6 +250,15 @@ export default function Home({ data }) {
           userName: userName,
           isAdded: true,
         })
+      );
+
+      const res = await axios.post(
+        `http://localhost:5000/profile/${USERNAME}`,
+        {
+          ...link,
+          userName: userName,
+          isAdded: true,
+        }
       );
 
       dispatch(
@@ -273,6 +282,18 @@ export default function Home({ data }) {
             baseUrl,
           },
         ])
+      );
+      const res = await axios.post(
+        `http://localhost:5000/profile/${USERNAME}`,
+        {
+          id: uuidv4(),
+          type: 'links',
+          userName,
+          link: text,
+          logo,
+          hostname,
+          baseUrl,
+        }
       );
     }
     setUrl('');
