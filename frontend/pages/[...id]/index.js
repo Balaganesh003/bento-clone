@@ -321,7 +321,7 @@ export default function Home({ data }) {
                 <Avatar
                   avatarSrc={avatarSrc}
                   setAvatarSrc={setAvatarSrc}
-                  username={'abc'}
+                  username={USERNAME}
                 />
                 <div className="flex h-fit xl:hidden rounded-lg mt-2 border shadow-sm  items-center justify-center">
                   <button className="text-[0.87rem] transition-all duration-200 font-bold w-full py-2 px-[10px] hover:bg-[#FBFBFB]">
