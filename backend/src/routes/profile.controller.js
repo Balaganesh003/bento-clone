@@ -17,20 +17,6 @@ const addProfileObject = async (req, res) => {
     imgUrl,
   } = req.body;
 
-  console.log(
-    'req.body',
-    type,
-    id,
-    baseUrl,
-    userName,
-    logo,
-    bgColor,
-    content,
-    location,
-    imgUrl
-  );
-  console.log('req.params', req.location);
-
   try {
     // Find the user by username
     const user = await User.findOne({ username });
@@ -60,15 +46,28 @@ const addProfileObject = async (req, res) => {
       imgUrl,
     };
 
+    if (type === 'image') {
+      // Upload the image to Cloudinary and get the URL
+      const fileStr = imgUrl; // Assuming imgUrl contains the base64 image data
+      const uploadedResponse = await cloudinary.uploader.upload(fileStr, {
+        folder: `bento/${username}`, // Upload image under 'avatars/username' folder
+        public_id: `bento_${username}_${Date.now()}`, // Unique ID for the uploaded image
+      });
+
+      // Set the imgUrl field of the profile object to the Cloudinary URL
+      newProfileObject.imgUrl = uploadedResponse.secure_url;
+    }
+
     // Add the new profile object to the profiles array within the profile document
     profile.profiles.push(newProfileObject);
 
     // Save the updated profile document
     await profile.save();
 
-    res
-      .status(201)
-      .json({ message: 'Profile object added successfully', profile: profile });
+    res.status(201).json({
+      message: 'Profile object added successfully',
+      profile: profile,
+    });
   } catch (error) {
     console.error('Add profile object error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -145,7 +144,6 @@ const setInitialProfile = async (userId) => {
 
 const updateProfileObject = async (req, res) => {
   const { username } = req.params;
-  //   const { updatedObject } = req.body;
   const {
     type,
     id,
@@ -186,10 +184,34 @@ const updateProfileObject = async (req, res) => {
         .json({ message: 'Object not found in the profile' });
     }
 
+    // Create the new profile object based on the input data
+    const newProfileObject = {
+      type,
+      id,
+      baseUrl,
+      userName,
+      logo,
+      bgColor,
+      content,
+      location,
+      imgUrl,
+    };
+
+    if (type === 'image' && imgUrl) {
+      // Upload the image to Cloudinary and get the URL
+      const uploadedResponse = await cloudinary.uploader.upload(imgUrl, {
+        folder: `bento/${username}`, // Upload image under 'bento/username' folder
+        public_id: `bento_${username}_${Date.now()}`, // Unique ID for the uploaded image
+      });
+
+      // Set the imgUrl field of the profile object to the Cloudinary URL
+      newProfileObject.imgUrl = uploadedResponse.secure_url;
+    }
+
     // Update the specific object using its index
     profile.profiles[objectIndex] = {
       ...profile.profiles[objectIndex],
-      ...req.body,
+      ...newProfileObject,
     };
 
     // Save the updated profile document
@@ -285,6 +307,20 @@ const deleteProfileObject = async (req, res) => {
   }
 };
 
+// Helper function to extract public_id from Cloudinary URL
+function extractPublicId(imgUrl) {
+  try {
+    const url = new URL(imgUrl);
+    const pathComponents = url.pathname.split('/');
+    const publicIdWithVersion = pathComponents.slice(4).join('/'); // Extract from 'v' onwards
+    const publicId = publicIdWithVersion.split('.')[0]; // Remove file extension
+    return publicId;
+  } catch (error) {
+    console.error('Error extracting public_id from image URL:', error);
+    return null;
+  }
+}
+
 const updateDisplayName = async (req, res) => {
   const { username } = req.params;
   //   const { updatedObject } = req.body;
@@ -372,8 +408,8 @@ const uploadAvatar = async (req, res) => {
 
     const fileStr = req.body.avatar;
     const uploadedResponse = await cloudinary.uploader.upload(fileStr, {
-      folder: 'avatars', // Optional folder in Cloudinary
-      public_id: `avatar_${username}`, // Unique ID for avatar
+      folder: `bento/${username}`, // Optional folder in Cloudinary
+      public_id: `avatar`, // Unique ID for avatar
     });
 
     profile.avatar = uploadedResponse.secure_url;
