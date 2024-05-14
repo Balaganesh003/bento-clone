@@ -1,10 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import BuyMeCoffee from '@/assets/coffee.svg';
-import Twitter from '@/assets/twitter.svg';
-import Instagram from '@/assets/instagram.svg';
-import Github from '@/assets/github.svg';
-import Linkedin from '@/assets/linkedin.svg';
-import Dribbble from '@/assets/dribble.svg';
 
 const initialState = {
   isfirstTime: true,
@@ -14,7 +8,7 @@ const initialState = {
       type: 'socialLink',
       baseUrl: 'twitter',
       userName: '',
-      logo: Twitter,
+      logo: 'https://res.cloudinary.com/dqlj6jlir/image/upload/v1715698990/logo/twitter_leayqs.svg',
       bgColor: 'bg-[#55ACEE]',
       isAdded: false,
     },
@@ -23,7 +17,7 @@ const initialState = {
       type: 'socialLink',
       baseUrl: 'instagram',
       userName: '',
-      logo: Instagram,
+      logo: 'https://res.cloudinary.com/dqlj6jlir/image/upload/v1715698960/logo/instagram_psrjkv.svg',
       bgColor: 'bg-[#CE3B9F]',
       isAdded: false,
     },
@@ -32,7 +26,7 @@ const initialState = {
       baseUrl: 'github',
       type: 'socialLink',
       userName: '',
-      logo: Github,
+      logo: 'https://res.cloudinary.com/dqlj6jlir/image/upload/v1715698955/logo/github_bpmxzd.svg',
       bgColor: 'bg-[#181717]',
       isAdded: false,
     },
@@ -41,7 +35,7 @@ const initialState = {
       baseUrl: 'linkedin',
       type: 'socialLink',
       userName: '',
-      logo: Linkedin,
+      logo: 'https://res.cloudinary.com/dqlj6jlir/image/upload/v1715698975/logo/linkedin_dmyqon.svg',
       bgColor: 'bg-[#007EBB]',
       isAdded: false,
     },
@@ -50,7 +44,7 @@ const initialState = {
       baseUrl: 'dribbble',
       type: 'socialLink',
       userName: '',
-      logo: Dribbble,
+      logo: 'https://res.cloudinary.com/dqlj6jlir/image/upload/v1715699056/logo/dribble_wx1hht.svg',
       bgColor: 'bg-[#D15584]',
       isAdded: false,
     },
@@ -59,7 +53,7 @@ const initialState = {
       baseUrl: 'buymeacoffee',
       type: 'socialLink',
       userName: '',
-      logo: BuyMeCoffee,
+      logo: 'https://res.cloudinary.com/dqlj6jlir/image/upload/v1715699053/logo/coffee_eerped.svg',
       bgColor: 'bg-[#FFDD06]',
       isAdded: false,
     },

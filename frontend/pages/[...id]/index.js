@@ -399,7 +399,7 @@ export default function Home({ data }) {
                             {...provided.dragHandleProps}
                             {...provided.draggableProps}>
                             <div className="w-full">
-                              {item.type === 'socialLink' && item.isAdded && (
+                              {item.type === 'socialLink' && (
                                 <SocialLinkCard
                                   item={item}
                                   USERNAME={USERNAME}
