@@ -55,8 +55,9 @@ const ImageCard = ({ item, USERNAME }) => {
 
   return (
     <div>
-      {item?.imgUrl ? (
+      {item?.imgUrl && item.imgUrl != 'null' ? (
         <ResizingContainer
+          USERNAME={USERNAME}
           item={item}
           height={height}
           width={width}

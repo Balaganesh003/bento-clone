@@ -111,7 +111,15 @@ const MapboxMap = ({ item, USERNAME }) => {
     setSearchResults([]);
   };
 
-  const handleLocation = () => {
+  const handleLocation = async () => {
+    await axios.put(`http://localhost:5000/profile/${USERNAME}`, {
+      ...item,
+      location: {
+        latitude: 20.5937,
+        longitude: 78.9629,
+        zoom: 4,
+      },
+    });
     dispatch(
       profileActions.updateItem({
         ...item,
@@ -158,7 +166,7 @@ const MapboxMap = ({ item, USERNAME }) => {
 
   return (
     <div>
-      {item.location ? (
+      {item.location.latitude && item.location.longitude ? (
         <ResizingContainer
           isSearchOpen={isSearchOpen}
           setIsSearchOpen={setIsSearchOpen}
@@ -167,6 +175,7 @@ const MapboxMap = ({ item, USERNAME }) => {
           item={item}
           type={item.type}
           key={renderKey}
+          USERNAME={USERNAME}
           handleResize={handleResize}>
           <Map
             width="100%"

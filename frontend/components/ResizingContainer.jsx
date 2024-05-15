@@ -14,21 +14,63 @@ const ResizingContainer = ({
   item,
   isSearchOpen,
   setIsSearchOpen,
+  USERNAME,
 }) => {
   const dispatch = useDispatch();
 
-  const handelDelete = () => {
-    if (item.type === 'socialLink') {
-      dispatch(
-        profileActions.updateSocialLinks({
-          ...item,
-          isAdded: false,
-          userName: '',
-        })
+  const handelDelete = async () => {
+    try {
+      if (item.type === 'socialLink') {
+        // Dispatch action to update social links
+        dispatch(
+          profileActions.updateSocialLinks({
+            ...item,
+            isAdded: false,
+            userName: '',
+          })
+        );
+      }
+
+      // Make an axios DELETE request to delete the profile object
+      const response = await axios.delete(
+        `http://localhost:5000/profile/${USERNAME}/${item.id}`
       );
+
+      // Dispatch action to remove the item from state upon successful deletion
+      dispatch(profileActions.removeItem(item.id));
+
+      // Handle response status if needed (e.g., log success message)
+      console.log('Profile object deleted successfully:', response.data);
+    } catch (error) {
+      // Handle errors from dispatching actions or API request
+      console.error('Error deleting profile object:', error);
+
+      // Optionally dispatch an action to handle error state (e.g., show error message)
+      // dispatch(profileActions.handleError(error));
+
+      // If necessary, rollback any state changes or notify the user of the error
+      // dispatch(profileActions.rollbackChanges());
+
+      // Handle specific error scenarios based on error.response.status or error.message
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        console.error('Server responded with status:', error.response.status);
+        // Optionally dispatch an action based on specific server errors
+        // dispatch(profileActions.handleServerError(error.response.data));
+      } else if (error.message === 'Network Error') {
+        // Handle network-related errors
+        console.error(
+          'Network error occurred. Please check your internet connection.'
+        );
+        // Optionally dispatch an action to notify the user
+        // dispatch(profileActions.handleNetworkError());
+      } else {
+        // Handle other types of errors
+        console.error('An unexpected error occurred:', error.message);
+        // Optionally dispatch an action to handle unexpected errors
+        // dispatch(profileActions.handleUnexpectedError());
+      }
     }
-    dispatch(profileActions.removeItem(item.id));
-    const res = axios.delete(`http://localhost:5000/profile/abc/${item.id}`);
   };
 
   return (

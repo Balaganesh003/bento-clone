@@ -31,6 +31,7 @@ const SocialLinkCard = ({ item, USERNAME }) => {
 
   return (
     <ResizingContainer
+      USERNAME={USERNAME}
       width={width}
       item={item}
       handleResize={handleResize}

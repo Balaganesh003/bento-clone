@@ -4,7 +4,9 @@ const cloudinary = require('../services/cloudinary');
 
 // Controller function to add a profile object to a user's profile details
 const addProfileObject = async (req, res) => {
-  const { username } = req.params;
+  let { username } = req.params;
+  // Convert username to string if it's a number
+  username = String(username);
   const {
     type,
     id,
@@ -46,7 +48,13 @@ const addProfileObject = async (req, res) => {
       imgUrl,
     };
 
-    if (type === 'image') {
+    if (
+      type === 'image' &&
+      imgUrl &&
+      imgUrl.startsWith('data:image') &&
+      imgUrl !== null &&
+      imgUrl !== 'null'
+    ) {
       // Upload the image to Cloudinary and get the URL
       const fileStr = imgUrl; // Assuming imgUrl contains the base64 image data
       const uploadedResponse = await cloudinary.uploader.upload(fileStr, {
@@ -76,7 +84,9 @@ const addProfileObject = async (req, res) => {
 
 // Controller function to fetch all profile objects associated with a user
 const getAllProfileObjects = async (req, res) => {
-  const { username } = req.params;
+  let { username } = req.params;
+  // Convert username to string if it's a number
+  username = String(username);
 
   try {
     // Find the user by username
@@ -143,7 +153,9 @@ const setInitialProfile = async (userId) => {
 };
 
 const updateProfileObject = async (req, res) => {
-  const { username } = req.params;
+  let { username } = req.params;
+  // Convert username to string if it's a number
+  username = String(username);
   const {
     type,
     id,
@@ -266,6 +278,8 @@ const setProfileDetails = async (req, res) => {
 const deleteProfileObject = async (req, res) => {
   const { username, objectId } = req.params;
 
+  // Convert username to string if it's a number
+
   try {
     // Find the user by their username
     const user = await User.findOne({ username });
@@ -322,7 +336,9 @@ function extractPublicId(imgUrl) {
 }
 
 const updateDisplayName = async (req, res) => {
-  const { username } = req.params;
+  let { username } = req.params;
+  // Convert username to string if it's a number
+  username = String(username);
   //   const { updatedObject } = req.body;
   const { displayName } = req.body;
 
@@ -356,7 +372,9 @@ const updateDisplayName = async (req, res) => {
 };
 
 const updateBio = async (req, res) => {
-  const { username } = req.params;
+  let { username } = req.params;
+  // Convert username to string if it's a number
+  username = String(username);
   //   const { updatedObject } = req.body;
   const { bio } = req.body;
 
@@ -390,7 +408,9 @@ const updateBio = async (req, res) => {
 };
 
 const uploadAvatar = async (req, res) => {
-  const { username } = req.params;
+  let { username } = req.params;
+  // Convert username to string if it's a number
+  username = String(username);
 
   try {
     const user = await User.findOne({ username });

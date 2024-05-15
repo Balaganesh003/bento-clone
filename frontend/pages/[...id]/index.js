@@ -32,6 +32,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
 import { uiActions } from '@/store/ui-slice';
+import a from 'react-map-gl-geocoder';
 // import toast, { ToastBar } from 'react-hot-toast';
 
 axios.defaults.withCredentials = true;
@@ -39,6 +40,24 @@ axios.defaults.withCredentials = true;
 const inter = Inter({
   subsets: ['latin'],
 });
+
+const InitialData = [
+  {
+    id: uuidv4(),
+    type: 'image',
+    imgUrl: 'null',
+  },
+  {
+    id: uuidv4(),
+    type: 'text',
+    content: null,
+  },
+  {
+    id: uuidv4(),
+    type: 'map',
+    location: { latitude: null, longitude: null, zoom: 4 },
+  },
+];
 
 export default function Home({ data }) {
   const dispatch = useDispatch();
@@ -105,35 +124,28 @@ export default function Home({ data }) {
     }
   };
 
-  const nextPanel = (e) => {
+  const nextPanel = async (e) => {
     e.preventDefault();
 
     if (index < 2) {
       setIndex(index + 1);
       setDirection(1);
     }
+
     if (index >= 0 && !isSuggestionsOpen) {
       setIsSuggestionsOpen(true);
       dispatch(
-        profileActions.setProfileDetails([
-          ...profileDetails,
-          {
-            id: uuidv4(),
-            type: 'image',
-            imgUrl: null,
-          },
-          {
-            id: uuidv4(),
-            type: 'text',
-            content: null,
-          },
-          {
-            id: uuidv4(),
-            type: 'map',
-            location: null,
-          },
-        ])
+        profileActions.setProfileDetails([...profileDetails, ...InitialData])
       );
+      InitialData.map(async (item) => {
+        const res = await axios.post(
+          `http://localhost:5000/profile/${USERNAME}`,
+          {
+            ...item,
+          }
+        );
+        console.log(res);
+      });
     }
   };
 

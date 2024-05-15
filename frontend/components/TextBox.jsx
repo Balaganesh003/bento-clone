@@ -104,6 +104,7 @@ const TextBox = ({ item, USERNAME }) => {
         </div>
       ) : (
         <ResizingContainer
+          USERNAME={USERNAME}
           width={width}
           height={height}
           item={item}

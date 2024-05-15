@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import LinkLogo from '@/assets/link.svg';
 
-const OtherLinkCard = ({ item }) => {
+const OtherLinkCard = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
@@ -24,6 +24,7 @@ const OtherLinkCard = ({ item }) => {
 
   return (
     <ResizingContainer
+      USERNAME={USERNAME}
       width={width}
       item={item}
       handleResize={handleResize}
