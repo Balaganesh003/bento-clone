@@ -3,6 +3,7 @@ import { AiOutlineDelete } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import axios from 'axios';
+import { axiosWithToken } from '@/utils/axiosjwt';
 
 const TitleBox = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
@@ -10,7 +11,7 @@ const TitleBox = ({ item, USERNAME }) => {
 
   const handelDelete = async () => {
     dispatch(profileActions.removeItem(item.id));
-    const res = await axios.delete(
+    const res = await axiosWithToken.delete(
       `http://localhost:5000/profile/${USERNAME}/${item.id}`
     );
     console.log('res', res.data);
@@ -42,10 +43,13 @@ const TitleBox = ({ item, USERNAME }) => {
     );
     console.log(titleRef?.current?.textContent);
     try {
-      const res = await axios.put(`http://localhost:5000/profile/${USERNAME}`, {
-        ...item,
-        content: titleRef?.current?.textContent,
-      });
+      const res = await axiosWithToken.put(
+        `http://localhost:5000/profile/${USERNAME}`,
+        {
+          ...item,
+          content: titleRef?.current?.textContent,
+        }
+      );
       console.log('res', res.status);
     } catch (error) {
       console.log('error', error);

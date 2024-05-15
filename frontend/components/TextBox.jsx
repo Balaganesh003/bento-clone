@@ -6,6 +6,7 @@ import TextLogo from '@/assets/text.png';
 import Image from 'next/image';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { axiosWithToken } from '@/utils/axiosjwt';
 
 const TextBox = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
@@ -61,10 +62,13 @@ const TextBox = ({ item, USERNAME }) => {
     setTextareaValue(e.target.value); // Update the separate textarea value
     dispatch(profileActions.updateItem({ ...item, content: e.target.value }));
     try {
-      const res = await axios.put(`http://localhost:5000/profile/${USERNAME}`, {
-        ...item,
-        content: e.target.value,
-      });
+      const res = await axiosWithToken.put(
+        `http://localhost:5000/profile/${USERNAME}`,
+        {
+          ...item,
+          content: e.target.value,
+        }
+      );
       console.log(res.data);
     } catch (error) {
       console.log('error', error);
@@ -74,10 +78,13 @@ const TextBox = ({ item, USERNAME }) => {
   const handleTextClick = () => {
     dispatch(profileActions.updateItem({ ...item, content: '' }));
     try {
-      const res = axios.put(`http://localhost:5000/profile/${USERNAME}`, {
-        ...item,
-        content: '',
-      });
+      const res = axiosWithToken.put(
+        `http://localhost:5000/profile/${USERNAME}`,
+        {
+          ...item,
+          content: '',
+        }
+      );
       console.log(res.data);
     } catch (error) {
       console.log('error', error);
@@ -104,6 +111,7 @@ const TextBox = ({ item, USERNAME }) => {
         </div>
       ) : (
         <ResizingContainer
+          USERNAME={USERNAME}
           width={width}
           height={height}
           item={item}

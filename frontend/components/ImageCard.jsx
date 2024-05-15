@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import axios from 'axios';
+import { axiosWithToken } from '@/utils/axiosjwt';
 
 const ImageCard = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ const ImageCard = ({ item, USERNAME }) => {
           dispatch(profileActions.updateItem({ ...item, imgUrl }));
 
           // Send a PUT request to update the profile with the imgUrl
-          const res = await axios.put(
+          const res = await axiosWithToken.put(
             `http://localhost:5000/profile/${USERNAME}`,
             {
               ...item,
@@ -55,8 +56,9 @@ const ImageCard = ({ item, USERNAME }) => {
 
   return (
     <div>
-      {item?.imgUrl ? (
+      {item?.imgUrl && item.imgUrl != 'null' ? (
         <ResizingContainer
+          USERNAME={USERNAME}
           item={item}
           height={height}
           width={width}

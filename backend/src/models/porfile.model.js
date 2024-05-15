@@ -58,14 +58,15 @@ const profileSchema = new mongoose.Schema({
       content: {
         type: String,
         default: '',
-        validate: {
-          validator: function (v) {
-            return this.type === 'text' || this.type === 'title'
-              ? v.length >= 0
-              : true;
-          },
-          message: 'Content is required for text and title types',
-        },
+        required: false,
+        // validate: {
+        //   validator: function (v) {
+        //     return this.type === 'text' || this.type === 'title'
+        //       ? v.length >= 0
+        //       : true;
+        //   },
+        //   message: 'Content is required for text and title types',
+        // },
       },
       location: {
         type: {

@@ -1,70 +1,75 @@
-import React from 'react';
-import { useRef, useState } from 'react';
+import { axiosWithToken } from '@/utils/axiosjwt';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { profileActions } from '@/store/profile-slice';
 
-const NameBio = ({ yourname, yourbio }) => {
-  const nameRef = useRef();
-  const bioRef = useRef();
+const NameBio = ({ USERNAME }) => {
+  const dispatch = useDispatch();
+  const nameRef = useRef(null);
+  const bioRef = useRef(null);
 
-  const [name, setName] = useState(yourname);
-  const [isNamePlaceholder, setIsNamePlaceholder] = useState(true);
+  const { name, bio } = useSelector((state) => state.profile);
 
-  const [bio, setBio] = useState(yourbio);
-  const [isBioPlaceholder, setIsBioPlaceholder] = useState(true);
+  const [isNamePlaceholder, setIsNamePlaceholder] = useState(!name);
+  const [isBioPlaceholder, setIsBioPlaceholder] = useState(!bio);
 
-  const handleNamePlaceholder = () => {
-    if (nameRef?.current?.innerText.length == 0) {
-      setName(nameRef.current.innerText);
+  const handleNameBlur = async () => {
+    const newName = nameRef.current.innerText.trim();
+    if (newName === '') {
       setIsNamePlaceholder(true);
     }
+    dispatch(profileActions.updateDisplayName(newName));
+    await updateProfile('displayname', newName);
   };
 
-  const handleBioPlaceholder = () => {
-    if (bioRef?.current?.innerText.length == 0) {
-      setBio(bioRef.current.innerText);
+  const handleBioBlur = async () => {
+    const newBio = bioRef.current.innerText.trim();
+    if (newBio === '') {
       setIsBioPlaceholder(true);
     }
+    dispatch(profileActions.updateBio(newBio));
+    await updateProfile('bio', newBio);
   };
+
+  const updateProfile = async (field, value) => {
+    try {
+      const response = await axiosWithToken.put(
+        `http://localhost:5000/profile/${field}/${USERNAME}`,
+        {
+          [field]: value,
+        }
+      );
+      console.log(`Updated ${field}:`, response.data);
+    } catch (error) {
+      console.error(`Failed to update ${field}:`, error);
+    }
+  };
+
+  useEffect(() => {
+    setIsNamePlaceholder(!name);
+    setIsBioPlaceholder(!bio);
+  }, [name, bio]);
 
   return (
     <div>
       <div
         onFocus={() => setIsNamePlaceholder(false)}
-        onBlur={handleNamePlaceholder}
+        onBlur={handleNameBlur}
         ref={nameRef}
-        contentEditable="true"
-        suppressContentEditableWarning={true}
-        translate="no"
-        className="relative tracking-[-2px] text-[32px] xl:text-[44px] font-bold  focus:outline-none leading-[120%] text-[#565656]">
-        {name}
-        <div
-          onClick={() => setIsNamePlaceholder(false)}
-          ref={nameRef}
-          contentEditable="false"
-          suppressContentEditableWarning={true}
-          className={` ${
-            isNamePlaceholder ? 'block absolute top-0 left-0' : 'hidden'
-          }  text-[32px] xl:text-[44px] font-bold  leading-[120%] text-[#565656]`}>
-          Your Name
-        </div>
+        contentEditable
+        suppressContentEditableWarning
+        className={`relative tracking-[-2px] text-[32px] xl:text-[44px] font-bold focus:outline-none leading-[120%] text-[#565656]`}>
+        {isNamePlaceholder ? 'Your Name' : name}
       </div>
+
       <div
         onFocus={() => setIsBioPlaceholder(false)}
+        onBlur={handleBioBlur}
         ref={bioRef}
-        onBlur={handleBioPlaceholder}
-        contentEditable="true"
-        suppressContentEditableWarning={true}
-        translate="no"
-        className="mt-3   xl:text-xl  focus:outline-none  relative  text-[#565656] ">
-        {bio}
-        <div
-          contentEditable="false"
-          suppressContentEditableWarning={true}
-          onClick={() => setIsBioPlaceholder(false)}
-          className={`${
-            isBioPlaceholder ? 'block absolute top-0 left-0' : 'hidden'
-          }  xl:text-xl  focus:outline-none   text-[#565656]`}>
-          Your Bio
-        </div>
+        contentEditable
+        suppressContentEditableWarning
+        className="mt-3 xl:text-xl focus:outline-none relative text-[#565656]">
+        {isBioPlaceholder ? 'Your Bio' : bio}
       </div>
     </div>
   );

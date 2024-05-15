@@ -7,6 +7,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import { uiActions } from '@/store/ui-slice';
+import Cookies from 'js-cookie';
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,13 +30,22 @@ const LoginForm = () => {
         password: password,
       });
 
-      // document.cookie = `jwt=${res.data.token}`;
+      const token = res.data.token;
+
+      // Set the JWT token as a cookie with a 15-day expiry using js-cookie
+      Cookies.set('jwt', token, {
+        expires: 15, // Expires in 15 days
+        path: '/', // Cookie path (all paths)
+        secure: true, // Secure cookie (requires HTTPS)
+        sameSite: 'None', // SameSite attribute for cross-site requests
+      });
+
       toast.success('Logged in successfully');
       dispatch(uiActions.setFirstTime(false));
       dispatch(profileActions.setFirstTime(false));
       router.push(`/${res.data.username}`);
     } catch (error) {
-      // toast.error(error.response.data.message || 'Server error ');
+      toast.error(error.response.data.message || 'Server error ');
       console.log(error);
     }
   };

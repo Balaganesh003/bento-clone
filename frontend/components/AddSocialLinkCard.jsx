@@ -3,6 +3,7 @@ import Image from 'next/image';
 import crosslogo from '@/assets/whitecloselogo.svg';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
+import { axiosWithToken } from '@/utils/axiosjwt';
 
 const AddSocialLinkCard = ({ link, bgColor, logo, isAdded, isLogo }) => {
   const dispatch = useDispatch();
@@ -13,7 +14,7 @@ const AddSocialLinkCard = ({ link, bgColor, logo, isAdded, isLogo }) => {
     setLinkValue(e.target.value);
   };
 
-  const addLink = () => {
+  const addLink = async () => {
     dispatch(
       profileActions.addItem({
         ...link,
@@ -21,6 +22,17 @@ const AddSocialLinkCard = ({ link, bgColor, logo, isAdded, isLogo }) => {
         isAdded: true,
       })
     );
+
+    const res = await axiosWithToken.post(
+      `http://localhost:5000/profile/${USERNAME}`,
+      {
+        ...link,
+        userName: linkValue,
+        isAdded: true,
+      }
+    );
+
+    console.log(res.data);
 
     dispatch(
       profileActions.updateSocialLinks({
@@ -34,6 +46,11 @@ const AddSocialLinkCard = ({ link, bgColor, logo, isAdded, isLogo }) => {
 
   const removeLink = () => {
     dispatch(profileActions.removeItem(link.id));
+
+    // fix this
+    // const res = axios.delete(`http://localhost:5000/profile/abc/${link.id}`);
+
+    console.log(res.data);
 
     dispatch(
       profileActions.updateSocialLinks({

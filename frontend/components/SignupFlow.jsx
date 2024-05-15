@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { uiActions } from '@/store/ui-slice';
+import Cookies from 'js-cookie';
 
 const SignupFlow = () => {
   const router = useRouter();
@@ -37,7 +38,7 @@ const SignupFlow = () => {
     }
   };
 
-  const handelSignUp = async (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
 
     if (!email || !password || !name) {
@@ -51,16 +52,25 @@ const SignupFlow = () => {
         password: password,
         username: name,
       });
-      document.cookie = `jwt=${res.data.token}`;
-      dispatch(uiActions.setFirstTime(true));
-      console.log(res.data.token);
 
+      // Set JWT token to expire in 15 days
+      const token = res.data.token;
+      // Set the JWT token as a cookie with a 15-day expiry using js-cookie
+      Cookies.set('jwt', token, {
+        expires: 15, // Expires in 15 days
+        path: '/', // Cookie path (all paths)
+        secure: true, // Secure cookie (requires HTTPS)
+        sameSite: 'None', // SameSite attribute for cross-site requests
+      });
+
+      dispatch(uiActions.setFirstTime(true));
+      console.log(token);
       toast.success('Signed up successfully');
 
       router.push(`/${name}`);
     } catch (error) {
-      console.log(error);
-      toast.error(error.response.data.message || 'Server error ');
+      console.error(error);
+      toast.error(error.response?.data?.message || 'Server error');
     }
   };
 
@@ -85,7 +95,7 @@ const SignupFlow = () => {
               showPassword={showPassword}
               setShowPassword={setShowPassword1}
               prevPanel={prevPanel}
-              handelSignUp={handelSignUp}
+              handelSignUp={handleSignUp}
             />
           )}
           {index === 0 && (

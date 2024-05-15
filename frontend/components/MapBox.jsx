@@ -9,6 +9,7 @@ import { profileActions } from '@/store/profile-slice';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 import axios from 'axios';
+import { axiosWithToken } from '@/utils/axiosjwt';
 
 const MapboxMap = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
@@ -75,7 +76,7 @@ const MapboxMap = ({ item, USERNAME }) => {
         );
 
         try {
-          const res = await axios.put(
+          const res = await axiosWithToken.put(
             `http://localhost:5000/profile/${USERNAME}`,
             {
               ...item,
@@ -111,7 +112,15 @@ const MapboxMap = ({ item, USERNAME }) => {
     setSearchResults([]);
   };
 
-  const handleLocation = () => {
+  const handleLocation = async () => {
+    await axiosWithToken.put(`http://localhost:5000/profile/${USERNAME}`, {
+      ...item,
+      location: {
+        latitude: 20.5937,
+        longitude: 78.9629,
+        zoom: 4,
+      },
+    });
     dispatch(
       profileActions.updateItem({
         ...item,
@@ -133,10 +142,13 @@ const MapboxMap = ({ item, USERNAME }) => {
     if (!selectedLocation) {
       dispatch(profileActions.updateItem({ ...item, location: newViewport }));
       try {
-        const res = axios.put(`http://localhost:5000/profile/${USERNAME}`, {
-          ...item,
-          location: newViewport,
-        });
+        const res = axiosWithToken.put(
+          `http://localhost:5000/profile/${USERNAME}`,
+          {
+            ...item,
+            location: newViewport,
+          }
+        );
         console.log(res.data);
       } catch (error) {
         console.log('error', error);
@@ -158,7 +170,7 @@ const MapboxMap = ({ item, USERNAME }) => {
 
   return (
     <div>
-      {item.location ? (
+      {item.location.latitude && item.location.longitude ? (
         <ResizingContainer
           isSearchOpen={isSearchOpen}
           setIsSearchOpen={setIsSearchOpen}
@@ -167,6 +179,7 @@ const MapboxMap = ({ item, USERNAME }) => {
           item={item}
           type={item.type}
           key={renderKey}
+          USERNAME={USERNAME}
           handleResize={handleResize}>
           <Map
             width="100%"

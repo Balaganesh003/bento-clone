@@ -4,8 +4,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
+import axios from 'axios';
+import { axiosWithToken } from '@/utils/axiosjwt';
 
-const SocialLinkCard = ({ item }) => {
+const SocialLinkCard = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
@@ -21,10 +23,19 @@ const SocialLinkCard = ({ item }) => {
     dispatch(
       profileActions.updateItem({ ...item, userName: e.target.innerText })
     );
+    const res = axiosWithToken.put(
+      `http://localhost:5000/profile/${USERNAME}`,
+      {
+        ...item,
+        userName: e.target.innerText,
+      }
+    );
+    console.log(res.data);
   };
 
   return (
     <ResizingContainer
+      USERNAME={USERNAME}
       width={width}
       item={item}
       handleResize={handleResize}
