@@ -3,7 +3,7 @@ import Image from 'next/image';
 import crosslogo from '@/assets/whitecloselogo.svg';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
-import axios from 'axios';
+import { axiosWithToken } from '@/utils/axiosjwt';
 
 const AddSocialLinkCard = ({ link, bgColor, logo, isAdded, isLogo }) => {
   const dispatch = useDispatch();
@@ -23,11 +23,14 @@ const AddSocialLinkCard = ({ link, bgColor, logo, isAdded, isLogo }) => {
       })
     );
 
-    const res = await axios.post(`http://localhost:5000/profile/${USERNAME}`, {
-      ...link,
-      userName: linkValue,
-      isAdded: true,
-    });
+    const res = await axiosWithToken.post(
+      `http://localhost:5000/profile/${USERNAME}`,
+      {
+        ...link,
+        userName: linkValue,
+        isAdded: true,
+      }
+    );
 
     console.log(res.data);
 

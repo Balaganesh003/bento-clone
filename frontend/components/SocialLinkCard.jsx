@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import axios from 'axios';
+import { axiosWithToken } from '@/utils/axiosjwt';
 
 const SocialLinkCard = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
@@ -22,10 +23,13 @@ const SocialLinkCard = ({ item, USERNAME }) => {
     dispatch(
       profileActions.updateItem({ ...item, userName: e.target.innerText })
     );
-    const res = axios.put(`http://localhost:5000/profile/${USERNAME}`, {
-      ...item,
-      userName: e.target.innerText,
-    });
+    const res = axiosWithToken.put(
+      `http://localhost:5000/profile/${USERNAME}`,
+      {
+        ...item,
+        userName: e.target.innerText,
+      }
+    );
     console.log(res.data);
   };
 

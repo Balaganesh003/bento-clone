@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  isfirstTime: true,
+  isfirstTime: false,
 };
 
 const uiSlice = createSlice({

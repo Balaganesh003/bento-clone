@@ -30,9 +30,9 @@ import NameBio from '@/components/NameBio';
 import { useRouter } from 'next/router';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
-
+import { axiosWithToken } from '@/utils/axiosjwt';
 import { uiActions } from '@/store/ui-slice';
-import a from 'react-map-gl-geocoder';
+
 // import toast, { ToastBar } from 'react-hot-toast';
 
 axios.defaults.withCredentials = true;
@@ -99,7 +99,7 @@ export default function Home({ data }) {
       newContent.splice(destination.index, 0, removed);
       dispatch(profileActions.setProfileDetails(newContent));
       try {
-        const res = await axios.put(
+        const res = await axiosWithToken.put(
           `http://localhost:5000/profile/replace/${USERNAME}`,
           {
             profileDetails: newContent,
@@ -109,18 +109,6 @@ export default function Home({ data }) {
       } catch (error) {
         console.log('error', error);
       }
-    }
-  };
-
-  const handleFileSelect = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setAvatarSrc(e.target.result);
-        console.log(e.target.result);
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -138,7 +126,7 @@ export default function Home({ data }) {
         profileActions.setProfileDetails([...profileDetails, ...InitialData])
       );
       InitialData.map(async (item) => {
-        const res = await axios.post(
+        const res = await axiosWithToken.post(
           `http://localhost:5000/profile/${USERNAME}`,
           {
             ...item,
@@ -165,11 +153,14 @@ export default function Home({ data }) {
 
     dispatch(profileActions.setProfileDetails([...profileDetails, Obj]));
 
-    const res = await axios.post(`http://localhost:5000/profile/${USERNAME}`, {
-      type: Obj.type,
-      id: Obj.id,
-      content: '',
-    });
+    const res = await axiosWithToken.post(
+      `http://localhost:5000/profile/${USERNAME}`,
+      {
+        type: Obj.type,
+        id: Obj.id,
+        content: '',
+      }
+    );
   };
 
   const addMap = () => {
@@ -181,11 +172,14 @@ export default function Home({ data }) {
 
     dispatch(profileActions.setProfileDetails([...profileDetails, MapObj]));
 
-    const res = axios.post(`http://localhost:5000/profile/${USERNAME}`, {
-      type: MapObj.type,
-      id: MapObj.id,
-      location: MapObj.location,
-    });
+    const res = axiosWithToken.post(
+      `http://localhost:5000/profile/${USERNAME}`,
+      {
+        type: MapObj.type,
+        id: MapObj.id,
+        location: MapObj.location,
+      }
+    );
   };
 
   const addImage = (e) => {
@@ -203,11 +197,14 @@ export default function Home({ data }) {
             },
           ])
         );
-        const res = axios.post(`http://localhost:5000/profile/${USERNAME}`, {
-          type: 'image',
-          id: uuidv4(),
-          imgUrl: e.target.result,
-        });
+        const res = axiosWithToken.post(
+          `http://localhost:5000/profile/${USERNAME}`,
+          {
+            type: 'image',
+            id: uuidv4(),
+            imgUrl: e.target.result,
+          }
+        );
         dispatch(
           profileActions.setProfileDetails([
             ...profileDetails,
@@ -233,11 +230,14 @@ export default function Home({ data }) {
 
     dispatch(profileActions.setProfileDetails([...profileDetails, TitleObj]));
 
-    const res = axios.post(`http://localhost:5000/profile/${USERNAME}`, {
-      type: TitleObj.type,
-      id: TitleObj.id,
-      content: TitleObj.content,
-    });
+    const res = axiosWithToken.post(
+      `http://localhost:5000/profile/${USERNAME}`,
+      {
+        type: TitleObj.type,
+        id: TitleObj.id,
+        content: TitleObj.content,
+      }
+    );
 
     console.log(res);
   };
@@ -264,7 +264,7 @@ export default function Home({ data }) {
         })
       );
 
-      const res = await axios.post(
+      const res = await axiosWithToken.post(
         `http://localhost:5000/profile/${USERNAME}`,
         {
           ...link,
@@ -295,7 +295,7 @@ export default function Home({ data }) {
           },
         ])
       );
-      const res = await axios.post(
+      const res = await axiosWithToken.post(
         `http://localhost:5000/profile/${USERNAME}`,
         {
           id: uuidv4(),
@@ -345,18 +345,20 @@ export default function Home({ data }) {
   useEffect(() => {
     const getData = async () => {
       try {
-        const res = await axios.get(
+        const res = await axiosWithToken.get(
           `http://localhost:5000/profile/${USERNAME}`
         );
         dispatch(profileActions.setProfileDetails(res.data.profiles));
       } catch (error) {
-        console.log('error', error);
-        // toast.error('Please signup to create your profile');
-        router.push('/signup');
+        console.error('Profile data fetch error:', error);
+
+        console.log('Redirecting to /login');
+        router.push('/login');
       }
     };
+
     getData();
-  }, []);
+  }, [USERNAME, router, dispatch]);
 
   return (
     <main

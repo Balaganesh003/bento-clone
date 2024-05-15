@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import { BiSearch } from 'react-icons/bi';
 import axios from 'axios';
+import { axiosWithToken } from '@/utils/axiosjwt';
 
 const ResizingContainer = ({
   children,
@@ -32,7 +33,7 @@ const ResizingContainer = ({
       }
 
       // Make an axios DELETE request to delete the profile object
-      const response = await axios.delete(
+      const response = await axiosWithToken.delete(
         `http://localhost:5000/profile/${USERNAME}/${item.id}`
       );
 

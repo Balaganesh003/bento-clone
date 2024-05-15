@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { BiUpArrowCircle } from 'react-icons/bi';
 import axios from 'axios';
+import { axiosWithToken } from '@/utils/axiosjwt';
 
 const Avatar = ({ avatarSrc, setAvatarSrc, username }) => {
   const handleFileSelect = async (e) => {
@@ -14,7 +15,7 @@ const Avatar = ({ avatarSrc, setAvatarSrc, username }) => {
       console.log(fileDataUrl);
 
       try {
-        const response = await axios.post(
+        const response = await axiosWithToken.post(
           `http://localhost:5000/profile/avatar/${username}`,
           {
             avatar: fileDataUrl,

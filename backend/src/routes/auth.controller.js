@@ -2,44 +2,41 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const { setInitialProfile } = require('./profile.controller');
+require('dotenv').config();
+
+const generateToken = (userId, username) => {
+  return jwt.sign({ userId, username }, process.env.JWT_SECRET, {
+    expiresIn: '15d',
+  });
+};
 
 const register = async (req, res) => {
   const { email, password, username } = req.body;
 
   try {
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({
-        message:
-          'A user with this email already exists. Please try logging in instead.',
-      });
+      return res.status(400).json({ message: 'Email is already registered' });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create new user
     const newUser = await User.create({
       username,
       email,
       password: hashedPassword,
     });
 
-    // Generate JWT token for the newly registered user
-    const token = jwt.sign({ userId: newUser._id }, 'abcd', {
-      expiresIn: '1h', // Set token expiration time
-    });
+    const token = generateToken(newUser._id, newUser.username); // Include username in token
 
-    // Send token in response (e.g., as a cookie or in the response body)
-    res.cookie('jwt', token, {
-      httpOnly: true, // Cookie accessible only by the web server
-      secure: false, // Set to true if using HTTPS
-    });
-
+    // Set initial profile for the user
     await setInitialProfile(newUser._id);
 
-    // Respond with success message and token
+    console.log('Generated token:', token); // Log the generated token for debugging
+
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 15,
+    }); // Set cookie expiry for 15 days
     res.status(201).json({ message: 'User registered successfully', token });
   } catch (error) {
     console.error('Registration error:', error);
@@ -51,41 +48,32 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Verify password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid Password' });
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Generate JWT
-    const token = jwt.sign(
-      { userId: user._id },
-      'abcd',
-      {
-        expiresIn: '1h',
-      },
-      (err, token) => {
-        // Send token in cookie
-        console.log('Token:', token);
-        res
-          .cookie('jwt', token, {
-            // httpOnly: true,
-            // secure: false,
-          })
-          .status(200)
-          .json({
-            message: 'Logged in successfully',
-            token,
-            username: user.username,
-          });
-      }
-    );
+    const token = generateToken(user._id, user.username); // Include username in token
+
+    console.log('Generated token:', token); // Log the generated token for debugging
+
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 15,
+      sameSite: 'none',
+      secure: false, // Ensure you are serving over HTTPS
+    });
+
+    res.status(200).json({
+      message: 'Logged in successfully',
+      token,
+      username: user.username,
+    });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Server error' });

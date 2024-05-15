@@ -9,6 +9,7 @@ import { profileActions } from '@/store/profile-slice';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 import axios from 'axios';
+import { axiosWithToken } from '@/utils/axiosjwt';
 
 const MapboxMap = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
@@ -75,7 +76,7 @@ const MapboxMap = ({ item, USERNAME }) => {
         );
 
         try {
-          const res = await axios.put(
+          const res = await axiosWithToken.put(
             `http://localhost:5000/profile/${USERNAME}`,
             {
               ...item,
@@ -112,7 +113,7 @@ const MapboxMap = ({ item, USERNAME }) => {
   };
 
   const handleLocation = async () => {
-    await axios.put(`http://localhost:5000/profile/${USERNAME}`, {
+    await axiosWithToken.put(`http://localhost:5000/profile/${USERNAME}`, {
       ...item,
       location: {
         latitude: 20.5937,
@@ -141,10 +142,13 @@ const MapboxMap = ({ item, USERNAME }) => {
     if (!selectedLocation) {
       dispatch(profileActions.updateItem({ ...item, location: newViewport }));
       try {
-        const res = axios.put(`http://localhost:5000/profile/${USERNAME}`, {
-          ...item,
-          location: newViewport,
-        });
+        const res = axiosWithToken.put(
+          `http://localhost:5000/profile/${USERNAME}`,
+          {
+            ...item,
+            location: newViewport,
+          }
+        );
         console.log(res.data);
       } catch (error) {
         console.log('error', error);
