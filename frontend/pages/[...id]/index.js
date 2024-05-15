@@ -348,7 +348,14 @@ export default function Home({ data }) {
         const res = await axiosWithToken.get(
           `http://localhost:5000/profile/${USERNAME}`
         );
-        dispatch(profileActions.setProfileDetails(res.data.profiles));
+        dispatch(profileActions.setProfileDetails(res.data.profile.profiles));
+
+        console.log('Profile Data:', res.data.profile.displayName);
+        dispatch(profileActions.updateAvatar(res.data.profile.avatar));
+        dispatch(
+          profileActions.updateDisplayName(res.data.profile.displayName)
+        );
+        dispatch(profileActions.updateBio(res.data.profile.bio));
       } catch (error) {
         console.error('Profile data fetch error:', error);
 
@@ -381,7 +388,7 @@ export default function Home({ data }) {
                 </div>
               </div>
               <div className="mt-8 ml-2 ">
-                <NameBio />
+                <NameBio USERNAME={USERNAME} />
               </div>
             </div>
           )}

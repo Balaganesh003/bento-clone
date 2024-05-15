@@ -106,8 +106,8 @@ const getAllProfileObjects = async (req, res) => {
     }
 
     // Return the profiles array from the profile document
-    const profileObjects = profile.profiles;
-    res.status(200).json({ profiles: profileObjects });
+
+    res.status(200).json({ profile });
   } catch (error) {
     console.error('Fetch profile objects error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -340,7 +340,7 @@ const updateDisplayName = async (req, res) => {
   // Convert username to string if it's a number
   username = String(username);
   //   const { updatedObject } = req.body;
-  const { displayName } = req.body;
+  const { displayname } = req.body;
 
   try {
     // Find the user by their username
@@ -359,11 +359,12 @@ const updateDisplayName = async (req, res) => {
         .json({ message: 'Profile not found for the user' });
     }
 
-    profile.displayName = displayName;
+    profile.displayName = displayname;
 
     // Save the updated profile document
     await profile.save();
 
+    console.log('Profile Name updated successfully');
     res.status(200).json({ message: 'Profile Name updated successfully' });
   } catch (error) {
     console.error('Update profile Name error:', error);

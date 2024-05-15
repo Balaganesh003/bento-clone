@@ -59,6 +59,9 @@ const initialState = {
     },
   ],
   profileDetails: [],
+  name: '',
+  bio: '',
+  avatar: '',
 };
 
 const profileSlice = createSlice({
@@ -106,6 +109,18 @@ const profileSlice = createSlice({
           item?.location !== null &&
           item?.imgUrl !== null
       );
+    },
+
+    updateDisplayName(state, action) {
+      state.name = action.payload;
+    },
+
+    updateBio(state, action) {
+      state.bio = action.payload;
+    },
+
+    updateAvatar(state, action) {
+      state.avatar = action.payload;
     },
   },
 });
