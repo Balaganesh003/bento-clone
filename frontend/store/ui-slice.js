@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   isfirstTime: false,
+  isSameUser: true,
 };
 
 const uiSlice = createSlice({
@@ -10,6 +11,9 @@ const uiSlice = createSlice({
   reducers: {
     setFirstTime(state, action) {
       state.isfirstTime = action.payload;
+    },
+    setSameUser(state, action) {
+      state.isSameUser = action.payload;
     },
   },
 });

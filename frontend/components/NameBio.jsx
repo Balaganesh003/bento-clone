@@ -9,6 +9,7 @@ const NameBio = ({ USERNAME }) => {
   const bioRef = useRef(null);
 
   const { name, bio } = useSelector((state) => state.profile);
+  const { isSameUser } = useSelector((state) => state.ui);
 
   const [isNamePlaceholder, setIsNamePlaceholder] = useState(!name);
   const [isBioPlaceholder, setIsBioPlaceholder] = useState(!bio);
@@ -52,25 +53,38 @@ const NameBio = ({ USERNAME }) => {
 
   return (
     <div>
-      <div
-        onFocus={() => setIsNamePlaceholder(false)}
-        onBlur={handleNameBlur}
-        ref={nameRef}
-        contentEditable
-        suppressContentEditableWarning
-        className={`relative tracking-[-2px] text-[32px] xl:text-[44px] font-bold focus:outline-none leading-[120%] text-[#565656]`}>
-        {isNamePlaceholder ? 'Your Name' : name}
-      </div>
+      {isSameUser ? (
+        <div
+          onFocus={() => setIsNamePlaceholder(false)}
+          onBlur={handleNameBlur}
+          ref={nameRef}
+          contentEditable
+          suppressContentEditableWarning
+          className={`relative tracking-[-2px] text-[32px] xl:text-[44px] font-bold focus:outline-none leading-[120%] text-[#565656]`}>
+          {isNamePlaceholder ? 'Your Name' : name}
+        </div>
+      ) : (
+        <div
+          className={`relative tracking-[-2px] text-[32px] xl:text-[44px] font-bold focus:outline-none leading-[120%] text-[#565656]`}>
+          {isNamePlaceholder ? 'Your Name' : name}
+        </div>
+      )}
 
-      <div
-        onFocus={() => setIsBioPlaceholder(false)}
-        onBlur={handleBioBlur}
-        ref={bioRef}
-        contentEditable
-        suppressContentEditableWarning
-        className="mt-3 xl:text-xl focus:outline-none relative text-[#565656]">
-        {isBioPlaceholder ? 'Your Bio' : bio}
-      </div>
+      {isSameUser ? (
+        <div
+          onFocus={() => setIsBioPlaceholder(false)}
+          onBlur={handleBioBlur}
+          ref={bioRef}
+          contentEditable
+          suppressContentEditableWarning
+          className="mt-3 xl:text-xl focus:outline-none relative text-[#565656]">
+          {isBioPlaceholder ? 'Your Bio' : bio}
+        </div>
+      ) : (
+        <div className="mt-3 xl:text-xl focus:outline-none relative text-[#565656]">
+          {isBioPlaceholder ? 'Your Bio' : bio}
+        </div>
+      )}
     </div>
   );
 };

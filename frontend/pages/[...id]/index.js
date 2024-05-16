@@ -33,8 +33,6 @@ import axios from 'axios';
 import { axiosWithToken } from '@/utils/axiosjwt';
 import { uiActions } from '@/store/ui-slice';
 
-// import toast, { ToastBar } from 'react-hot-toast';
-
 axios.defaults.withCredentials = true;
 
 const inter = Inter({
@@ -67,6 +65,7 @@ export default function Home({ data }) {
   const isFirst = useSelector((state) => state.ui.isfirstTime);
   const [removeSuggestions, setRemoveSuggestions] = useState(true);
   const { profileDetails, socialLinks } = useSelector((state) => state.profile);
+  const { isSameUser } = useSelector((state) => state.ui);
   const [isLaptop, setIsLaptop] = useState(true);
 
   const [avatarSrc, setAvatarSrc] = useState('');
@@ -75,6 +74,36 @@ export default function Home({ data }) {
   const [isUrlOpen, setIsUrlOpen] = useState(false);
 
   const USERNAME = router.query.id[0];
+
+  useEffect(() => {
+    const getData = async () => {
+      if (router.query.id.length > 1) {
+        router.push(`/${router.query.id[0]}`);
+      }
+
+      try {
+        const res = await axiosWithToken.get(
+          `http://localhost:5000/profile/${USERNAME}`
+        );
+        dispatch(profileActions.setProfileDetails(res.data.profile.profiles));
+
+        dispatch(profileActions.updateAvatar(res.data.profile.avatar));
+        dispatch(
+          profileActions.updateDisplayName(res.data.profile.displayName)
+        );
+        dispatch(profileActions.updateBio(res.data.profile.bio));
+      } catch (error) {
+        console.error('Profile data fetch error:', error);
+
+        console.log('Redirecting to /login');
+        router.push('/login');
+      }
+    };
+
+    if (USERNAME) {
+      getData();
+    }
+  }, [USERNAME]);
 
   const handelFirstTime = () => {
     dispatch(uiActions.setFirstTime(false));
@@ -338,39 +367,9 @@ export default function Home({ data }) {
     setRemoveSuggestions(false);
   };
 
-  useEffect(() => {
-    console.log('Profile Details', profileDetails);
-  }, [profileDetails]);
-
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const res = await axiosWithToken.get(
-          `http://localhost:5000/profile/${USERNAME}`
-        );
-        dispatch(profileActions.setProfileDetails(res.data.profile.profiles));
-
-        console.log('Profile Data:', res.data.profile.displayName);
-        dispatch(profileActions.updateAvatar(res.data.profile.avatar));
-        dispatch(
-          profileActions.updateDisplayName(res.data.profile.displayName)
-        );
-        dispatch(profileActions.updateBio(res.data.profile.bio));
-      } catch (error) {
-        console.error('Profile data fetch error:', error);
-
-        console.log('Redirecting to /login');
-        router.push('/login');
-      }
-    };
-
-    getData();
-  }, [USERNAME, router, dispatch]);
-
   return (
     <main
       className={`${inter.className} overflow-x-hidden flex justify-center xl:justify-normal`}>
-      {/* <ToastBar /> */}
       <div className=" xl:max-w-none max-w-[428px] xl:w-full flex-col xl:flex-row flex xl:gap-[2.5rem] xl:p-[4rem] ">
         <div className="flex xl:min-w-[278px] xl:max-w-[calc(100vw-64rem)]   xl:max-h-[calc(100vh-8rem)] flex-1 flex-col px-6 pt-12 xl:p-0 ">
           {!isFirst && (
@@ -380,6 +379,7 @@ export default function Home({ data }) {
                   avatarSrc={avatarSrc}
                   setAvatarSrc={setAvatarSrc}
                   username={USERNAME}
+                  isSameUser={isSameUser}
                 />
                 <div className="flex h-fit xl:hidden rounded-lg mt-2 border shadow-sm  items-center justify-center">
                   <button className="text-[0.87rem] transition-all duration-200 font-bold w-full py-2 px-[10px] hover:bg-[#FBFBFB]">
@@ -478,125 +478,128 @@ export default function Home({ data }) {
         </DragDropContext>
       </div>
       {/* Fixed bar */}
-      <div className="fixed bottom-[2.5rem]  backdrop-blur-lg  bg-blend-multiply  bg-white/50  left-1/2 -translate-x-1/2 p-3 rounded-2xl flex items-center shadow-xl  ">
-        <div className="h-[33px] hidden xl:flex rounded-md w-[127px] bg-green-500 text-white  items-center justify-center">
-          <button className="text-[0.87rem] font-bold w-full">
-            Share my Bento
-          </button>
-        </div>
-        <div className="mx-4 w-[2px] h-[16px] bg-gray-300 hidden xl:block"></div>
-        <div
-          onBlur={() => setIsUrlOpen(false)}
-          className="h-[32px] flex gap-3 xl:gap-1  mix-blend-none">
-          <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer relative">
-            <div
-              onClick={() => setIsUrlOpen(!isUrlOpen)}
-              className="w-[24px] h-[24px] rounded-md flex items-center justify-center border hover:shadow-xl">
-              <Image
-                src={LinkLogo}
-                alt="link"
-                className="rounded-md object-cover"
-              />
-            </div>
-            {/* Add Link */}
-            {isUrlOpen && (
-              <div className="h-10 w-[16rem] bg-white border absolute bottom-[3rem] shadow-lg rounded-lg left-[-4rem] cursor-text  ">
-                <div className="h-full w-full flex gap-2 items-center px-1 group">
-                  <input
-                    onPaste={handelOnPaste}
-                    type="text"
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    placeholder="Enter link"
-                    className="w-full h-full bg-transparent px-1 py-1 text-black focus:outline-none "
-                  />
-                  {url.length > 0 ? (
-                    <button
-                      onClick={handleUrl}
-                      className="bg-green-500 cursor-pointer text-white px-3 py-1 rounded-lg hover:bg-green-600 transition-colors duration-150 h-fit text-[14px]">
-                      Add
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handelOnPaste}
-                      className="bg-[#fafafa] shadow-sm border group-hover:opacity-[100%]  opacity-0 text-black px-3 py-1 rounded-lg hover:bg-[#f7f7f7] transition-colors duration-150 h-fit text-[14px]">
-                      Paste
-                    </button>
-                  )}
-                </div>
+      {isSameUser && (
+        <div className="fixed bottom-[2.5rem]  backdrop-blur-lg  bg-blend-multiply  bg-white/50  left-1/2 -translate-x-1/2 p-3 rounded-2xl flex items-center shadow-xl  ">
+          <div className="h-[33px] hidden xl:flex rounded-md w-[127px] bg-green-500 text-white  items-center justify-center">
+            <button className="text-[0.87rem] font-bold w-full">
+              Share my Bento
+            </button>
+          </div>
+          <div className="mx-4 w-[2px] h-[16px] bg-gray-300 hidden xl:block"></div>
+          <div
+            onBlur={() => setIsUrlOpen(false)}
+            className="h-[32px] flex gap-3 xl:gap-1  mix-blend-none">
+            <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer relative">
+              <div
+                onClick={() => setIsUrlOpen(!isUrlOpen)}
+                className="w-[24px] h-[24px] rounded-md flex items-center justify-center border hover:shadow-xl">
+                <Image
+                  src={LinkLogo}
+                  alt="link"
+                  className="rounded-md object-cover"
+                />
               </div>
-            )}
+              {/* Add Link */}
+              {isUrlOpen && (
+                <div className="h-10 w-[16rem] bg-white border absolute bottom-[3rem] shadow-lg rounded-lg left-[-4rem] cursor-text  ">
+                  <div className="h-full w-full flex gap-2 items-center px-1 group">
+                    <input
+                      onPaste={handelOnPaste}
+                      type="text"
+                      value={url}
+                      onChange={(e) => setUrl(e.target.value)}
+                      placeholder="Enter link"
+                      className="w-full h-full bg-transparent px-1 py-1 text-black focus:outline-none "
+                    />
+                    {url.length > 0 ? (
+                      <button
+                        onClick={handleUrl}
+                        className="bg-green-500 cursor-pointer text-white px-3 py-1 rounded-lg hover:bg-green-600 transition-colors duration-150 h-fit text-[14px]">
+                        Add
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handelOnPaste}
+                        className="bg-[#fafafa] shadow-sm border group-hover:opacity-[100%]  opacity-0 text-black px-3 py-1 rounded-lg hover:bg-[#f7f7f7] transition-colors duration-150 h-fit text-[14px]">
+                        Paste
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer relative">
+              <div className="cursor-pointer rounded-md flex items-center justify-center border hover:shadow-xl">
+                <Image
+                  src={ImageLogo}
+                  className=" rounded-md object-cover w-[24px] h-[24px]"
+                  alt="image"
+                />
+              </div>
+              <div className="absolute opacity-0 top-0 left-0 cursor-pointer  w-[28px] h-[28px] rounded-lg">
+                <input
+                  type="file"
+                  onChange={addImage}
+                  className="w-full h-full  cursor-pointer"
+                />
+              </div>
+            </div>
+            <div
+              onClick={addNote}
+              className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
+              <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
+                <Image
+                  src={TextLogo}
+                  className="rounded-md object-cover w-[24px] h-[24px]"
+                  alt="text"
+                />
+              </div>
+            </div>
+            <div
+              onClick={addMap}
+              className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
+              <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
+                <Image
+                  src={MapLogo}
+                  className="object-cover rounded-md w-[24px] h-[24px]"
+                  alt="text"
+                />
+              </div>
+            </div>
+            <div
+              onClick={addTitle}
+              className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
+              <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
+                <Image
+                  src={TitleLogo}
+                  className="object-cover rounded-md w-[24px] h-[24px]"
+                  alt="text"
+                />
+              </div>
+            </div>
           </div>
-          <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer relative">
-            <div className="cursor-pointer rounded-md flex items-center justify-center border hover:shadow-xl">
-              <Image
-                src={ImageLogo}
-                className=" rounded-md object-cover w-[24px] h-[24px]"
-                alt="image"
-              />
-            </div>
-            <div className="absolute opacity-0 top-0 left-0 cursor-pointer  w-[28px] h-[28px] rounded-lg">
-              <input
-                type="file"
-                onChange={addImage}
-                className="w-full h-full  cursor-pointer"
-              />
-            </div>
-          </div>
-          <div
-            onClick={addNote}
-            className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
-            <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
-              <Image
-                src={TextLogo}
-                className="rounded-md object-cover w-[24px] h-[24px]"
-                alt="text"
-              />
-            </div>
-          </div>
-          <div
-            onClick={addMap}
-            className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
-            <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
-              <Image
-                src={MapLogo}
-                className="object-cover rounded-md w-[24px] h-[24px]"
-                alt="text"
-              />
-            </div>
-          </div>
-          <div
-            onClick={addTitle}
-            className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
-            <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
-              <Image
-                src={TitleLogo}
-                className="object-cover rounded-md w-[24px] h-[24px]"
-                alt="text"
-              />
-            </div>
+          <div className="mx-4 w-[2px] h-[16px] bg-gray-300 hidden xl:block"></div>
+          <div className="h-[33px] w-[104px]  gap-1 hidden xl:flex">
+            <button
+              onClick={() => setIsLaptop(true)}
+              className={`px-[10px] py-2 w-[50px] ${
+                isLaptop ? 'bg-black' : 'bg-white'
+              } flex items-center justify-center rounded-md`}>
+              <Image src={isLaptop ? Laptop : LaptopBlack} alt="laptop" />
+            </button>
+            <button
+              onClick={() => setIsLaptop(false)}
+              className={`px-[10px] py-2 w-[50px]  ${
+                isLaptop ? 'bg-white' : 'bg-black'
+              } flex items-center justify-center rounded-md`}>
+              <Image src={isLaptop ? Mobile : MobileWhite} alt="laptop" />
+            </button>
           </div>
         </div>
-        <div className="mx-4 w-[2px] h-[16px] bg-gray-300 hidden xl:block"></div>
-        <div className="h-[33px] w-[104px]  gap-1 hidden xl:flex">
-          <button
-            onClick={() => setIsLaptop(true)}
-            className={`px-[10px] py-2 w-[50px] ${
-              isLaptop ? 'bg-black' : 'bg-white'
-            } flex items-center justify-center rounded-md`}>
-            <Image src={isLaptop ? Laptop : LaptopBlack} alt="laptop" />
-          </button>
-          <button
-            onClick={() => setIsLaptop(false)}
-            className={`px-[10px] py-2 w-[50px]  ${
-              isLaptop ? 'bg-white' : 'bg-black'
-            } flex items-center justify-center rounded-md`}>
-            <Image src={isLaptop ? Mobile : MobileWhite} alt="laptop" />
-          </button>
-        </div>
-      </div>
+      )}
+
       {/* Remove suggestions */}
-      {removeSuggestions && !isFirst && (
+      {removeSuggestions && !isFirst && isSameUser && (
         <div
           onClick={removeSuggestion}
           className="fixed right-5 bottom-[5rem] shadow-lg flex gap-2 items-center rounded-lg bg-white border p-2 text-[14px] font-bold cursor-pointer">

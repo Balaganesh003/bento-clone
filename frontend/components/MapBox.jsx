@@ -6,7 +6,7 @@ import Image from 'next/image';
 import MapLogo from '@/assets/map.png';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
-
+import { useSelector } from 'react-redux';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import axios from 'axios';
 import { axiosWithToken } from '@/utils/axiosjwt';
@@ -16,6 +16,7 @@ const MapboxMap = ({ item, USERNAME }) => {
   const [width, setWidth] = useState(5);
   const [height, setHeight] = useState(5);
   const [renderKey, setRenderKey] = useState(0);
+  const { isSameUser } = useSelector((state) => state.ui);
   const Token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -27,6 +28,9 @@ const MapboxMap = ({ item, USERNAME }) => {
   const [isViewportFixed, setIsViewportFixed] = useState(true);
 
   const handleResize = (width, height) => {
+    if (!isSameUser) {
+      return;
+    }
     setWidth(width);
     setHeight(height);
     setRenderKey((prev) => prev + 1);
@@ -113,6 +117,10 @@ const MapboxMap = ({ item, USERNAME }) => {
   };
 
   const handleLocation = async () => {
+    if (!isSameUser) {
+      return;
+    }
+
     await axiosWithToken.put(`http://localhost:5000/profile/${USERNAME}`, {
       ...item,
       location: {
@@ -181,31 +189,55 @@ const MapboxMap = ({ item, USERNAME }) => {
           key={renderKey}
           USERNAME={USERNAME}
           handleResize={handleResize}>
-          <Map
-            width="100%"
-            height="100%"
-            style={{ borderRadius: '1.5rem' }}
-            mapboxAccessToken={Token}
-            mapStyle="mapbox://styles/mapbox/streets-v12"
-            {...(isViewportFixed && { ...item.location })}
-            onViewportChange={handleViewportChange}>
-            <NavigationControl />
+          {isSameUser ? (
+            <Map
+              width="100%"
+              height="100%"
+              style={{ borderRadius: '1.5rem' }}
+              mapboxAccessToken={Token}
+              mapStyle="mapbox://styles/mapbox/streets-v12"
+              {...(isViewportFixed && { ...item.location })}
+              onViewportChange={handleViewportChange}>
+              <NavigationControl />
 
-            <GeolocateControl
-              positionOptions={{ enableHighAccuracy: true }}
-              trackUserLocation={true}
-            />
+              <GeolocateControl
+                positionOptions={{ enableHighAccuracy: true }}
+                trackUserLocation={true}
+              />
 
-            <Marker
-              longitude={
-                selectedLocation?.center[0] || item.location?.longitude
-              }
-              latitude={selectedLocation?.center[1] || item.location?.latitude}
-              anchor="bottom">
-              <FaMapMarkerAlt size={30} className="text-red-500" />
-            </Marker>
-          </Map>
-          {isSearchOpen && (
+              <Marker
+                longitude={
+                  selectedLocation?.center[0] || item.location?.longitude
+                }
+                latitude={
+                  selectedLocation?.center[1] || item.location?.latitude
+                }
+                anchor="bottom">
+                <FaMapMarkerAlt size={30} className="text-red-500" />
+              </Marker>
+            </Map>
+          ) : (
+            <Map
+              width="100%"
+              height="100%"
+              style={{ borderRadius: '1.5rem' }}
+              mapboxAccessToken={Token}
+              mapStyle="mapbox://styles/mapbox/streets-v12"
+              {...(isViewportFixed && { ...item.location })}>
+              <Marker
+                longitude={
+                  selectedLocation?.center[0] || item.location?.longitude
+                }
+                latitude={
+                  selectedLocation?.center[1] || item.location?.latitude
+                }
+                anchor="bottom">
+                <FaMapMarkerAlt size={30} className="text-red-500" />
+              </Marker>
+            </Map>
+          )}
+
+          {isSearchOpen && isSameUser && (
             <div
               onBlur={() => setIsSearchOpen(false)}
               className="absolute bottom-[1rem] left-[7rem] z-[100]  ">
