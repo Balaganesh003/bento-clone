@@ -4,13 +4,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
-import axios from 'axios';
 import { axiosWithToken } from '@/utils/axiosjwt';
+import { useSelector } from 'react-redux';
 
 const SocialLinkCard = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
+  const { isSameUser } = useSelector((state) => state.ui);
 
   const handleResize = (width, height) => {
     setWidth(width);
@@ -20,6 +21,10 @@ const SocialLinkCard = ({ item, USERNAME }) => {
   let link = `https://${item.baseUrl}.com/${item.userName}`;
 
   const updateUserName = (e) => {
+    if (!isSameUser) {
+      return;
+    }
+
     dispatch(
       profileActions.updateItem({ ...item, userName: e.target.innerText })
     );
@@ -46,13 +51,23 @@ const SocialLinkCard = ({ item, USERNAME }) => {
             <Image src={item.logo} width={44} height={44} alt="logo" />
           </div>
         </div>
-        <div
-          onBlur={updateUserName}
-          contentEditable="true"
-          suppressContentEditableWarning={true}
-          className="mt-1 font-bold focus:outline-none p-2 w-full hover:bg-[#f5f5f5] hover:cursor-text rounded-lg py-1 text-[0.875rem]  leading-[1.2rem] max-h-[calc(100%-6rem)]  line-clamp-2">
-          {item.userName}
-        </div>
+        {isSameUser ? (
+          <div
+            onBlur={updateUserName}
+            contentEditable="true"
+            suppressContentEditableWarning={true}
+            className="mt-1 font-bold focus:outline-none p-2 w-full hover:bg-[#f5f5f5] hover:cursor-text rounded-lg py-1 text-[0.875rem]  leading-[1.2rem] max-h-[calc(100%-6rem)]  line-clamp-2">
+            {item.userName}
+          </div>
+        ) : (
+          <div
+            className={`mt-1 font-bold focus:outline-none p-2 w-full ${
+              isSameUser && 'hover:bg-[#f5f5f5] hover:cursor-text'
+            }  rounded-lg py-1 text-[0.875rem]  leading-[1.2rem] max-h-[calc(100%-6rem)]  line-clamp-2`}>
+            {item.userName}
+          </div>
+        )}
+
         <Link href={link} target="_blank">
           <button className="absolute bottom-5 h-fit left-5   text-[0.75rem] leading-4 font-bold py-[7px] px-[21px] rounded-md bg-slate-300">
             Follow

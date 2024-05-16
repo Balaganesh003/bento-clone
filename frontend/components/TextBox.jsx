@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import TextLogo from '@/assets/text.png';
 import Image from 'next/image';
-import axios from 'axios';
 import { useRouter } from 'next/router';
 import { axiosWithToken } from '@/utils/axiosjwt';
 import { useSelector } from 'react-redux';

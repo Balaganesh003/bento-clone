@@ -5,7 +5,6 @@ import imageLogo from '@/assets/image.png';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
-import axios from 'axios';
 import { axiosWithToken } from '@/utils/axiosjwt';
 import { useSelector } from 'react-redux';
 

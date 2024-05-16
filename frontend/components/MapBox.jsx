@@ -8,7 +8,6 @@ import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import { useSelector } from 'react-redux';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import axios from 'axios';
 import { axiosWithToken } from '@/utils/axiosjwt';
 
 const MapboxMap = ({ item, USERNAME }) => {
@@ -223,7 +222,7 @@ const MapboxMap = ({ item, USERNAME }) => {
               style={{ borderRadius: '1.5rem' }}
               mapboxAccessToken={Token}
               mapStyle="mapbox://styles/mapbox/streets-v12"
-              {...(isViewportFixed && { ...item.location })}>
+              {...{ ...item.location }}>
               <Marker
                 longitude={
                   selectedLocation?.center[0] || item.location?.longitude

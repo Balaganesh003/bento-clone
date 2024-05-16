@@ -3,7 +3,6 @@ import { AiOutlineDelete } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import { BiSearch } from 'react-icons/bi';
-import axios from 'axios';
 import { axiosWithToken } from '@/utils/axiosjwt';
 import { useSelector } from 'react-redux';
 
