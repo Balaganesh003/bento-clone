@@ -7,7 +7,7 @@ import { axiosWithToken } from '@/utils/axiosjwt';
 
 const AddSocialLinkCard = ({ link, bgColor, logo, isAdded, isLogo }) => {
   const dispatch = useDispatch();
-
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [linkValue, setLinkValue] = useState(link.userName);
 
   const handelChange = (e) => {
@@ -23,14 +23,11 @@ const AddSocialLinkCard = ({ link, bgColor, logo, isAdded, isLogo }) => {
       })
     );
 
-    const res = await axiosWithToken.post(
-      `http://localhost:5000/profile/${USERNAME}`,
-      {
-        ...link,
-        userName: linkValue,
-        isAdded: true,
-      }
-    );
+    const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
+      ...link,
+      userName: linkValue,
+      isAdded: true,
+    });
 
     console.log(res.data);
 

@@ -15,6 +15,7 @@ const SignupFlow = () => {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword1] = useState(false);
@@ -47,7 +48,7 @@ const SignupFlow = () => {
     }
 
     try {
-      const res = await axios.post(`http://localhost:5000/auth/signup`, {
+      const res = await axios.post(`${API_URL}/auth/signup`, {
         email: email,
         password: password,
         username: name,

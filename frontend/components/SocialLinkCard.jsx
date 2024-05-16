@@ -12,6 +12,7 @@ const SocialLinkCard = ({ item, USERNAME }) => {
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
   const { isSameUser } = useSelector((state) => state.ui);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const handleResize = (width, height) => {
     setWidth(width);
@@ -28,13 +29,10 @@ const SocialLinkCard = ({ item, USERNAME }) => {
     dispatch(
       profileActions.updateItem({ ...item, userName: e.target.innerText })
     );
-    const res = axiosWithToken.put(
-      `http://localhost:5000/profile/${USERNAME}`,
-      {
-        ...item,
-        userName: e.target.innerText,
-      }
-    );
+    const res = axiosWithToken.put(`${API_URL}/profile/${USERNAME}`, {
+      ...item,
+      userName: e.target.innerText,
+    });
     console.log(res.data);
   };
 

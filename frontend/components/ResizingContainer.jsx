@@ -18,7 +18,7 @@ const ResizingContainer = ({
   USERNAME,
 }) => {
   const dispatch = useDispatch();
-
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const { isSameUser } = useSelector((state) => state.ui);
   const handelDelete = async () => {
     try {
@@ -35,7 +35,7 @@ const ResizingContainer = ({
 
       // Make an axios DELETE request to delete the profile object
       const response = await axiosWithToken.delete(
-        `http://localhost:5000/profile/${USERNAME}/${item.id}`
+        `${API_URL}/profile/${USERNAME}/${item.id}`
       );
 
       // Dispatch action to remove the item from state upon successful deletion

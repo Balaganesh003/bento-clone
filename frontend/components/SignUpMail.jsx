@@ -14,8 +14,10 @@ export default function SignUpMail({
   prevPanel,
   handelSignUp,
 }) {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
   const handelGoogleSignIn = () => {
-    window.open(`http://${NEXT_PUBLIC_API_URL}/auth/google/`, '_self');
+    window.open(`${API_URL}/auth/google/`, '_self');
   };
 
   return (

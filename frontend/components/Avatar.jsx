@@ -9,6 +9,7 @@ import { profileActions } from '@/store/profile-slice';
 const Avatar = ({ username }) => {
   const { avatar } = useSelector((state) => state.profile);
   const { isSameUser } = useSelector((state) => state.ui);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const dispatch = useDispatch();
   const handleFileSelect = async (e) => {
     if (!isSameUser) {
@@ -23,7 +24,7 @@ const Avatar = ({ username }) => {
 
       try {
         const response = await axiosWithToken.post(
-          `http://localhost:5000/profile/avatar/${username}`,
+          `${API_URL}/profile/avatar/${username}`,
           {
             avatar: fileDataUrl,
           }
