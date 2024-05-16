@@ -1,6 +1,30 @@
 const User = require('../models/user.model');
 const Profile = require('../models/porfile.model');
 const cloudinary = require('../services/cloudinary');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
+// Helper function to verify username from JWT token against URL params
+const verifyUsernameMatch = async (token, urlUsername) => {
+  try {
+    if (!token) {
+      throw new Error('Authorization token not found');
+    }
+
+    // Verify the JWT token to extract user information
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Extract username from the JWT payload
+    const jwtUsername = decoded.username;
+
+    // Compare the usernames
+    if (jwtUsername !== urlUsername) {
+      throw new Error('Username mismatch');
+    }
+  } catch (error) {
+    throw error;
+  }
+};
 
 // Controller function to add a profile object to a user's profile details
 const addProfileObject = async (req, res) => {
@@ -20,6 +44,11 @@ const addProfileObject = async (req, res) => {
   } = req.body;
 
   try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    await verifyUsernameMatch(token, username);
+
     // Find the user by username
     const user = await User.findOne({ username });
 
@@ -169,6 +198,11 @@ const updateProfileObject = async (req, res) => {
   } = req.body;
 
   try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    await verifyUsernameMatch(token, username);
+
     // Find the user by their username
     const user = await User.findOne({ username });
 
@@ -241,6 +275,11 @@ const setProfileDetails = async (req, res) => {
   const { profileDetails } = req.body;
 
   try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    await verifyUsernameMatch(token, username);
+
     // Find the user by username
     const user = await User.findOne({ username });
 
@@ -282,6 +321,12 @@ const deleteProfileObject = async (req, res) => {
 
   try {
     // Find the user by their username
+
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    await verifyUsernameMatch(token, username);
+
     const user = await User.findOne({ username });
 
     if (!user) {
@@ -321,20 +366,6 @@ const deleteProfileObject = async (req, res) => {
   }
 };
 
-// Helper function to extract public_id from Cloudinary URL
-function extractPublicId(imgUrl) {
-  try {
-    const url = new URL(imgUrl);
-    const pathComponents = url.pathname.split('/');
-    const publicIdWithVersion = pathComponents.slice(4).join('/'); // Extract from 'v' onwards
-    const publicId = publicIdWithVersion.split('.')[0]; // Remove file extension
-    return publicId;
-  } catch (error) {
-    console.error('Error extracting public_id from image URL:', error);
-    return null;
-  }
-}
-
 const updateDisplayName = async (req, res) => {
   let { username } = req.params;
   // Convert username to string if it's a number
@@ -343,6 +374,11 @@ const updateDisplayName = async (req, res) => {
   const { displayname } = req.body;
 
   try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    await verifyUsernameMatch(token, username);
+
     // Find the user by their username
     const user = await User.findOne({ username });
 
@@ -380,6 +416,11 @@ const updateBio = async (req, res) => {
   const { bio } = req.body;
 
   try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    await verifyUsernameMatch(token, username);
+
     // Find the user by their username
     const user = await User.findOne({ username });
 
@@ -414,6 +455,11 @@ const uploadAvatar = async (req, res) => {
   username = String(username);
 
   try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    await verifyUsernameMatch(token, username);
+
     const user = await User.findOne({ username });
 
     if (!user) {

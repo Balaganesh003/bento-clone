@@ -8,8 +8,13 @@ import { profileActions } from '@/store/profile-slice';
 
 const Avatar = ({ username }) => {
   const { avatar } = useSelector((state) => state.profile);
+  const { isSameUser } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
   const handleFileSelect = async (e) => {
+    if (!isSameUser) {
+      return;
+    }
+
     const file = e.target.files[0];
     const fileReader = new FileReader();
 
@@ -40,7 +45,9 @@ const Avatar = ({ username }) => {
 
   return (
     <div
-      className={`flex-shrink-0 border-gray-border w-[7.5rem] h-[7.5rem] xl:w-[11.5rem] xl:h-[11.5rem]  text-center cursor-pointer relative rounded-full border-dashed ${
+      className={`flex-shrink-0 border-gray-border w-[7.5rem] h-[7.5rem] xl:w-[11.5rem] xl:h-[11.5rem]  text-center ${
+        isSameUser && 'cursor-pointer'
+      }  relative rounded-full border-dashed ${
         !avatar && 'border-2'
       } bg-[#f7f7f7]`}>
       <div className="w-full h-full flex items-center  justify-center absolute top-0 left-0">
@@ -64,12 +71,14 @@ const Avatar = ({ username }) => {
           </div>
         )}
       </div>
-      <input
-        type="file"
-        id="resumeInput"
-        className="w-full h-full  absolute top-0 left-0 cursor-pointer opacity-0"
-        onChange={handleFileSelect}
-      />
+      {isSameUser && (
+        <input
+          type="file"
+          id="resumeInput"
+          className="w-full h-full  absolute top-0 left-0 cursor-pointer opacity-0"
+          onChange={handleFileSelect}
+        />
+      )}
     </div>
   );
 };

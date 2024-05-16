@@ -7,10 +7,12 @@ import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import axios from 'axios';
 import { axiosWithToken } from '@/utils/axiosjwt';
+import { useSelector } from 'react-redux';
 
 const ImageCard = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
 
+  const { isSameUser } = useSelector((state) => state.ui);
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
 
@@ -20,6 +22,9 @@ const ImageCard = ({ item, USERNAME }) => {
   };
 
   const handleFileSelect = async (e) => {
+    if (!isSameUser) {
+      return;
+    }
     const file = e.target.files[0];
     const reader = new FileReader();
 
@@ -64,7 +69,9 @@ const ImageCard = ({ item, USERNAME }) => {
           width={width}
           handleResize={handleResize}>
           <div
-            className={` flex-shrink-0 bg-[#f7f7f7] border-gray-border rounded-[1.5rem] border-dashed w-full h-full  text-center  cursor-pointer relative  `}>
+            className={` flex-shrink-0 bg-[#f7f7f7] border-gray-border rounded-[1.5rem] border-dashed w-full h-full  text-center ${
+              isSameUser && 'cursor-pointer'
+            }   relative  `}>
             <div className="w-full h-full flex items-center  justify-center absolute top-0 left-0 flex-col">
               <Image
                 src={item?.imgUrl}
@@ -75,12 +82,14 @@ const ImageCard = ({ item, USERNAME }) => {
               />
             </div>
 
-            <input
-              type="file"
-              id="resumeInput"
-              className="w-[80%] h-[60%]  absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 cursor-pointer opacity-0 "
-              onChange={handleFileSelect}
-            />
+            {isSameUser && (
+              <input
+                type="file"
+                id="resumeInput"
+                className="w-[80%] h-[60%]  absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 cursor-pointer opacity-0 "
+                onChange={handleFileSelect}
+              />
+            )}
           </div>
         </ResizingContainer>
       ) : (

@@ -4,12 +4,9 @@ require('dotenv').config();
 
 const authMiddleware = async (req, res, next) => {
   try {
-    // Check for the authorization header
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    const urlUsername = req.params.username;
 
-    // Verify the token if present
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const { userId, username } = decoded;
@@ -25,13 +22,12 @@ const authMiddleware = async (req, res, next) => {
           .json({ message: 'Unauthorized: User not found' });
       }
 
-      if (user.username !== username || username !== urlUsername) {
+      if (user.username != username) {
         console.log('Unauthorized: Invalid token');
 
         return res.status(401).json({ message: 'Unauthorized: Invalid token' });
       }
 
-      // Attach the user object to the request for further processing
       req.user = user;
     }
 

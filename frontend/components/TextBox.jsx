@@ -7,8 +7,10 @@ import Image from 'next/image';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { axiosWithToken } from '@/utils/axiosjwt';
+import { useSelector } from 'react-redux';
 
 const TextBox = ({ item, USERNAME }) => {
+  const { isSameUser } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -24,6 +26,10 @@ const TextBox = ({ item, USERNAME }) => {
   const textareaRef = useRef(null);
 
   const handleFocus = () => {
+    if (!isSameUser) {
+      return;
+    }
+
     if (textareaRef.current) {
       const lastLine = textareaRef.current.lastElementChild;
       if (lastLine) {
@@ -49,6 +55,10 @@ const TextBox = ({ item, USERNAME }) => {
   };
 
   const handleBlur = () => {
+    if (!isSameUser) {
+      return;
+    }
+
     if (textareaRef.current) {
       textareaRef.current.selectionStart = 0;
       textareaRef.current.selectionEnd = 0;
@@ -59,6 +69,10 @@ const TextBox = ({ item, USERNAME }) => {
   };
 
   const handleChange = async (e) => {
+    if (!isSameUser) {
+      return;
+    }
+
     setTextareaValue(e.target.value); // Update the separate textarea value
     dispatch(profileActions.updateItem({ ...item, content: e.target.value }));
     try {
@@ -76,6 +90,10 @@ const TextBox = ({ item, USERNAME }) => {
   };
 
   const handleTextClick = () => {
+    if (!isSameUser) {
+      return;
+    }
+
     dispatch(profileActions.updateItem({ ...item, content: '' }));
     try {
       const res = axiosWithToken.put(
@@ -93,7 +111,7 @@ const TextBox = ({ item, USERNAME }) => {
 
   return (
     <div>
-      {item.content == null ? (
+      {item.content == null && isSameUser ? (
         <div
           onClick={handleTextClick}
           className={`flex-shrink-0 bg-[#f7f7f7] h-[175px] w-[175px] border-gray-border rounded-[1.5rem] border-dashed  text-center  cursor-pointer relative border-2 `}>
@@ -117,7 +135,10 @@ const TextBox = ({ item, USERNAME }) => {
           item={item}
           type={'text'}
           handleResize={handleResize}>
-          <div className="h-full w-full overflow-hidden p-2 group-hover:bg-[#f5f5f5] group rounded-lg">
+          <div
+            className={`h-full w-full overflow-hidden p-2 ${
+              isSameUser && 'group-hover:bg-[#f5f5f5]'
+            }  group rounded-lg`}>
             <textarea
               ref={textareaRef}
               onFocus={handleFocus}
@@ -125,7 +146,9 @@ const TextBox = ({ item, USERNAME }) => {
               placeholder="Add Note"
               onChange={handleChange}
               value={textareaValue} // Use the separate textarea value
-              className={`w-full h-full  scrollbar-hide focus:outline-none group-hover:bg-[#f5f5f5] leading-snug resize-none rounded overflow-y-auto ${
+              className={`w-full h-full  scrollbar-hide focus:outline-none ${
+                isSameUser && 'group-hover:bg-[#f5f5f5]'
+              } leading-snug resize-none rounded overflow-y-auto ${
                 (height === 1 || height === 3) && 'line-clamp-5'
               } ${(height === 4 || height === 5) && 'line-clamp-[13]'} ${
                 height === 2 && 'line-clamp-1 '
