@@ -65,7 +65,9 @@ const NameBio = ({ USERNAME }) => {
         </div>
       ) : (
         <div
-          className={`relative tracking-[-2px] text-[32px] xl:text-[44px] font-bold focus:outline-none leading-[120%] text-[#565656]`}>
+          className={`relative tracking-[-2px] text-[32px] xl:text-[44px] font-bold focus:outline-none leading-[120%] text-[#565656] ${
+            name.length === 0 && 'hidden'
+          }`}>
           {isNamePlaceholder ? 'Your Name' : name}
         </div>
       )}
@@ -81,7 +83,10 @@ const NameBio = ({ USERNAME }) => {
           {isBioPlaceholder ? 'Your Bio' : bio}
         </div>
       ) : (
-        <div className="mt-3 xl:text-xl focus:outline-none relative text-[#565656]">
+        <div
+          className={`mt-3 xl:text-xl focus:outline-none relative text-[#565656] ${
+            bio.length === 0 && 'hidden'
+          } `}>
           {isBioPlaceholder ? 'Your Bio' : bio}
         </div>
       )}

@@ -43,6 +43,8 @@ const Avatar = ({ username }) => {
     }
   };
 
+  if (!avatar && !isSameUser) return null;
+
   return (
     <div
       className={`flex-shrink-0 border-gray-border w-[7.5rem] h-[7.5rem] xl:w-[11.5rem] xl:h-[11.5rem]  text-center ${

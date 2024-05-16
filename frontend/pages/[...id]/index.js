@@ -92,6 +92,7 @@ export default function Home({ data }) {
           profileActions.updateDisplayName(res.data.profile.displayName)
         );
         dispatch(profileActions.updateBio(res.data.profile.bio));
+        dispatch(uiActions.setSameUser(res.data.isSameUser));
       } catch (error) {
         console.error('Profile data fetch error:', error);
 
@@ -424,58 +425,91 @@ export default function Home({ data }) {
           )}
         </div>
 
-        <DragDropContext onDragEnd={onDragEnd}>
-          <div className="xl:max-w-[820px]  xl:min-w-[820px] xl:w-[820px] px-6 pb-6 pt-12 xl:p-0 xl:min-h-[calc(100vh-8rem)] w-full h-full flex">
-            <Droppable droppableId="ROOT" type="group">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  <div className=" flex  gap-[24px] xl:gap-[39px]  flex-wrap last:pb-[6rem]">
-                    {profileDetails.map((item, index) => (
-                      <Draggable
-                        key={item.id}
-                        draggableId={item.id}
-                        index={index}>
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.dragHandleProps}
-                            {...provided.draggableProps}>
-                            <div className="w-full">
-                              {item.type === 'socialLink' && (
-                                <SocialLinkCard
-                                  item={item}
-                                  USERNAME={USERNAME}
-                                />
-                              )}
-                              {item.type === 'image' && (
-                                <ImageCard item={item} USERNAME={USERNAME} />
-                              )}
-                              {item.type === 'text' && (
-                                <TextBox item={item} USERNAME={USERNAME} />
-                              )}
-                              {item.type === 'map' && (
-                                <MapboxMap item={item} USERNAME={USERNAME} />
-                              )}
-                              {item.type === 'links' && (
-                                <OtherLinkCard
-                                  item={item}
-                                  USERNAME={USERNAME}
-                                />
-                              )}
-                              {item.type === 'title' && (
-                                <TitleBox item={item} USERNAME={USERNAME} />
-                              )}
+        {isSameUser ? (
+          <DragDropContext onDragEnd={onDragEnd}>
+            <div className="xl:max-w-[820px]  xl:min-w-[820px] xl:w-[820px] px-6 pb-6 pt-12 xl:p-0 xl:min-h-[calc(100vh-8rem)] w-full h-full flex">
+              <Droppable droppableId="ROOT" type="group">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    <div className=" flex  gap-[24px] xl:gap-[39px]  flex-wrap last:pb-[6rem]">
+                      {profileDetails.map((item, index) => (
+                        <Draggable
+                          key={item.id}
+                          draggableId={item.id}
+                          index={index}>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.dragHandleProps}
+                              {...provided.draggableProps}>
+                              <div className="w-full">
+                                {item.type === 'socialLink' && (
+                                  <SocialLinkCard
+                                    item={item}
+                                    USERNAME={USERNAME}
+                                  />
+                                )}
+                                {item.type === 'image' && (
+                                  <ImageCard item={item} USERNAME={USERNAME} />
+                                )}
+                                {item.type === 'text' && (
+                                  <TextBox item={item} USERNAME={USERNAME} />
+                                )}
+                                {item.type === 'map' && (
+                                  <MapboxMap item={item} USERNAME={USERNAME} />
+                                )}
+                                {item.type === 'links' && (
+                                  <OtherLinkCard
+                                    item={item}
+                                    USERNAME={USERNAME}
+                                  />
+                                )}
+                                {item.type === 'title' && (
+                                  <TitleBox item={item} USERNAME={USERNAME} />
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
+                          )}
+                        </Draggable>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-            </Droppable>
+                )}
+              </Droppable>
+            </div>
+          </DragDropContext>
+        ) : (
+          <div className="xl:max-w-[820px]  xl:min-w-[820px] xl:w-[820px] px-6 pb-6 pt-12 xl:p-0 xl:min-h-[calc(100vh-8rem)] w-full h-full flex">
+            <div>
+              <div className=" flex  gap-[24px] xl:gap-[39px]  flex-wrap last:pb-[6rem]">
+                {profileDetails.map((item, index) => (
+                  <div key={item._id}>
+                    <div className="w-full">
+                      {item.type === 'socialLink' && (
+                        <SocialLinkCard item={item} USERNAME={USERNAME} />
+                      )}
+                      {item.type === 'image' && (
+                        <ImageCard item={item} USERNAME={USERNAME} />
+                      )}
+                      {item.type === 'text' && (
+                        <TextBox item={item} USERNAME={USERNAME} />
+                      )}
+                      {item.type === 'map' && (
+                        <MapboxMap item={item} USERNAME={USERNAME} />
+                      )}
+                      {item.type === 'links' && (
+                        <OtherLinkCard item={item} USERNAME={USERNAME} />
+                      )}
+                      {item.type === 'title' && (
+                        <TitleBox item={item} USERNAME={USERNAME} />
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </DragDropContext>
+        )}
       </div>
       {/* Fixed bar */}
       {isSameUser && (

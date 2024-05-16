@@ -117,9 +117,20 @@ const getAllProfileObjects = async (req, res) => {
   // Convert username to string if it's a number
   username = String(username);
 
+  let isSameUser = false;
+
   try {
     // Find the user by username
     const user = await User.findOne({ username });
+    const token = req.cookies.jwt;
+
+    if (token) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const jwtUsername = decoded.username;
+      if (jwtUsername === username) {
+        isSameUser = true;
+      }
+    }
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -136,7 +147,7 @@ const getAllProfileObjects = async (req, res) => {
 
     // Return the profiles array from the profile document
 
-    res.status(200).json({ profile });
+    res.status(200).json({ profile, isSameUser });
   } catch (error) {
     console.error('Fetch profile objects error:', error);
     res.status(500).json({ message: 'Server error' });
