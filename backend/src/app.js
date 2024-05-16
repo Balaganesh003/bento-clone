@@ -18,7 +18,12 @@ app.use(express.json());
 app.use(helmet());
 app.use(
   cors({
-    origin: [process.env.ORIGIN_1, process.env.ORIGIN_2, process.env.ORIGIN_3],
+    origin: [
+      process.env.ORIGIN_1,
+      process.env.ORIGIN_2,
+      process.env.ORIGIN_3,
+      process.env.ORIGIN_4,
+    ],
     credentials: true,
   })
 );
