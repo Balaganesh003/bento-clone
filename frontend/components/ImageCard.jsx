@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 
 const ImageCard = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
-
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const { isSameUser } = useSelector((state) => state.ui);
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
@@ -37,7 +37,7 @@ const ImageCard = ({ item, USERNAME }) => {
 
           // Send a PUT request to update the profile with the imgUrl
           const res = await axiosWithToken.put(
-            `http://localhost:5000/profile/${USERNAME}`,
+            `${API_URL}/profile/${USERNAME}`,
             {
               ...item,
               imgUrl,

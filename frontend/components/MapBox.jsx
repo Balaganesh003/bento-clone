@@ -12,6 +12,7 @@ import { axiosWithToken } from '@/utils/axiosjwt';
 
 const MapboxMap = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [width, setWidth] = useState(5);
   const [height, setHeight] = useState(5);
   const [renderKey, setRenderKey] = useState(0);
@@ -80,7 +81,7 @@ const MapboxMap = ({ item, USERNAME }) => {
 
         try {
           const res = await axiosWithToken.put(
-            `http://localhost:5000/profile/${USERNAME}`,
+            `${API_URL}/profile/${USERNAME}`,
             {
               ...item,
               location: {
@@ -120,7 +121,7 @@ const MapboxMap = ({ item, USERNAME }) => {
       return;
     }
 
-    await axiosWithToken.put(`http://localhost:5000/profile/${USERNAME}`, {
+    await axiosWithToken.put(`${API_URL}/profile/${USERNAME}`, {
       ...item,
       location: {
         latitude: 20.5937,
@@ -149,13 +150,10 @@ const MapboxMap = ({ item, USERNAME }) => {
     if (!selectedLocation) {
       dispatch(profileActions.updateItem({ ...item, location: newViewport }));
       try {
-        const res = axiosWithToken.put(
-          `http://localhost:5000/profile/${USERNAME}`,
-          {
-            ...item,
-            location: newViewport,
-          }
-        );
+        const res = axiosWithToken.put(`${API_URL}/profile/${USERNAME}`, {
+          ...item,
+          location: newViewport,
+        });
         console.log(res.data);
       } catch (error) {
         console.log('error', error);

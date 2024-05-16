@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 
 const TitleBox = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const { isSameUser } = useSelector((state) => state.ui);
   const [isPlaceholderVisible, setIsPlaceholderVisible] = useState(false);
 
@@ -17,7 +18,7 @@ const TitleBox = ({ item, USERNAME }) => {
 
     dispatch(profileActions.removeItem(item.id));
     const res = await axiosWithToken.delete(
-      `http://localhost:5000/profile/${USERNAME}/${item.id}`
+      `${API_URL}/profile/${USERNAME}/${item.id}`
     );
     console.log('res', res.data);
   };
@@ -55,13 +56,10 @@ const TitleBox = ({ item, USERNAME }) => {
     );
     console.log(titleRef?.current?.textContent);
     try {
-      const res = await axiosWithToken.put(
-        `http://localhost:5000/profile/${USERNAME}`,
-        {
-          ...item,
-          content: titleRef?.current?.textContent,
-        }
-      );
+      const res = await axiosWithToken.put(`${API_URL}/profile/${USERNAME}`, {
+        ...item,
+        content: titleRef?.current?.textContent,
+      });
       console.log('res', res.status);
     } catch (error) {
       console.log('error', error);

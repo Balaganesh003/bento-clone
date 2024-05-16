@@ -4,11 +4,11 @@ import axios from 'axios';
 
 const SignupLink = ({ name, setName, nextPanel }) => {
   const [isAlreadyExist, setIsAlreadyExist] = useState(false);
-
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => {
     if (name) {
       axios
-        .get(`http://localhost:5000/auth/checkusername/${name}`)
+        .get(`${API_URL}/auth/checkusername/${name}`)
         .then((res) => {
           if (res.status === 400) {
             // Username already exists

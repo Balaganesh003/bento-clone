@@ -67,13 +67,15 @@ export default function Home({ data }) {
   const { profileDetails, socialLinks } = useSelector((state) => state.profile);
   const { isSameUser } = useSelector((state) => state.ui);
   const [isLaptop, setIsLaptop] = useState(true);
-
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [avatarSrc, setAvatarSrc] = useState('');
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
   const [url, setUrl] = useState('');
   const [isUrlOpen, setIsUrlOpen] = useState(false);
 
   const USERNAME = router.query.id[0];
+
+  console.log('USERNAME', API_URL, USERNAME);
 
   useEffect(() => {
     const getData = async () => {
@@ -82,9 +84,7 @@ export default function Home({ data }) {
       }
 
       try {
-        const res = await axiosWithToken.get(
-          `http://localhost:5000/profile/${USERNAME}`
-        );
+        const res = await axiosWithToken.get(`${API_URL}/profile/${USERNAME}`);
         dispatch(profileActions.setProfileDetails(res.data.profile.profiles));
 
         dispatch(profileActions.updateAvatar(res.data.profile.avatar));
@@ -130,7 +130,7 @@ export default function Home({ data }) {
       dispatch(profileActions.setProfileDetails(newContent));
       try {
         const res = await axiosWithToken.put(
-          `http://localhost:5000/profile/replace/${USERNAME}`,
+          `${API_URL}/profile/replace/${USERNAME}`,
           {
             profileDetails: newContent,
           }
@@ -157,7 +157,7 @@ export default function Home({ data }) {
       );
       InitialData.map(async (item) => {
         const res = await axiosWithToken.post(
-          `http://localhost:5000/profile/${USERNAME}`,
+          `${API_URL}/profile/${USERNAME}`,
           {
             ...item,
           }
@@ -183,14 +183,11 @@ export default function Home({ data }) {
 
     dispatch(profileActions.setProfileDetails([...profileDetails, Obj]));
 
-    const res = await axiosWithToken.post(
-      `http://localhost:5000/profile/${USERNAME}`,
-      {
-        type: Obj.type,
-        id: Obj.id,
-        content: '',
-      }
-    );
+    const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
+      type: Obj.type,
+      id: Obj.id,
+      content: '',
+    });
   };
 
   const addMap = () => {
@@ -202,14 +199,11 @@ export default function Home({ data }) {
 
     dispatch(profileActions.setProfileDetails([...profileDetails, MapObj]));
 
-    const res = axiosWithToken.post(
-      `http://localhost:5000/profile/${USERNAME}`,
-      {
-        type: MapObj.type,
-        id: MapObj.id,
-        location: MapObj.location,
-      }
-    );
+    const res = axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
+      type: MapObj.type,
+      id: MapObj.id,
+      location: MapObj.location,
+    });
   };
 
   const addImage = (e) => {
@@ -227,14 +221,11 @@ export default function Home({ data }) {
             },
           ])
         );
-        const res = axiosWithToken.post(
-          `http://localhost:5000/profile/${USERNAME}`,
-          {
-            type: 'image',
-            id: uuidv4(),
-            imgUrl: e.target.result,
-          }
-        );
+        const res = axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
+          type: 'image',
+          id: uuidv4(),
+          imgUrl: e.target.result,
+        });
         dispatch(
           profileActions.setProfileDetails([
             ...profileDetails,
@@ -260,14 +251,11 @@ export default function Home({ data }) {
 
     dispatch(profileActions.setProfileDetails([...profileDetails, TitleObj]));
 
-    const res = axiosWithToken.post(
-      `http://localhost:5000/profile/${USERNAME}`,
-      {
-        type: TitleObj.type,
-        id: TitleObj.id,
-        content: TitleObj.content,
-      }
-    );
+    const res = axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
+      type: TitleObj.type,
+      id: TitleObj.id,
+      content: TitleObj.content,
+    });
 
     console.log(res);
   };
@@ -294,14 +282,11 @@ export default function Home({ data }) {
         })
       );
 
-      const res = await axiosWithToken.post(
-        `http://localhost:5000/profile/${USERNAME}`,
-        {
-          ...link,
-          userName: userName,
-          isAdded: true,
-        }
-      );
+      const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
+        ...link,
+        userName: userName,
+        isAdded: true,
+      });
 
       dispatch(
         profileActions.updateSocialLinks({
@@ -325,18 +310,15 @@ export default function Home({ data }) {
           },
         ])
       );
-      const res = await axiosWithToken.post(
-        `http://localhost:5000/profile/${USERNAME}`,
-        {
-          id: uuidv4(),
-          type: 'links',
-          userName,
-          link: text,
-          logo,
-          hostname,
-          baseUrl,
-        }
-      );
+      const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
+        id: uuidv4(),
+        type: 'links',
+        userName,
+        link: text,
+        logo,
+        hostname,
+        baseUrl,
+      });
     }
     setUrl('');
     setIsUrlOpen(false);

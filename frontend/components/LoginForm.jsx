@@ -14,6 +14,7 @@ const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const dispatch = useDispatch();
 
   const handelLogin = async (e) => {
@@ -25,7 +26,7 @@ const LoginForm = () => {
     }
 
     try {
-      const res = await axios.post(`http://localhost:5000/auth/signin`, {
+      const res = await axios.post(`${API_URL}/auth/signin`, {
         email: email,
         password: password,
       });

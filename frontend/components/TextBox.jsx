@@ -12,6 +12,7 @@ const TextBox = ({ item, USERNAME }) => {
   const { isSameUser } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
   const router = useRouter();
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
@@ -75,13 +76,10 @@ const TextBox = ({ item, USERNAME }) => {
     setTextareaValue(e.target.value); // Update the separate textarea value
     dispatch(profileActions.updateItem({ ...item, content: e.target.value }));
     try {
-      const res = await axiosWithToken.put(
-        `http://localhost:5000/profile/${USERNAME}`,
-        {
-          ...item,
-          content: e.target.value,
-        }
-      );
+      const res = await axiosWithToken.put(`${API_URL}/profile/${USERNAME}`, {
+        ...item,
+        content: e.target.value,
+      });
       console.log(res.data);
     } catch (error) {
       console.log('error', error);
@@ -95,13 +93,10 @@ const TextBox = ({ item, USERNAME }) => {
 
     dispatch(profileActions.updateItem({ ...item, content: '' }));
     try {
-      const res = axiosWithToken.put(
-        `http://localhost:5000/profile/${USERNAME}`,
-        {
-          ...item,
-          content: '',
-        }
-      );
+      const res = axiosWithToken.put(`${API_URL}/profile/${USERNAME}`, {
+        ...item,
+        content: '',
+      });
       console.log(res.data);
     } catch (error) {
       console.log('error', error);

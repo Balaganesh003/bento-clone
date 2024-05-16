@@ -7,6 +7,7 @@ const NameBio = ({ USERNAME }) => {
   const dispatch = useDispatch();
   const nameRef = useRef(null);
   const bioRef = useRef(null);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const { name, bio } = useSelector((state) => state.profile);
   const { isSameUser } = useSelector((state) => state.ui);
@@ -35,7 +36,7 @@ const NameBio = ({ USERNAME }) => {
   const updateProfile = async (field, value) => {
     try {
       const response = await axiosWithToken.put(
-        `http://localhost:5000/profile/${field}/${USERNAME}`,
+        `${API_URL}/profile/${field}/${USERNAME}`,
         {
           [field]: value,
         }
