@@ -483,7 +483,7 @@ export default function Home({ data }) {
             <div>
               <div className=" flex  gap-[24px] xl:gap-[39px]  flex-wrap last:pb-[6rem]">
                 {profileDetails.map((item, index) => (
-                  <div>
+                  <div key={item._id}>
                     <div className="w-full">
                       {item.type === 'socialLink' && (
                         <SocialLinkCard item={item} USERNAME={USERNAME} />
