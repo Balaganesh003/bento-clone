@@ -98,7 +98,8 @@ const getAllProfileObjects = async (req, res) => {
 
   try {
     const user = await User.findOne({ username });
-    const token = req.cookies.jwt;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
