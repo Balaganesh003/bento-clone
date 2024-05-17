@@ -98,20 +98,25 @@ const getAllProfileObjects = async (req, res) => {
 
   try {
     const user = await User.findOne({ username });
+    if (!user) {
+      console.log('User not found:', username);
+      return res.status(404).json({ message: 'User not found' });
+    }
+
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
     if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const jwtUsername = decoded.username;
-      if (jwtUsername === username) {
-        isSameUser = true;
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const jwtUsername = decoded.username;
+        if (jwtUsername === username) {
+          isSameUser = true;
+        }
+      } catch (err) {
+        console.error('JWT verification error:', err);
+        return res.status(401).json({ message: 'Unauthorized' });
       }
-    }
-
-    if (!user) {
-      console.log('User not found:', username);
-      return res.status(404).json({ message: 'User not found' });
     }
 
     const profile = await Profile.findOne({ user: user._id });

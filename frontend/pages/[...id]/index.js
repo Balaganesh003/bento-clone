@@ -92,7 +92,12 @@ export default function Home({ data }) {
         dispatch(profileActions.updateAvatar(profile.avatar));
         dispatch(profileActions.updateDisplayName(profile.displayName));
         dispatch(profileActions.updateBio(profile.bio));
-        dispatch(uiActions.setSameUser(isSameUser));
+
+        if (isSameUser !== undefined) {
+          dispatch(uiActions.setSameUser(isSameUser));
+        } else {
+          dispatch(uiActions.setSameUser(false)); // Handle case where isSameUser is undefined
+        }
       } catch (error) {
         console.error('Profile data fetch error:', error);
 
