@@ -73,42 +73,41 @@ export default function Home({ data }) {
   const [url, setUrl] = useState('');
   const [isUrlOpen, setIsUrlOpen] = useState(false);
 
-  let USERNAME = router.query.id[0];
+  let USERNAME = router.query?.id[0];
 
   console.log('USERNAME', API_URL, USERNAME);
 
   useEffect(() => {
     const getData = async () => {
-      // if (router.query.id.length > 1) {
-      //   router.push(`/${router.query.id[0]}`);
-      // }
-
       try {
-        console.log(`${API_URL}/profile/${USERNAME}`);
-        const res = await axiosWithToken.get(`${API_URL}/profile/${USERNAME}`);
-        console.log('res', res.data);
-        dispatch(profileActions.setProfileDetails(res.data.profile.profiles));
+        if (!USERNAME) return;
+        const url = `${API_URL}/profile/${USERNAME}`;
+        console.log('Fetching profile data from:', url);
+        const res = await axiosWithToken.get(url);
 
-        dispatch(profileActions.updateAvatar(res.data.profile.avatar));
-        dispatch(
-          profileActions.updateDisplayName(res.data.profile.displayName)
-        );
-        dispatch(profileActions.updateBio(res.data.profile.bio));
-        dispatch(uiActions.setSameUser(res.data.isSameUser));
+        const { profile, isSameUser } = res.data;
+        console.log('Profile data fetched:', profile);
+
+        dispatch(profileActions.setProfileDetails(profile.profiles));
+        dispatch(profileActions.updateAvatar(profile.avatar));
+        dispatch(profileActions.updateDisplayName(profile.displayName));
+        dispatch(profileActions.updateBio(profile.bio));
+        dispatch(uiActions.setSameUser(isSameUser));
       } catch (error) {
         console.error('Profile data fetch error:', error);
 
-        console.log('Redirecting to /login');
+        // Optionally handle redirection to login
+        // console.log('Redirecting to /login');
         // router.push('/login');
       }
     };
 
-    USERNAME = router.query.id[0];
-
-    if (USERNAME) {
+    if (router.query.id?.length > 1) {
+      router.push(`/${router.query.id[0]}`);
+    } else if (USERNAME) {
       getData();
     }
-  }, [USERNAME]);
+  }, [USERNAME, router.query.id]);
 
   const handelFirstTime = () => {
     dispatch(uiActions.setFirstTime(false));
