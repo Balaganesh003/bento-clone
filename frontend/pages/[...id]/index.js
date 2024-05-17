@@ -73,18 +73,20 @@ export default function Home({ data }) {
   const [url, setUrl] = useState('');
   const [isUrlOpen, setIsUrlOpen] = useState(false);
 
-  const USERNAME = router.query.id[0];
+  let USERNAME = router.query.id[0];
 
   console.log('USERNAME', API_URL, USERNAME);
 
   useEffect(() => {
     const getData = async () => {
-      if (router.query.id.length > 1) {
-        router.push(`/${router.query.id[0]}`);
-      }
+      // if (router.query.id.length > 1) {
+      //   router.push(`/${router.query.id[0]}`);
+      // }
 
       try {
+        console.log(`${API_URL}/profile/${USERNAME}`);
         const res = await axiosWithToken.get(`${API_URL}/profile/${USERNAME}`);
+        console.log('res', res.data);
         dispatch(profileActions.setProfileDetails(res.data.profile.profiles));
 
         dispatch(profileActions.updateAvatar(res.data.profile.avatar));
@@ -97,9 +99,11 @@ export default function Home({ data }) {
         console.error('Profile data fetch error:', error);
 
         console.log('Redirecting to /login');
-        router.push('/login');
+        // router.push('/login');
       }
     };
+
+    USERNAME = router.query.id[0];
 
     if (USERNAME) {
       getData();
