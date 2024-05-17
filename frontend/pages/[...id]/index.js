@@ -97,8 +97,8 @@ export default function Home({ data }) {
         console.error('Profile data fetch error:', error);
 
         // Optionally handle redirection to login
-        // console.log('Redirecting to /login');
-        // router.push('/login');
+        console.log('Redirecting to /login');
+        router.push('/signup');
       }
     };
 
