@@ -9,13 +9,27 @@ const passportConfig = require('./utils/passport.js');
 const profileRouter = require('./routes/profile.router.js');
 const path = require('path');
 const helmet = require('helmet');
-dotenv.config();
 const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
+const compression = require('compression');
+dotenv.config();
+
 const app = express();
+
+// Middleware for logging HTTP requests
+app.use(morgan('combined'));
+
+// Middleware for parsing cookies
 app.use(cookieParser());
+
+// Middleware for parsing JSON requests with a large payload
 app.use(bodyParser.json({ limit: '50mb' }));
-app.use(express.json());
+
+// Middleware for setting various HTTP headers for security
 app.use(helmet());
+
+// Middleware for enabling CORS with specific origins
 app.use(
   cors({
     origin: [
@@ -27,14 +41,20 @@ app.use(
     credentials: true,
   })
 );
+
+// Middleware for handling sessions with cookies
 app.use(
   cookieSession({
     name: 'session',
     keys: [process.env.SESSION_SECRET],
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    secure: process.env.NODE_ENV === 'production', // Secure cookies in production
+    httpOnly: true, // HTTP only, prevents JavaScript cookie access
+    sameSite: 'strict', // SameSite attribute for CSRF protection
   })
 );
 
+// Fix for potential issues with cookie-session in some environments
 app.use((req, res, next) => {
   if (req.session && !req.session.regenerate) {
     req.session.regenerate = (cb) => {
@@ -49,13 +69,32 @@ app.use((req, res, next) => {
   next();
 });
 
+// Middleware for initializing Passport.js
 app.use(passport.initialize());
 
+// Rate limiting middleware to prevent abuse
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
+
+// Middleware for response compression
+app.use(compression());
+
+// Route handlers
 app.use('/auth', authRouter);
 app.use('/profile', profileRouter);
 
+// Basic route
 app.get('/', (req, res) => {
   res.send('Hello World!');
+});
+
+// Global error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Internal Server Error' });
 });
 
 module.exports = app;
