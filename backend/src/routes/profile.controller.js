@@ -67,7 +67,7 @@ const addProfileObject = async (req, res) => {
       imgUrl,
     };
 
-    if (type === 'image' && imgUrl && imgUrl.startsWith('data:image')) {
+    if (type === 'image' && imgUrl && imgUrl !== 'null') {
       const uploadedResponse = await cloudinary.uploader.upload(imgUrl, {
         folder: `bento/${username}`,
         public_id: `bento_${username}_${Date.now()}`,
