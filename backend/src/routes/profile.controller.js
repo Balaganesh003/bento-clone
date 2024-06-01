@@ -37,6 +37,8 @@ const addProfileObject = async (req, res) => {
     imgUrl,
     width,
     height,
+    hostname,
+    link,
   } = req.body;
 
   const session = await mongoose.startSession();
@@ -77,6 +79,8 @@ const addProfileObject = async (req, res) => {
       imgUrl,
       width,
       height,
+      hostname,
+      link,
     };
 
     if (type === 'image' && imgUrl && imgUrl !== 'null') {
@@ -205,6 +209,8 @@ const updateProfileObject = async (req, res) => {
     id,
     baseUrl,
     userName,
+    link,
+    hostname,
     logo,
     bgColor,
     content,
@@ -266,6 +272,8 @@ const updateProfileObject = async (req, res) => {
       imgUrl,
       height,
       width,
+      link,
+      hostname,
     };
 
     if (type === 'image' && imgUrl) {

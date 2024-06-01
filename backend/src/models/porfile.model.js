@@ -39,7 +39,7 @@ const profileSchema = new mongoose.Schema({
       userName: {
         type: String,
         required: function () {
-          return this.type === 'socialLink' || this.type === 'links';
+          return this.type === 'socialLink';
         },
       },
       logo: {
@@ -53,6 +53,14 @@ const profileSchema = new mongoose.Schema({
         required: function () {
           return this.type === 'socialLink';
         },
+      },
+
+      hostname: {
+        type: String,
+      },
+
+      link: {
+        type: String,
       },
 
       content: {

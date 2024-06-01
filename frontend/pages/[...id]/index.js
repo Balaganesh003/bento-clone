@@ -189,83 +189,78 @@ export default function Home({ data }) {
   };
 
   const addNote = async () => {
-    const Obj = {
+    const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
       id: uuidv4(),
       type: 'text',
       content: '',
       width: 1,
       height: 1,
-    };
-
-    dispatch(profileActions.setProfileDetails([...profileDetails, Obj]));
-
-    const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
-      type: Obj.type,
-      id: Obj.id,
-      content: '',
-      width: 1,
-      height: 1,
     });
+
+    dispatch(
+      profileActions.setProfileDetails([
+        ...profileDetails,
+        res.data.addedObject,
+      ])
+    );
   };
 
-  const addMap = () => {
-    const MapObj = {
+  const addMap = async () => {
+    const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
       id: uuidv4(),
       type: 'map',
       location: { latitude: 20.5937, longitude: 78.9629, zoom: 4 },
       width: 5,
       height: 5,
-    };
-
-    dispatch(profileActions.setProfileDetails([...profileDetails, MapObj]));
-
-    const res = axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
-      type: MapObj.type,
-      id: MapObj.id,
-      location: MapObj.location,
     });
+
+    dispatch(
+      profileActions.setProfileDetails([
+        ...profileDetails,
+        res.data.addedObject,
+      ])
+    );
   };
 
-  const addImage = (e) => {
+  const addImage = async (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        const res = axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
-          type: 'image',
-          id: uuidv4(),
-          imgUrl: e.target.result,
-          width: 5,
-          height: 5,
-        });
+      reader.onload = async (e) => {
+        const res = await axiosWithToken.post(
+          `${API_URL}/profile/${USERNAME}`,
+          {
+            type: 'image',
+            id: uuidv4(),
+            imgUrl: e.target.result,
+            width: 5,
+            height: 5,
+          }
+        );
         dispatch(
           profileActions.setProfileDetails([
             ...profileDetails,
-            ...res.data.addedObject,
+            res.data.addedObject,
           ])
         );
-        console.log(res);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const addTitle = () => {
-    const TitleObj = {
+  const addTitle = async () => {
+    const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
       id: uuidv4(),
       type: 'title',
       content: '',
-    };
-
-    dispatch(profileActions.setProfileDetails([...profileDetails, TitleObj]));
-
-    const res = axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
-      type: TitleObj.type,
-      id: TitleObj.id,
-      content: TitleObj.content,
     });
 
-    console.log(res);
+    dispatch(
+      profileActions.setProfileDetails([
+        ...profileDetails,
+        res.data.addedObject,
+      ])
+    );
   };
 
   const handelLink = async (text) => {
@@ -282,16 +277,6 @@ export default function Home({ data }) {
     if (allSocialLinks.includes(baseUrl)) {
       const link = socialLinks.find((link) => link.id === baseUrl);
 
-      dispatch(
-        profileActions.addItem({
-          ...link,
-          userName: userName,
-          isAdded: true,
-          width: 1,
-          height: 1,
-        })
-      );
-
       const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
         ...link,
         userName: userName,
@@ -301,30 +286,20 @@ export default function Home({ data }) {
       });
 
       dispatch(
+        profileActions.addItem({
+          ...res.data.addedObject,
+          isAdded: true,
+        })
+      );
+
+      dispatch(
         profileActions.updateSocialLinks({
-          ...link,
-          userName: userName,
+          ...res.data.addedObject,
           isAdded: true,
         })
       );
     } else {
-      dispatch(
-        profileActions.setProfileDetails([
-          ...profileDetails,
-          {
-            id: uuidv4(),
-            type: 'links',
-            userName,
-            link: text,
-            logo,
-            hostname,
-            baseUrl,
-            width: 1,
-            height: 1,
-          },
-        ])
-      );
-      const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
+      const linkObj = {
         id: uuidv4(),
         type: 'links',
         userName,
@@ -334,7 +309,18 @@ export default function Home({ data }) {
         baseUrl,
         width: 1,
         height: 1,
+      };
+
+      const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
+        ...linkObj,
       });
+
+      dispatch(
+        profileActions.setProfileDetails([
+          ...profileDetails,
+          res.data.addedObject,
+        ])
+      );
     }
     setUrl('');
     setIsUrlOpen(false);
