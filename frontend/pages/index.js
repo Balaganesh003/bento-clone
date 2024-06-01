@@ -4,6 +4,14 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 
+import coffee from '@/assets/coffee.svg';
+import dribble from '@/assets/dribble.svg';
+import github from '@/assets/github.svg';
+import linkedin from '@/assets/linkedin.svg';
+import twitter from '@/assets/twitter.svg';
+import youtube from '@/assets/youtube.svg';
+import instagram from '@/assets/instagram.svg';
+
 export default function LandingPage() {
   return (
     <div>
@@ -16,15 +24,15 @@ export default function LandingPage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <section className="w-full bg-gradient-to-b from-[#F9FAFB] to-white py-12 md:py-20">
-          <div className="container mx-auto flex flex-col items-center gap-8 px-4 md:px-8 justify-center">
+      <main className="">
+        <section className=" max-w-7xl animate-fade-in w-full bg-gradient-to-b from-[#F9FAFB] to-white py-12 md:py-20">
+          <div className=" container mx-auto flex flex-col items-center gap-8 px-4 md:px-8 justify-center">
             <span className="flex flex-col items-center gap-2">
               <OrigamiIcon className="h-8 w-8 text-gray-900" />
               <span className="text-lg font-semibold text-gray-900">Bento</span>
             </span>
             <div className="space-y-6 text-center">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 z-10">
                 Elevate Your Online Presence
               </h1>
               <p className="max-w-[600px] mx-auto text-base sm:text-lg text-gray-700 md:text-xl">
@@ -57,10 +65,60 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
+          <Image
+            className="z-0 animate-fade-in animate-float text-6xl absolute top-5 left-[8rem]"
+            src={coffee}
+            alt="Coffee"
+          />
+          <Image
+            className="z-0 animate-fade-in animate-float text-5xl absolute top-[10rem] left-5"
+            src={dribble}
+            alt="Dribble"
+          />
+          <Image
+            className=" z-0 animate-fade-in animate-float text-4xl absolute top-[13rem] left-[12rem]"
+            src={github}
+            alt="GitHub"
+          />
+          <Image
+            className="z-0 animate-fade-in animate-float text-4xl absolute bottom-[5rem] left-[9rem]"
+            src={linkedin}
+            alt="LinkedIn"
+          />
+          <Image
+            className="z-0 animate-fade-in animate-float text-5xl absolute bottom-[11rem] left-[20rem]"
+            src={twitter}
+            alt="Twitter"
+          />
+          <Image
+            className="z-0 animate-fade-in animate-float text-4xl absolute bottom-[11rem] right-[20rem]"
+            src={youtube}
+            alt="YouTube"
+          />
+          <Image
+            className="z-0 animate-fade-in animate-float text-6xl absolute bottom-[5rem] right-[9rem]"
+            src={instagram}
+            alt="Instagram"
+          />
+          <Image
+            className="z-0 animate-fade-in animate-float text-4xl absolute top-[13rem] right-[12rem]"
+            src={coffee}
+            alt="Coffee"
+          />
+          <Image
+            className="z-0 animate-fade-in animate-float text-5xl absolute top-[10rem] right-5"
+            src={github}
+            alt="GitHub"
+          />
+          <Image
+            className="z-0 animate-fade-in animate-float text-6xl absolute top-5 right-[8rem]"
+            src={dribble}
+            alt="Dribble"
+          />
         </section>
 
         <section
-          className="w-full bg-white py-12 md:py-20 lg:py-24"
+          className=" max-w-7xl w-full bg-white py-12 md:py-20 lg:py-24"
           id="features">
           <div className="container mx-auto flex items-center gap-8 px-4 md:px-8">
             <div className="space-y-6">
@@ -122,7 +180,7 @@ export default function LandingPage() {
         </section>
 
         <section
-          className="w-full bg-white py-12 md:py-20 lg:py-24"
+          className="  max-w-7xl w-full bg-white py-12 md:py-20 lg:py-24"
           id="testimonials">
           <div className="container mx-auto flex flex-col items-center gap-8 px-4 md:px-8">
             <div className="space-y-6 text-center">
@@ -155,7 +213,7 @@ export default function LandingPage() {
         </section>
 
         <section
-          className="w-full bg-gradient-to-b from-[#F9FAFB] to-white py-12 md:py-20 lg:py-24"
+          className="  max-w-7xl w-full bg-gradient-to-b from-[#F9FAFB] to-white py-12 md:py-20 lg:py-24"
           id="cta">
           <div className="container mx-auto flex flex-col items-center justify-center gap-6 px-4 md:px-8">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 text-center">
@@ -186,8 +244,8 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <footer className="w-full bg-gray-900 py-12">
-          <div className="container mx-auto flex flex-col items-center justify-center gap-6 px-4 md:px-8">
+        <footer className=" w-full bg-gray-900 py-12">
+          <div className=" max-w-7xl container mx-auto flex flex-col items-center justify-center gap-6 px-4 md:px-8">
             <div className="flex items-center gap-4">
               <OrigamiIcon
                 className="h-8 w-8 text-gray-50"
