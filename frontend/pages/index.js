@@ -65,56 +65,58 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-          <Image
-            className="z-0 animate-fade-in animate-float text-6xl absolute top-5 left-[8rem]"
-            src={coffee}
-            alt="Coffee"
-          />
-          <Image
-            className="z-0 animate-fade-in animate-float text-5xl absolute top-[10rem] left-5"
-            src={dribble}
-            alt="Dribble"
-          />
-          <Image
-            className=" z-0 animate-fade-in animate-float text-4xl absolute top-[13rem] left-[12rem]"
-            src={github}
-            alt="GitHub"
-          />
-          <Image
-            className="z-0 animate-fade-in animate-float text-4xl absolute bottom-[5rem] left-[9rem]"
-            src={linkedin}
-            alt="LinkedIn"
-          />
-          <Image
-            className="z-0 animate-fade-in animate-float text-5xl absolute bottom-[11rem] left-[20rem]"
-            src={twitter}
-            alt="Twitter"
-          />
-          <Image
-            className="z-0 animate-fade-in animate-float text-4xl absolute bottom-[11rem] right-[20rem]"
-            src={youtube}
-            alt="YouTube"
-          />
-          <Image
-            className="z-0 animate-fade-in animate-float text-6xl absolute bottom-[5rem] right-[9rem]"
-            src={instagram}
-            alt="Instagram"
-          />
-          <Image
-            className="z-0 animate-fade-in animate-float text-4xl absolute top-[13rem] right-[12rem]"
-            src={coffee}
-            alt="Coffee"
-          />
-          <Image
-            className="z-0 animate-fade-in animate-float text-5xl absolute top-[10rem] right-5"
-            src={github}
-            alt="GitHub"
-          />
-          <Image
-            className="z-0 animate-fade-in animate-float text-6xl absolute top-5 right-[8rem]"
-            src={dribble}
-            alt="Dribble"
-          />
+          <div className="animate-fade-in">
+            <Image
+              className="z-0  animate-float text-6xl absolute top-5 left-[8rem]"
+              src={coffee}
+              alt="Coffee"
+            />
+            <Image
+              className="z-0  animate-float text-5xl absolute top-[10rem] left-5"
+              src={dribble}
+              alt="Dribble"
+            />
+            <Image
+              className=" z-0  animate-float text-4xl absolute top-[13rem] left-[12rem]"
+              src={github}
+              alt="GitHub"
+            />
+            <Image
+              className="z-0  animate-float text-4xl absolute bottom-[5rem] left-[9rem]"
+              src={linkedin}
+              alt="LinkedIn"
+            />
+            <Image
+              className="z-0  animate-float text-5xl absolute bottom-[11rem] left-[20rem]"
+              src={twitter}
+              alt="Twitter"
+            />
+            <Image
+              className="z-0  animate-float text-4xl absolute bottom-[11rem] right-[20rem]"
+              src={youtube}
+              alt="YouTube"
+            />
+            <Image
+              className="z-0 animate-float text-6xl absolute bottom-[5rem] right-[9rem]"
+              src={instagram}
+              alt="Instagram"
+            />
+            <Image
+              className="z-0  animate-float text-4xl absolute top-[13rem] right-[12rem]"
+              src={coffee}
+              alt="Coffee"
+            />
+            <Image
+              className="z-0  animate-float text-5xl absolute top-[10rem] right-5"
+              src={github}
+              alt="GitHub"
+            />
+            <Image
+              className="z-0  animate-float text-6xl absolute top-5 right-[8rem]"
+              src={dribble}
+              alt="Dribble"
+            />
+          </div>
         </section>
 
         <section
