@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   isfirstTime: false,
-  isSameUser: true,
+  isSameUser: false,
 };
 
 const uiSlice = createSlice({

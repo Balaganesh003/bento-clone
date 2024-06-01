@@ -24,7 +24,7 @@ const profileSchema = new mongoose.Schema({
       type: {
         type: String,
         required: true,
-        enum: ['socialLink', 'text', 'map', 'image', 'title'],
+        enum: ['socialLink', 'text', 'map', 'image', 'title', 'links'],
       },
       id: {
         type: String,
@@ -33,7 +33,7 @@ const profileSchema = new mongoose.Schema({
       baseUrl: {
         type: String,
         required: function () {
-          return this.type === 'socialLink';
+          return this.type === 'socialLink' || this.type === 'links';
         },
       },
       userName: {
@@ -53,6 +53,14 @@ const profileSchema = new mongoose.Schema({
         required: function () {
           return this.type === 'socialLink';
         },
+      },
+
+      hostname: {
+        type: String,
+      },
+
+      link: {
+        type: String,
       },
 
       content: {
@@ -98,6 +106,13 @@ const profileSchema = new mongoose.Schema({
         required: function () {
           return this.type === 'image';
         },
+      },
+
+      height: {
+        type: Number,
+      },
+      width: {
+        type: Number,
       },
     },
   ],

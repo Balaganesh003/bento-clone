@@ -13,8 +13,8 @@ import { axiosWithToken } from '@/utils/axiosjwt';
 const MapboxMap = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const [width, setWidth] = useState(5);
-  const [height, setHeight] = useState(5);
+  const [width, setWidth] = useState(item.width);
+  const [height, setHeight] = useState(item.height);
   const [renderKey, setRenderKey] = useState(0);
   const { isSameUser } = useSelector((state) => state.ui);
   const Token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
@@ -27,9 +27,18 @@ const MapboxMap = ({ item, USERNAME }) => {
 
   const [isViewportFixed, setIsViewportFixed] = useState(true);
 
-  const handleResize = (width, height) => {
+  const handleResize = async (width, height) => {
     if (!isSameUser) {
       return;
+    }
+    try {
+      const res = await axiosWithToken.put(
+        `${API_URL}/profile/resize/${USERNAME}/${item.id}/${width}/${height}`
+      );
+
+      console.log(res.data.message);
+    } catch (error) {
+      console.log('error', error.message);
     }
     setWidth(width);
     setHeight(height);

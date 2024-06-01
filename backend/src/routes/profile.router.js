@@ -13,6 +13,10 @@ router.put('/bio/:username', profileController.updateBio);
 router.post('/avatar/:username', profileController.uploadAvatar);
 router.post('/:username', profileController.addProfileObject);
 router.put('/:username', profileController.updateProfileObject);
+router.put(
+  '/resize/:username/:objectId/:height/:width',
+  profileController.resize
+);
 router.delete('/:username/:objectId', profileController.deleteProfileObject);
 
 module.exports = router;

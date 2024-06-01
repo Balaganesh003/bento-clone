@@ -14,11 +14,23 @@ const TextBox = ({ item, USERNAME }) => {
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  const [width, setWidth] = useState(1);
-  const [height, setHeight] = useState(1);
+  const [width, setWidth] = useState(item.width);
+  const [height, setHeight] = useState(item.height);
   const [textareaValue, setTextareaValue] = useState(item.content); // Store textarea value separately
 
-  const handleResize = (width, height) => {
+  const handleResize = async (width, height) => {
+    // i should make a put request to update the width and height of the item
+
+    try {
+      const res = await axiosWithToken.put(
+        `${API_URL}/profile/resize/${USERNAME}/${item.id}/${width}/${height}`
+      );
+
+      console.log(res.data.message);
+    } catch (error) {
+      console.log('error', error.message);
+    }
+
     setWidth(width);
     setHeight(height);
   };

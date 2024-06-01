@@ -1,23 +1,19 @@
+const mongoose = require('mongoose');
 const User = require('../models/user.model');
 const Profile = require('../models/porfile.model');
 const cloudinary = require('../services/cloudinary');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-// Helper function to verify username from JWT token against URL params
 const verifyUsernameMatch = async (token, urlUsername) => {
   try {
     if (!token) {
       throw new Error('Authorization token not found');
     }
 
-    // Verify the JWT token to extract user information
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Extract username from the JWT payload
     const jwtUsername = decoded.username;
 
-    // Compare the usernames
     if (jwtUsername !== urlUsername) {
       throw new Error('Username mismatch');
     }
@@ -26,10 +22,8 @@ const verifyUsernameMatch = async (token, urlUsername) => {
   }
 };
 
-// Controller function to add a profile object to a user's profile details
 const addProfileObject = async (req, res) => {
   let { username } = req.params;
-  // Convert username to string if it's a number
   username = String(username);
   const {
     type,
@@ -41,7 +35,14 @@ const addProfileObject = async (req, res) => {
     content,
     location,
     imgUrl,
+    width,
+    height,
+    hostname,
+    link,
   } = req.body;
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
   try {
     const authHeader = req.headers['authorization'];
@@ -49,22 +50,23 @@ const addProfileObject = async (req, res) => {
 
     await verifyUsernameMatch(token, username);
 
-    // Find the user by username
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).session(session);
 
     if (!user) {
+      console.log('User not found:', username);
+      await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Find or create the profile document associated with the user
-    let profile = await Profile.findOne({ user: user._id });
+    let profile = await Profile.findOne({ user: user._id }).session(session);
 
     if (!profile) {
-      // Create a new profile document if none exists
-      profile = await Profile.create({ user: user._id, profiles: [] });
+      profile = await Profile.create([{ user: user._id, profiles: [] }], {
+        session,
+      });
     }
 
-    // Create the new profile object based on the input data
     const newProfileObject = {
       type,
       id,
@@ -75,68 +77,70 @@ const addProfileObject = async (req, res) => {
       content,
       location,
       imgUrl,
+      width,
+      height,
+      hostname,
+      link,
     };
 
-    if (
-      type === 'image' &&
-      imgUrl &&
-      imgUrl.startsWith('data:image') &&
-      imgUrl !== null &&
-      imgUrl !== 'null'
-    ) {
-      // Upload the image to Cloudinary and get the URL
-      const fileStr = imgUrl; // Assuming imgUrl contains the base64 image data
-      const uploadedResponse = await cloudinary.uploader.upload(fileStr, {
-        folder: `bento/${username}`, // Upload image under 'avatars/username' folder
-        public_id: `bento_${username}_${Date.now()}`, // Unique ID for the uploaded image
+    if (type === 'image' && imgUrl && imgUrl !== 'null') {
+      const uploadedResponse = await cloudinary.uploader.upload(imgUrl, {
+        folder: `bento/${username}`,
+        public_id: `bento_${username}_${Date.now()}`,
       });
 
-      // Set the imgUrl field of the profile object to the Cloudinary URL
       newProfileObject.imgUrl = uploadedResponse.secure_url;
     }
 
-    // Add the new profile object to the profiles array within the profile document
     profile.profiles.push(newProfileObject);
+    await profile.save({ session });
 
-    // Save the updated profile document
-    await profile.save();
+    await session.commitTransaction();
+    session.endSession();
 
+    console.log('Profile object added:', newProfileObject);
     res.status(201).json({
       message: 'Profile object added successfully',
       profile: profile,
+      addedObject: newProfileObject,
     });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     console.error('Add profile object error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-// Controller function to fetch all profile objects associated with a user
 const getAllProfileObjects = async (req, res) => {
   let { username } = req.params;
-  // Convert username to string if it's a number
   username = String(username);
 
   let isSameUser = false;
 
   try {
-    // Find the user by username
     const user = await User.findOne({ username });
-    const token = req.cookies.jwt;
-
-    if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const jwtUsername = decoded.username;
-      if (jwtUsername === username) {
-        isSameUser = true;
-      }
-    }
-
     if (!user) {
+      console.log('User not found:', username);
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Find the profile document associated with the user
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const jwtUsername = decoded.username;
+        if (jwtUsername === username) {
+          isSameUser = true;
+        }
+      } catch (err) {
+        console.error('JWT verification error:', err);
+        isSameUser = false;
+      }
+    }
+
     const profile = await Profile.findOne({ user: user._id });
 
     if (!profile) {
@@ -144,8 +148,6 @@ const getAllProfileObjects = async (req, res) => {
         .status(404)
         .json({ message: 'Profile not found for the user' });
     }
-
-    // Return the profiles array from the profile document
 
     res.status(200).json({ profile, isSameUser });
   } catch (error) {
@@ -155,38 +157,45 @@ const getAllProfileObjects = async (req, res) => {
 };
 
 const setInitialProfile = async (userId) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
-    // Find the user by their ID
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).session(session);
 
     if (!user) {
       throw new Error('User not found');
     }
 
-    // Check if the user already has an associated profile
-    const existingProfile = await Profile.findOne({ user: userId });
+    const existingProfile = await Profile.findOne({ user: userId }).session(
+      session
+    );
 
     if (existingProfile) {
-      console.log('User already has a profile');
+      console.log('User already has a profile:', userId);
+      await session.abortTransaction();
+      session.endSession();
       return;
     }
 
-    // Create a new profile reference object with default values
     const defaultProfile = {
       user: userId,
-      profiles: [], // Set an empty array or add default profile objects here
+      profiles: [],
     };
 
-    // Create and save the new profile document
-    const newProfile = await Profile.create(defaultProfile);
+    const newProfile = await Profile.create([defaultProfile], { session });
     console.log('Initial profile set for user:', user.username);
 
-    // Associate the new profile document with the user
     user.profileDetails = newProfile._id;
-    await user.save();
+    await user.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
 
     console.log('Profile reference updated for user:', user.username);
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     console.error('Set initial profile error:', error);
     throw error;
   }
@@ -194,19 +203,25 @@ const setInitialProfile = async (userId) => {
 
 const updateProfileObject = async (req, res) => {
   let { username } = req.params;
-  // Convert username to string if it's a number
   username = String(username);
   const {
     type,
     id,
     baseUrl,
     userName,
+    link,
+    hostname,
     logo,
     bgColor,
     content,
     location,
     imgUrl,
+    height,
+    width,
   } = req.body;
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
   try {
     const authHeader = req.headers['authorization'];
@@ -214,34 +229,37 @@ const updateProfileObject = async (req, res) => {
 
     await verifyUsernameMatch(token, username);
 
-    // Find the user by their username
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).session(session);
 
     if (!user) {
+      console.log('User not found:', username);
+      await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Find the profile document associated with the user
-    const profile = await Profile.findOne({ user: user._id });
+    const profile = await Profile.findOne({ user: user._id }).session(session);
 
     if (!profile) {
+      await session.abortTransaction();
+      session.endSession();
       return res
         .status(404)
         .json({ message: 'Profile not found for the user' });
     }
 
-    // Find the index of the object to be updated within the profiles array
     const objectIndex = profile.profiles.findIndex(
       (obj) => obj.id.toString() === id
     );
 
     if (objectIndex === -1) {
+      await session.abortTransaction();
+      session.endSession();
       return res
         .status(404)
         .json({ message: 'Object not found in the profile' });
     }
 
-    // Create the new profile object based on the input data
     const newProfileObject = {
       type,
       id,
@@ -252,30 +270,39 @@ const updateProfileObject = async (req, res) => {
       content,
       location,
       imgUrl,
+      height,
+      width,
+      link,
+      hostname,
     };
 
     if (type === 'image' && imgUrl) {
-      // Upload the image to Cloudinary and get the URL
       const uploadedResponse = await cloudinary.uploader.upload(imgUrl, {
-        folder: `bento/${username}`, // Upload image under 'bento/username' folder
-        public_id: `bento_${username}_${Date.now()}`, // Unique ID for the uploaded image
+        folder: `bento/${username}`,
+        public_id: `bento_${username}_${Date.now()}`,
       });
 
-      // Set the imgUrl field of the profile object to the Cloudinary URL
       newProfileObject.imgUrl = uploadedResponse.secure_url;
     }
 
-    // Update the specific object using its index
     profile.profiles[objectIndex] = {
       ...profile.profiles[objectIndex],
       ...newProfileObject,
     };
 
-    // Save the updated profile document
-    await profile.save();
+    await profile.save({ session });
 
-    res.status(200).json({ message: 'Profile object updated successfully' });
+    await session.commitTransaction();
+    session.endSession();
+
+    console.log('Profile object updated:', newProfileObject);
+    res.status(200).json({
+      message: 'Profile object updated successfully',
+      updatedObject: newProfileObject,
+    });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     console.error('Update profile object error:', error);
     res.status(500).json({ message: 'Server error' });
   }
@@ -285,41 +312,48 @@ const setProfileDetails = async (req, res) => {
   const { username } = req.params;
   const { profileDetails } = req.body;
 
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
     await verifyUsernameMatch(token, username);
 
-    // Find the user by username
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).session(session);
 
     if (!user) {
+      console.log('User not found:', username);
+      await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Find the profile document associated with the user
-    let profile = await Profile.findOne({ user: user._id });
+    let profile = await Profile.findOne({ user: user._id }).session(session);
 
     if (!profile) {
-      // Create a new profile document if none exists
-      profile = await Profile.create({ user: user._id, profiles: [] });
+      profile = await Profile.create([{ user: user._id, profiles: [] }], {
+        session,
+      });
     }
 
-    // Clear existing profile objects
     profile.profiles = [];
-
-    // Add new profile objects from the request body
     profile.profiles.push(...profileDetails);
 
-    // Save the updated profile document
-    await profile.save();
+    await profile.save({ session });
 
+    await session.commitTransaction();
+    session.endSession();
+
+    console.log('Profile details updated for user:', username);
     res.status(200).json({
       message: 'Profile details updated successfully',
       profile: profile,
     });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     console.error('Set profile details error:', error);
     res.status(500).json({ message: 'Server error' });
   }
@@ -328,50 +362,57 @@ const setProfileDetails = async (req, res) => {
 const deleteProfileObject = async (req, res) => {
   const { username, objectId } = req.params;
 
-  // Convert username to string if it's a number
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
   try {
-    // Find the user by their username
-
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
     await verifyUsernameMatch(token, username);
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).session(session);
 
     if (!user) {
+      console.log('User not found:', username);
+      await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Find the profile document associated with the user
-    const profile = await Profile.findOne({ user: user._id });
+    const profile = await Profile.findOne({ user: user._id }).session(session);
 
     if (!profile) {
+      await session.abortTransaction();
+      session.endSession();
       return res
         .status(404)
         .json({ message: 'Profile not found for the user' });
     }
 
-    // Find the index of the object to be deleted within the profiles array
     const objectIndex = profile.profiles.findIndex(
       (obj) => obj.id.toString() === objectId
     );
 
     if (objectIndex === -1) {
+      await session.abortTransaction();
+      session.endSession();
       return res
         .status(404)
         .json({ message: 'Object not found in the profile' });
     }
 
-    // Remove the specific object from the profiles array
     profile.profiles.splice(objectIndex, 1);
+    await profile.save({ session });
 
-    // Save the updated profile document
-    await profile.save();
+    await session.commitTransaction();
+    session.endSession();
 
+    console.log('Profile object deleted:', objectId);
     res.status(200).json({ message: 'Profile object deleted successfully' });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     console.error('Delete profile object error:', error);
     res.status(500).json({ message: 'Server error' });
   }
@@ -379,10 +420,11 @@ const deleteProfileObject = async (req, res) => {
 
 const updateDisplayName = async (req, res) => {
   let { username } = req.params;
-  // Convert username to string if it's a number
   username = String(username);
-  //   const { updatedObject } = req.body;
   const { displayname } = req.body;
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
   try {
     const authHeader = req.headers['authorization'];
@@ -390,30 +432,38 @@ const updateDisplayName = async (req, res) => {
 
     await verifyUsernameMatch(token, username);
 
-    // Find the user by their username
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).session(session);
 
     if (!user) {
+      console.log('User not found:', username);
+      await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Find the profile document associated with the user
-    const profile = await Profile.findOne({ user: user._id });
+    const profile = await Profile.findOne({ user: user._id }).session(session);
 
     if (!profile) {
+      await session.abortTransaction();
+      session.endSession();
       return res
         .status(404)
         .json({ message: 'Profile not found for the user' });
     }
 
     profile.displayName = displayname;
+    await profile.save({ session });
 
-    // Save the updated profile document
-    await profile.save();
+    await session.commitTransaction();
+    session.endSession();
 
     console.log('Profile Name updated successfully');
-    res.status(200).json({ message: 'Profile Name updated successfully' });
+    res
+      .status(200)
+      .json({ message: 'Profile Name updated successfully', displayname });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     console.error('Update profile Name error:', error);
     res.status(500).json({ message: 'Server error' });
   }
@@ -421,10 +471,11 @@ const updateDisplayName = async (req, res) => {
 
 const updateBio = async (req, res) => {
   let { username } = req.params;
-  // Convert username to string if it's a number
   username = String(username);
-  //   const { updatedObject } = req.body;
   const { bio } = req.body;
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
   try {
     const authHeader = req.headers['authorization'];
@@ -432,38 +483,49 @@ const updateBio = async (req, res) => {
 
     await verifyUsernameMatch(token, username);
 
-    // Find the user by their username
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).session(session);
 
     if (!user) {
+      console.log('User not found:', username);
+      await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Find the profile document associated with the user
-    const profile = await Profile.findOne({ user: user._id });
+    const profile = await Profile.findOne({ user: user._id }).session(session);
 
     if (!profile) {
+      await session.abortTransaction();
+      session.endSession();
       return res
         .status(404)
         .json({ message: 'Profile not found for the user' });
     }
 
     profile.bio = bio;
+    await profile.save({ session });
 
-    // Save the updated profile document
-    await profile.save();
+    await session.commitTransaction();
+    session.endSession();
 
-    res.status(200).json({ message: 'Profile Bio updated successfully' });
+    console.log('Profile Bio updated successfully');
+    res
+      .status(200)
+      .json({ message: 'Profile Bio updated successfully', bio: bio });
   } catch (error) {
-    console.error('Update profile Name error:', error);
+    await session.abortTransaction();
+    session.endSession();
+    console.error('Update profile Bio error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
 
 const uploadAvatar = async (req, res) => {
   let { username } = req.params;
-  // Convert username to string if it's a number
   username = String(username);
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
   try {
     const authHeader = req.headers['authorization'];
@@ -471,31 +533,109 @@ const uploadAvatar = async (req, res) => {
 
     await verifyUsernameMatch(token, username);
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).session(session);
 
     if (!user) {
+      console.log('User not found:', username);
+      await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Find the profile document associated with the user
-    const profile = await Profile.findOne({ user: user._id });
+    const profile = await Profile.findOne({ user: user._id }).session(session);
 
     if (!profile) {
+      await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({ message: 'Profile not found' });
     }
 
     const fileStr = req.body.avatar;
     const uploadedResponse = await cloudinary.uploader.upload(fileStr, {
-      folder: `bento/${username}`, // Optional folder in Cloudinary
-      public_id: `avatar`, // Unique ID for avatar
+      folder: `bento/${username}`,
+      public_id: `avatar`,
     });
 
     profile.avatar = uploadedResponse.secure_url;
-    await profile.save();
+    await profile.save({ session });
 
-    res.status(200).json({ message: 'Avatar uploaded successfully', profile });
+    await session.commitTransaction();
+    session.endSession();
+
+    console.log('Avatar uploaded successfully:', uploadedResponse.secure_url);
+    res.status(200).json({
+      message: 'Avatar uploaded successfully',
+      profile,
+      avatar_url: uploadedResponse.secure_url,
+    });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     console.error('Avatar upload error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const resize = async (req, res) => {
+  const { username, objectId, height, width } = req.params;
+
+  console.log('Resize:', username, objectId, height, width);
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    await verifyUsernameMatch(token, username);
+
+    const user = await User.findOne({ username }).session(session);
+
+    if (!user) {
+      console.log('User not found:', username);
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const profile = await Profile.findOne({ user: user._id }).session(session);
+
+    if (!profile) {
+      await session.abortTransaction();
+      session.endSession();
+      return res
+        .status(404)
+        .json({ message: 'Profile not found for the user' });
+    }
+
+    const objectIndex = profile.profiles.findIndex(
+      (obj) => obj.id.toString() === objectId
+    );
+
+    if (objectIndex === -1) {
+      await session.abortTransaction();
+      session.endSession();
+      return res
+        .status(404)
+        .json({ message: 'Object not found in the profile' });
+    }
+
+    profile.profiles[objectIndex].height = height;
+    profile.profiles[objectIndex].width = width;
+    await profile.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    console.log('Profile object resized:', objectId);
+    res
+      .status(200)
+      .json({ message: 'Profile object resized successfully', width, height });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    console.error('Resize profile object error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -510,4 +650,5 @@ module.exports = {
   updateDisplayName,
   updateBio,
   uploadAvatar,
+  resize,
 };
