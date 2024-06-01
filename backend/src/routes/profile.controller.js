@@ -288,7 +288,10 @@ const updateProfileObject = async (req, res) => {
     session.endSession();
 
     console.log('Profile object updated:', newProfileObject);
-    res.status(200).json({ message: 'Profile object updated successfully' });
+    res.status(200).json({
+      message: 'Profile object updated successfully',
+      updatedObject: newProfileObject,
+    });
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
@@ -447,7 +450,9 @@ const updateDisplayName = async (req, res) => {
     session.endSession();
 
     console.log('Profile Name updated successfully');
-    res.status(200).json({ message: 'Profile Name updated successfully' });
+    res
+      .status(200)
+      .json({ message: 'Profile Name updated successfully', displayname });
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
@@ -496,7 +501,9 @@ const updateBio = async (req, res) => {
     session.endSession();
 
     console.log('Profile Bio updated successfully');
-    res.status(200).json({ message: 'Profile Bio updated successfully' });
+    res
+      .status(200)
+      .json({ message: 'Profile Bio updated successfully', bio: bio });
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
@@ -548,7 +555,11 @@ const uploadAvatar = async (req, res) => {
     session.endSession();
 
     console.log('Avatar uploaded successfully:', uploadedResponse.secure_url);
-    res.status(200).json({ message: 'Avatar uploaded successfully', profile });
+    res.status(200).json({
+      message: 'Avatar uploaded successfully',
+      profile,
+      avatar_url: uploadedResponse.secure_url,
+    });
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
@@ -610,7 +621,9 @@ const resize = async (req, res) => {
     session.endSession();
 
     console.log('Profile object resized:', objectId);
-    res.status(200).json({ message: 'Profile object resized successfully' });
+    res
+      .status(200)
+      .json({ message: 'Profile object resized successfully', width, height });
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
