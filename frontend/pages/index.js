@@ -2,8 +2,15 @@
 
 import Head from 'next/head';
 import Link from 'next/link';
-import BehanceImage from '@/assets/behance.png';
 import Image from 'next/image';
+
+import coffee from '@/assets/coffee.svg';
+import dribble from '@/assets/dribble.svg';
+import github from '@/assets/github.svg';
+import linkedin from '@/assets/linkedin.svg';
+import twitter from '@/assets/twitter.svg';
+import youtube from '@/assets/youtube.svg';
+import instagram from '@/assets/instagram.svg';
 
 export default function LandingPage() {
   return (
@@ -17,120 +24,117 @@ export default function LandingPage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm">
-        <div className="container flex h-16 items-center justify-between px-4 md:px-8">
-          <Link href="#">
-            <span className="flex items-center gap-2">
-              <OrigamiIcon className="h-6 w-6 text-gray-900" />
-              <span className="text-lg font-semibold text-gray-900">
-                Bento+
-              </span>
+      <main className="">
+        <section className=" max-w-7xl animate-fade-in w-full bg-gradient-to-b from-[#F9FAFB] to-white py-12 md:py-20">
+          <div className=" container mx-auto flex flex-col items-center gap-8 px-4 md:px-8 justify-center">
+            <span className="flex flex-col items-center gap-2">
+              <OrigamiIcon className="h-8 w-8 text-gray-900" />
+              <span className="text-lg font-semibold text-gray-900">Bento</span>
             </span>
-          </Link>
-          <nav className="hidden items-center gap-4 md:flex">
-            <Link href="#">
-              <span className="text-sm font-medium text-gray-700 hover:text-gray-900">
-                Explore
-              </span>
-            </Link>
-            <Link href="#">
-              <span className="text-sm font-medium text-gray-700 hover:text-gray-900">
-                Pricing
-              </span>
-            </Link>
-            <Link href="#">
-              <span className="text-sm font-medium text-gray-700 hover:text-gray-900">
-                About Us
-              </span>
-            </Link>
-            <Link href="#">
-              <span className="text-sm font-medium text-gray-700 hover:text-gray-900">
-                Contact
-              </span>
-            </Link>
-          </nav>
-          <div className="flex items-center gap-2">
-            <Link href="/signup">
-              <span className="inline-flex h-9 items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50">
-                Get Started
-              </span>
-            </Link>
-            <MenuIcon className="md:hidden h-6 w-6" />
-          </div>
-        </div>
-      </header>
-
-      <main>
-        <section className="w-full bg-gradient-to-b from-[#F9FAFB] to-white py-12 md:py-20 lg:py-24">
-          <div className="container grid items-center gap-8 px-4 md:px-8 lg:grid-cols-2 lg:gap-12">
-            <div className="space-y-6">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900">
-                Elevate Your Online Presence with Bento+
+            <div className="space-y-6 text-center">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 z-10">
+                Elevate Your Online Presence
               </h1>
-              <p className="max-w-[600px] text-base sm:text-lg text-gray-700 md:text-xl">
+              <p className="max-w-[600px] mx-auto text-base sm:text-lg text-gray-700 md:text-xl">
                 Bento+ is a powerful link-in-bio platform that helps you
                 showcase your best self online. With enhanced customization,
                 multimedia support, and professional branding, you can increase
                 engagement by up to 60%.
               </p>
-              <div className="flex flex-col gap-4 sm:flex-row">
-                <Link href="#">
-                  <span className="inline-flex h-10 items-center justify-center rounded-md bg-gray-900 px-6 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50">
-                    Get Started
-                  </span>
-                </Link>
-                <Link href="#">
-                  <span className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-6 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50">
-                    Learn More
-                  </span>
+              <div className="flex flex-col gap-4 xs:flex-row justify-center">
+                <Link
+                  href={'/signup'}
+                  class="relative inline-block p-px font-semibold leading-6 text-white no-underline bg-gray-900 shadow-2xl cursor-pointer group rounded-xl shadow-zinc-900">
+                  <div class="relative z-10 flex items-center px-6 py-3 space-x-2 rounded-xl bg-gray-950/50 ring-1 ring-white/10 justify-center ">
+                    <span className="">Create your Bento</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                      data-slot="icon"
+                      class="w-6 h-6">
+                      <path
+                        fill-rule="evenodd"
+                        d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+                        clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                  <span class="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-emerald-400/0 via-gray-400/90 to-slate-400/20 transition-opacity duration-500 group-hover:opacity-40"></span>
                 </Link>
               </div>
             </div>
-            <div className="flex justify-center">
-              <Image
-                alt="Bento+ Hero Image"
-                className="max-w-full rounded-lg"
-                height={500}
-                src={BehanceImage}
-                style={{
-                  aspectRatio: '4/3',
-                  objectFit: 'cover',
-                }}
-                width={750}
-              />
-            </div>
+          </div>
+          <div className="animate-fade-in">
+            <Image
+              className="z-0  animate-float text-6xl absolute top-5 left-[8rem]"
+              src={coffee}
+              alt="Coffee"
+            />
+            <Image
+              className="z-0  animate-float text-5xl absolute top-[10rem] left-5"
+              src={dribble}
+              alt="Dribble"
+            />
+            <Image
+              className=" z-0  animate-float text-4xl absolute top-[13rem] left-[12rem]"
+              src={github}
+              alt="GitHub"
+            />
+            <Image
+              className="z-0  animate-float text-4xl absolute bottom-[5rem] left-[9rem]"
+              src={linkedin}
+              alt="LinkedIn"
+            />
+            <Image
+              className="z-0  animate-float text-5xl absolute bottom-[11rem] left-[20rem]"
+              src={twitter}
+              alt="Twitter"
+            />
+            <Image
+              className="z-0  animate-float text-4xl absolute bottom-[11rem] right-[20rem]"
+              src={youtube}
+              alt="YouTube"
+            />
+            <Image
+              className="z-0 animate-float text-6xl absolute bottom-[5rem] right-[9rem]"
+              src={instagram}
+              alt="Instagram"
+            />
+            <Image
+              className="z-0  animate-float text-4xl absolute top-[13rem] right-[12rem]"
+              src={coffee}
+              alt="Coffee"
+            />
+            <Image
+              className="z-0  animate-float text-5xl absolute top-[10rem] right-5"
+              src={github}
+              alt="GitHub"
+            />
+            <Image
+              className="z-0  animate-float text-6xl absolute top-5 right-[8rem]"
+              src={dribble}
+              alt="Dribble"
+            />
           </div>
         </section>
 
         <section
-          className="w-full bg-white py-12 md:py-20 lg:py-24"
+          className=" max-w-7xl w-full bg-white py-12 md:py-20 lg:py-24"
           id="features">
-          <div className="container grid items-center gap-8 px-4 md:px-8 lg:grid-cols-2 lg:gap-12">
-            <div className="flex justify-center">
-              <Image
-                alt="Bento+ Features Image"
-                className="max-w-full rounded-lg"
-                height={500}
-                src={BehanceImage}
-                style={{
-                  aspectRatio: '4/3',
-                  objectFit: 'cover',
-                }}
-                width={750}
-              />
-            </div>
+          <div className="container mx-auto flex items-center gap-8 px-4 md:px-8">
             <div className="space-y-6">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
-                Unlock Your Full Potential
-              </h2>
-              <p className="max-w-[600px] text-base sm:text-lg text-gray-700 md:text-xl">
-                Bento+'s advanced features empower you to create a professional
-                and engaging online presence. Showcase your best work, connect
-                with your audience, and drive up to 60% more engagement.
-              </p>
-              <div className="grid gap-4">
+              <div className="flex flex-col items-center space-y-6 text-center">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
+                  Unlock Your Full Potential
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-6">
                 <div className="flex items-start gap-4">
-                  <UsersIcon className="h-6 w-6 flex-shrink-0 text-gray-900" />
+                  <UsersIcon
+                    className="h-6 w-6 flex-shrink-0 text-gray-900"
+                    aria-label="Customizable Profiles Icon"
+                  />
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">
                       Customizable Profiles
@@ -142,7 +146,10 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <VideoIcon className="h-6 w-6 flex-shrink-0 text-gray-900" />
+                  <VideoIcon
+                    className="h-6 w-6 flex-shrink-0 text-gray-900"
+                    aria-label="Multimedia Support Icon"
+                  />
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">
                       Multimedia Support
@@ -155,7 +162,10 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <BadgeIcon className="h-6 w-6 flex-shrink-0 text-gray-900" />
+                  <BadgeIcon
+                    className="h-6 w-6 flex-shrink-0 text-gray-900"
+                    aria-label="Professional Branding Icon"
+                  />
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">
                       Professional Branding
@@ -172,121 +182,78 @@ export default function LandingPage() {
         </section>
 
         <section
-          className="w-full bg-gradient-to-b from-[#F9FAFB] to-white py-12 md:py-20 lg:py-24"
-          id="showcase">
-          <div className="container grid items-center gap-8 px-4 md:px-8 lg:grid-cols-2 lg:gap-12">
-            <div className="space-y-6">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
-                Elevate Your Online Presence
-              </h2>
-              <p className="max-w-[600px] text-base sm:text-lg text-gray-700 md:text-xl">
-                Bento+ makes it easy to share your links and showcase your best
-                self online. With our powerful platform, you can increase
-                engagement by up to 60% and make a lasting impression.
-              </p>
-              <div className="flex flex-col gap-4 sm:flex-row">
-                <Link href="#">
-                  <span className="inline-flex h-10 items-center justify-center rounded-md bg-gray-900 px-6 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50">
-                    Get Started
-                  </span>
-                </Link>
-                <Link href="#">
-                  <span className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-6 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50">
-                    Learn More
-                  </span>
-                </Link>
-              </div>
-            </div>
-            <div className="flex justify-center">
-              <Image
-                alt="Bento+ Showcase Image"
-                className="max-w-full rounded-lg"
-                height={500}
-                src={BehanceImage}
-                style={{
-                  aspectRatio: '4/3',
-                  objectFit: 'cover',
-                }}
-                width={750}
-              />
-            </div>
-          </div>
-        </section>
-
-        <section
-          className="w-full bg-white py-12 md:py-20 lg:py-24"
+          className="  max-w-7xl w-full bg-white py-12 md:py-20 lg:py-24"
           id="testimonials">
-          <div className="container grid items-center gap-8 px-4 md:px-8 lg:grid-cols-2 lg:gap-12">
-            <div className="space-y-6">
+          <div className="container mx-auto flex flex-col items-center gap-8 px-4 md:px-8">
+            <div className="space-y-6 text-center">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
                 What Our Users Are Saying
               </h2>
-              <p className="max-w-[600px] text-base sm:text-lg text-gray-700 md:text-xl">
+              <p className="max-w-[600px] mx-auto text-base sm:text-lg text-gray-700 md:text-xl">
                 Bento+ has helped thousands of users elevate their online
                 presence. Here's what they have to say about us:
               </p>
-              <div className="grid gap-8 mt-8">
-                <div className="bg-gray-100 rounded-lg p-6 space-y-4 shadow-lg">
-                  <p className="text-lg text-gray-900">
-                    "Bento+ has completely transformed how I showcase my work
-                    online. It's professional, sleek, and incredibly easy to
-                    use."
-                  </p>
-                  <p className="text-gray-700">- Amanda Smith, Photographer</p>
-                </div>
-                <div className="bg-gray-100 rounded-lg p-6 space-y-4 shadow-lg">
-                  <p className="text-lg text-gray-900">
-                    "I've seen a 50% increase in engagement since using Bento+.
-                    It's the perfect tool for anyone serious about their online
-                    presence."
-                  </p>
-                  <p className="text-gray-700">- John Doe, Content Creator</p>
-                </div>
-              </div>
             </div>
-            <div className="flex justify-center">
-              <Image
-                alt="Bento+ Testimonials Image"
-                className="max-w-full rounded-lg"
-                height={500}
-                src={BehanceImage}
-                style={{
-                  aspectRatio: '4/3',
-                  objectFit: 'cover',
-                }}
-                width={750}
-              />
+            <div className="grid gap-8 mt-8 md:grid-cols-2">
+              <div className="bg-gray-100 rounded-lg p-6 space-y-4 shadow-lg">
+                <p className="text-lg text-gray-900">
+                  "Bento+ has completely transformed how I showcase my work
+                  online. It's professional, sleek, and incredibly easy to use."
+                </p>
+                <p className="text-gray-700">- Amanda Smith, Photographer</p>
+              </div>
+              <div className="bg-gray-100 rounded-lg p-6 space-y-4 shadow-lg">
+                <p className="text-lg text-gray-900">
+                  "I've seen a 50% increase in engagement since using Bento+.
+                  It's the perfect tool for anyone serious about their online
+                  presence."
+                </p>
+                <p className="text-gray-700">- John Doe, Content Creator</p>
+              </div>
             </div>
           </div>
         </section>
 
         <section
-          className="w-full bg-gradient-to-b from-[#F9FAFB] to-white py-12 md:py-20 lg:py-24"
+          className="  max-w-7xl w-full bg-gradient-to-b from-[#F9FAFB] to-white py-12 md:py-20 lg:py-24"
           id="cta">
-          <div className="container flex flex-col items-center justify-center gap-6 px-4 md:px-8">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
+          <div className="container mx-auto flex flex-col items-center justify-center gap-6 px-4 md:px-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 text-center">
               Ready to Elevate Your Online Presence?
             </h2>
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <Link href="#">
-                <span className="inline-flex h-12 items-center justify-center rounded-md bg-gray-900 px-8 text-lg font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50">
-                  Get Started
-                </span>
-              </Link>
-              <Link href="#">
-                <span className="inline-flex h-12 items-center justify-center rounded-md border border-gray-200 bg-white px-8 text-lg font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50">
-                  Learn More
-                </span>
+            <div className="flex flex-col gap-4 mt-3 xs:flex-row justify-center">
+              <Link
+                href={'/signup'}
+                class="relative inline-block p-px font-semibold leading-6 text-white no-underline bg-gray-900 shadow-2xl cursor-pointer group rounded-xl shadow-zinc-900">
+                <div class="relative z-10 flex items-center px-6 py-3 space-x-2 rounded-xl bg-gray-950/50 ring-1 ring-white/10 justify-center ">
+                  <span className="">Create your Bento</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                    data-slot="icon"
+                    class="w-6 h-6">
+                    <path
+                      fill-rule="evenodd"
+                      d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <span class="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-emerald-400/0 via-gray-400/90 to-slate-400/20 transition-opacity duration-500 group-hover:opacity-40"></span>
               </Link>
             </div>
           </div>
         </section>
 
-        <footer className="w-full bg-gray-900 py-12">
-          <div className="container flex flex-col items-center justify-center gap-6 px-4 md:px-8">
+        <footer className=" w-full bg-gray-900 py-12">
+          <div className=" max-w-7xl container mx-auto flex flex-col items-center justify-center gap-6 px-4 md:px-8">
             <div className="flex items-center gap-4">
-              <OrigamiIcon className="h-8 w-8 text-gray-50" />
-              <span className="text-lg font-semibold text-gray-50">Bento+</span>
+              <OrigamiIcon
+                className="h-8 w-8 text-gray-50"
+                aria-label="Bento+ logo"
+              />
+              <span className="text-lg font-semibold text-gray-50">Bento</span>
             </div>
             <p className="text-lg text-gray-200 text-center max-w-[600px]">
               Bento+ is a powerful platform to showcase your best self online.
