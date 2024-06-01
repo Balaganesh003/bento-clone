@@ -44,16 +44,22 @@ const InitialData = [
     id: uuidv4(),
     type: 'image',
     imgUrl: 'null',
+    width: 5,
+    height: 5,
   },
   {
     id: uuidv4(),
     type: 'text',
     content: null,
+    width: 1,
+    height: 1,
   },
   {
     id: uuidv4(),
     type: 'map',
     location: { latitude: null, longitude: null, zoom: 4 },
+    width: 5,
+    height: 5,
   },
 ];
 
@@ -187,6 +193,8 @@ export default function Home({ data }) {
       id: uuidv4(),
       type: 'text',
       content: '',
+      width: 1,
+      height: 1,
     };
 
     dispatch(profileActions.setProfileDetails([...profileDetails, Obj]));
@@ -195,6 +203,8 @@ export default function Home({ data }) {
       type: Obj.type,
       id: Obj.id,
       content: '',
+      width: 1,
+      height: 1,
     });
   };
 
@@ -203,6 +213,8 @@ export default function Home({ data }) {
       id: uuidv4(),
       type: 'map',
       location: { latitude: 20.5937, longitude: 78.9629, zoom: 4 },
+      width: 5,
+      height: 5,
     };
 
     dispatch(profileActions.setProfileDetails([...profileDetails, MapObj]));
@@ -219,29 +231,17 @@ export default function Home({ data }) {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        dispatch(
-          profileActions.setProfileDetails([
-            ...profileDetails,
-            {
-              id: uuidv4(),
-              type: 'image',
-              imgUrl: e.target.result,
-            },
-          ])
-        );
         const res = axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
           type: 'image',
           id: uuidv4(),
           imgUrl: e.target.result,
+          width: 5,
+          height: 5,
         });
         dispatch(
           profileActions.setProfileDetails([
             ...profileDetails,
-            {
-              id: uuidv4(),
-              type: 'image',
-              imgUrl: e.target.result,
-            },
+            ...res.data.addedObject,
           ])
         );
         console.log(res);
@@ -287,6 +287,8 @@ export default function Home({ data }) {
           ...link,
           userName: userName,
           isAdded: true,
+          width: 1,
+          height: 1,
         })
       );
 
@@ -294,6 +296,8 @@ export default function Home({ data }) {
         ...link,
         userName: userName,
         isAdded: true,
+        width: 1,
+        height: 1,
       });
 
       dispatch(
@@ -315,6 +319,8 @@ export default function Home({ data }) {
             logo,
             hostname,
             baseUrl,
+            width: 1,
+            height: 1,
           },
         ])
       );
@@ -326,6 +332,8 @@ export default function Home({ data }) {
         logo,
         hostname,
         baseUrl,
+        width: 1,
+        height: 1,
       });
     }
     setUrl('');
@@ -391,9 +399,16 @@ export default function Home({ data }) {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4 }}>
-                {index === 0 && <AddSocialLinks />}
-                {index === 1 && <AddOtherDetails prevPanel={prevPanel} />}
-                {index === 2 && <GotoProfile setIsFirst={handelFirstTime} />}
+                {index === 0 && <AddSocialLinks USERNAME={USERNAME} />}
+                {index === 1 && (
+                  <AddOtherDetails prevPanel={prevPanel} USERNAME={USERNAME} />
+                )}
+                {index === 2 && (
+                  <GotoProfile
+                    setIsFirst={handelFirstTime}
+                    USERNAME={USERNAME}
+                  />
+                )}
               </motion.div>
               {index < 2 && (
                 <div className="flex mt-10 gap-3">

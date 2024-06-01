@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import AddSocialLinkCard from '@/components/AddSocialLinkCard';
 import { useSelector } from 'react-redux';
 
-const AddSocialLinks = () => {
+const AddSocialLinks = ({ USERNAME }) => {
   const { socialLinks } = useSelector((state) => state.profile);
 
   useEffect(() => {}, [socialLinks]);
@@ -22,6 +22,7 @@ const AddSocialLinks = () => {
               logo={link.logo}
               bgColor={link.bgColor}
               isAdded={link.isAdded}
+              USERNAME={USERNAME}
             />
           ))}
         </div>

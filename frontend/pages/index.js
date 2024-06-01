@@ -1,5 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import BehanceImage from '@/assets/behance.png';
+import Image from 'next/image';
 
 export default function LandingPage() {
   return (
@@ -46,7 +48,7 @@ export default function LandingPage() {
             </Link>
           </nav>
           <div className="flex items-center gap-2">
-            <Link href="#">
+            <Link href="/signup">
               <span className="inline-flex h-9 items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50">
                 Get Started
               </span>
@@ -83,11 +85,11 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="flex justify-center">
-              <img
+              <Image
                 alt="Bento+ Hero Image"
                 className="max-w-full rounded-lg"
                 height={500}
-                src="/placeholder.svg"
+                src={BehanceImage}
                 style={{
                   aspectRatio: '4/3',
                   objectFit: 'cover',
@@ -103,11 +105,11 @@ export default function LandingPage() {
           id="features">
           <div className="container grid items-center gap-8 px-4 md:px-8 lg:grid-cols-2 lg:gap-12">
             <div className="flex justify-center">
-              <img
+              <Image
                 alt="Bento+ Features Image"
                 className="max-w-full rounded-lg"
                 height={500}
-                src="/placeholder.svg"
+                src={BehanceImage}
                 style={{
                   aspectRatio: '4/3',
                   objectFit: 'cover',
@@ -194,11 +196,11 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="flex justify-center">
-              <img
+              <Image
                 alt="Bento+ Showcase Image"
                 className="max-w-full rounded-lg"
                 height={500}
-                src="/placeholder.svg"
+                src={BehanceImage}
                 style={{
                   aspectRatio: '4/3',
                   objectFit: 'cover',
@@ -241,11 +243,11 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="flex justify-center">
-              <img
+              <Image
                 alt="Bento+ Testimonials Image"
                 className="max-w-full rounded-lg"
                 height={500}
-                src="/placeholder.svg"
+                src={BehanceImage}
                 style={{
                   aspectRatio: '4/3',
                   objectFit: 'cover',
