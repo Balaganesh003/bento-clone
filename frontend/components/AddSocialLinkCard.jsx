@@ -5,7 +5,14 @@ import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import { axiosWithToken } from '@/utils/axiosjwt';
 
-const AddSocialLinkCard = ({ link, bgColor, logo, isAdded, isLogo }) => {
+const AddSocialLinkCard = ({
+  link,
+  bgColor,
+  logo,
+  isAdded,
+  isLogo,
+  USERNAME,
+}) => {
   const dispatch = useDispatch();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [linkValue, setLinkValue] = useState(link.userName);
@@ -15,6 +22,12 @@ const AddSocialLinkCard = ({ link, bgColor, logo, isAdded, isLogo }) => {
   };
 
   const addLink = async () => {
+    const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
+      ...link,
+      userName: linkValue,
+      isAdded: true,
+    });
+
     dispatch(
       profileActions.addItem({
         ...link,
@@ -23,13 +36,7 @@ const AddSocialLinkCard = ({ link, bgColor, logo, isAdded, isLogo }) => {
       })
     );
 
-    const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
-      ...link,
-      userName: linkValue,
-      isAdded: true,
-    });
-
-    console.log(res.data);
+    console.log(res.data.addedObject.id);
 
     dispatch(
       profileActions.updateSocialLinks({
@@ -59,13 +66,21 @@ const AddSocialLinkCard = ({ link, bgColor, logo, isAdded, isLogo }) => {
     setLinkValue('');
   };
 
-  const handelLink = (paste) => {
+  const handelLink = async (paste) => {
     const url = new URL(paste);
     if (!url) return;
     const { hostname } = url;
     const path = url.pathname.split('/');
     const userName = path[1];
     const baseUrl = hostname.split('.')[0];
+
+    const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
+      ...link,
+      userName,
+      isAdded: true,
+    });
+
+    console.log(res.data.addedObject);
 
     dispatch(
       profileActions.updateSocialLinks({

@@ -44,16 +44,22 @@ const InitialData = [
     id: uuidv4(),
     type: 'image',
     imgUrl: 'null',
+    width: 5,
+    height: 5,
   },
   {
     id: uuidv4(),
     type: 'text',
     content: null,
+    width: 1,
+    height: 1,
   },
   {
     id: uuidv4(),
     type: 'map',
     location: { latitude: null, longitude: null, zoom: 4 },
+    width: 5,
+    height: 5,
   },
 ];
 
@@ -183,89 +189,78 @@ export default function Home({ data }) {
   };
 
   const addNote = async () => {
-    const Obj = {
+    const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
       id: uuidv4(),
       type: 'text',
       content: '',
-    };
-
-    dispatch(profileActions.setProfileDetails([...profileDetails, Obj]));
-
-    const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
-      type: Obj.type,
-      id: Obj.id,
-      content: '',
+      width: 1,
+      height: 1,
     });
+
+    dispatch(
+      profileActions.setProfileDetails([
+        ...profileDetails,
+        res.data.addedObject,
+      ])
+    );
   };
 
-  const addMap = () => {
-    const MapObj = {
+  const addMap = async () => {
+    const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
       id: uuidv4(),
       type: 'map',
       location: { latitude: 20.5937, longitude: 78.9629, zoom: 4 },
-    };
-
-    dispatch(profileActions.setProfileDetails([...profileDetails, MapObj]));
-
-    const res = axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
-      type: MapObj.type,
-      id: MapObj.id,
-      location: MapObj.location,
+      width: 5,
+      height: 5,
     });
+
+    dispatch(
+      profileActions.setProfileDetails([
+        ...profileDetails,
+        res.data.addedObject,
+      ])
+    );
   };
 
-  const addImage = (e) => {
+  const addImage = async (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
+        const res = await axiosWithToken.post(
+          `${API_URL}/profile/${USERNAME}`,
+          {
+            type: 'image',
+            id: uuidv4(),
+            imgUrl: e.target.result,
+            width: 5,
+            height: 5,
+          }
+        );
         dispatch(
           profileActions.setProfileDetails([
             ...profileDetails,
-            {
-              id: uuidv4(),
-              type: 'image',
-              imgUrl: e.target.result,
-            },
+            res.data.addedObject,
           ])
         );
-        const res = axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
-          type: 'image',
-          id: uuidv4(),
-          imgUrl: e.target.result,
-        });
-        dispatch(
-          profileActions.setProfileDetails([
-            ...profileDetails,
-            {
-              id: uuidv4(),
-              type: 'image',
-              imgUrl: e.target.result,
-            },
-          ])
-        );
-        console.log(res);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const addTitle = () => {
-    const TitleObj = {
+  const addTitle = async () => {
+    const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
       id: uuidv4(),
       type: 'title',
       content: '',
-    };
-
-    dispatch(profileActions.setProfileDetails([...profileDetails, TitleObj]));
-
-    const res = axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
-      type: TitleObj.type,
-      id: TitleObj.id,
-      content: TitleObj.content,
     });
 
-    console.log(res);
+    dispatch(
+      profileActions.setProfileDetails([
+        ...profileDetails,
+        res.data.addedObject,
+      ])
+    );
   };
 
   const handelLink = async (text) => {
@@ -282,43 +277,29 @@ export default function Home({ data }) {
     if (allSocialLinks.includes(baseUrl)) {
       const link = socialLinks.find((link) => link.id === baseUrl);
 
-      dispatch(
-        profileActions.addItem({
-          ...link,
-          userName: userName,
-          isAdded: true,
-        })
-      );
-
       const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
         ...link,
         userName: userName,
         isAdded: true,
+        width: 1,
+        height: 1,
       });
 
       dispatch(
+        profileActions.addItem({
+          ...res.data.addedObject,
+          isAdded: true,
+        })
+      );
+
+      dispatch(
         profileActions.updateSocialLinks({
-          ...link,
-          userName: userName,
+          ...res.data.addedObject,
           isAdded: true,
         })
       );
     } else {
-      dispatch(
-        profileActions.setProfileDetails([
-          ...profileDetails,
-          {
-            id: uuidv4(),
-            type: 'links',
-            userName,
-            link: text,
-            logo,
-            hostname,
-            baseUrl,
-          },
-        ])
-      );
-      const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
+      const linkObj = {
         id: uuidv4(),
         type: 'links',
         userName,
@@ -326,7 +307,20 @@ export default function Home({ data }) {
         logo,
         hostname,
         baseUrl,
+        width: 1,
+        height: 1,
+      };
+
+      const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
+        ...linkObj,
       });
+
+      dispatch(
+        profileActions.setProfileDetails([
+          ...profileDetails,
+          res.data.addedObject,
+        ])
+      );
     }
     setUrl('');
     setIsUrlOpen(false);
@@ -391,9 +385,16 @@ export default function Home({ data }) {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4 }}>
-                {index === 0 && <AddSocialLinks />}
-                {index === 1 && <AddOtherDetails prevPanel={prevPanel} />}
-                {index === 2 && <GotoProfile setIsFirst={handelFirstTime} />}
+                {index === 0 && <AddSocialLinks USERNAME={USERNAME} />}
+                {index === 1 && (
+                  <AddOtherDetails prevPanel={prevPanel} USERNAME={USERNAME} />
+                )}
+                {index === 2 && (
+                  <GotoProfile
+                    setIsFirst={handelFirstTime}
+                    USERNAME={USERNAME}
+                  />
+                )}
               </motion.div>
               {index < 2 && (
                 <div className="flex mt-10 gap-3">

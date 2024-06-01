@@ -18,7 +18,7 @@ dotenv.config();
 const app = express();
 
 // Middleware for logging HTTP requests
-app.use(morgan('combined'));
+// app.use(morgan('combined'));
 
 // Middleware for parsing cookies
 app.use(cookieParser());

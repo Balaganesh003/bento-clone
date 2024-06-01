@@ -12,10 +12,19 @@ const ImageCard = ({ item, USERNAME }) => {
   const dispatch = useDispatch();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const { isSameUser } = useSelector((state) => state.ui);
-  const [width, setWidth] = useState(1);
-  const [height, setHeight] = useState(1);
+  const [width, setWidth] = useState(item.width);
+  const [height, setHeight] = useState(item.height);
 
-  const handleResize = (width, height) => {
+  const handleResize = async (width, height) => {
+    try {
+      const res = await axiosWithToken.put(
+        `${API_URL}/profile/resize/${USERNAME}/${item.id}/${width}/${height}`
+      );
+
+      console.log(res.data.message);
+    } catch (error) {
+      console.log('error', error.message);
+    }
     setWidth(width);
     setHeight(height);
   };
