@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaGoogle } from 'react-icons/fa';
 import { HiArrowNarrowLeft } from 'react-icons/hi';
-import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function SignUpMail({
   email,
@@ -16,12 +16,44 @@ export default function SignUpMail({
 }) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  const handelGoogleSignIn = () => {
-    window.open(`${API_URL}/auth/google/`, '_self');
-  };
+  // window.open(`${API_URL}/auth/google/`, '_self');
 
+  const handelGoogleSignIn = async () => {
+    try {
+      toast.promise(
+        fetch(`${API_URL}/auth/google/`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Credentials: 'include',
+          },
+        }).then(async (res) => {
+          const data = await res.json();
+          if (!res.ok) {
+            throw new Error(
+              data.message || 'An error occurred, please try email signup'
+            );
+          }
+          return data;
+        }),
+        {
+          loading: 'Redirecting to Google...',
+          success: (data) => {
+            window.open(data.url, '_self');
+            return data.message;
+          },
+          error: (err) => {
+            return `Error: ${err.message}. Please try email signup.`;
+          },
+        }
+      );
+    } catch (error) {
+      toast.error(`Error: ${error.message}. Please try email signup.`);
+    }
+  };
   return (
     <React.Fragment>
+      <Toaster />
       <HiArrowNarrowLeft
         onClick={prevPanel}
         className="text-[28px] cursor-pointer text-[#6c6c6c] "
