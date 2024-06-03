@@ -5,20 +5,19 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const authRouter = require('./routes/auth.router.js');
 const dotenv = require('dotenv');
-const passportConfig = require('./utils/passport.js');
 const profileRouter = require('./routes/profile.router.js');
-const path = require('path');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
 dotenv.config();
+require('./utils/passport.js');
 
 const app = express();
 
 // Middleware for logging HTTP requests
-// app.use(morgan('combined'));
+app.use(morgan('combined'));
 
 // Middleware for parsing cookies
 app.use(cookieParser());
