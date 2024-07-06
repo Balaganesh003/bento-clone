@@ -676,7 +676,7 @@ export default function Home({ data }) {
       )}
 
       {/* Remove suggestions */}
-      {isSuggestionsOpen && (
+      {isSuggestionsOpen && isSameUser && (
         <div
           onClick={removeSuggestion}
           className="fixed right-5 bottom-[5rem] shadow-lg flex gap-2 items-center rounded-lg bg-white border p-2 text-[14px] font-bold cursor-pointer">
