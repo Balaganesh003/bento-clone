@@ -18,5 +18,6 @@ router.put(
   profileController.resize
 );
 router.delete('/:username/:objectId', profileController.deleteProfileObject);
+router.delete('/:username', profileController.removeObjectsOfType);
 
 module.exports = router;

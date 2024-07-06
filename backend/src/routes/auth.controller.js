@@ -40,7 +40,7 @@ const register = async (req, res) => {
     res.cookie('jwt', token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 15,
-      secure: true, // Since you are using HTTPS
+      secure: process.env.NODE_ENV == 'production', // Since you are using HTTPS
       sameSite: 'none',
     });
 
@@ -76,7 +76,7 @@ const login = async (req, res) => {
     res.cookie('jwt', token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 15,
-      secure: true, // Since you are using HTTPS
+      secure: process.env.NODE_ENV == 'production', // Since you are using HTTPS
       sameSite: 'none',
     });
 
@@ -98,7 +98,7 @@ const logout = (req, res) => {
 
   res.clearCookie('jwt', {
     httpOnly: true,
-    secure: true, // Since you are using HTTPS
+    secure: process.env.NODE_ENV == 'production', // Since you are using HTTPS
     sameSite: 'none',
   });
   res.status(200).json({ message: 'Logged out successfully' });

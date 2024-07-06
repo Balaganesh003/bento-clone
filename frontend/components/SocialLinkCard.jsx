@@ -28,7 +28,9 @@ const SocialLinkCard = ({ item, USERNAME }) => {
     setHeight(height);
   };
 
-  let link = `https://${item.baseUrl}.com/${item.userName}`;
+  let link = item.baseUrl.includes('linkedin')
+    ? `https://${item.baseUrl}.com/in/${item.userName}`
+    : `https://${item.baseUrl}.com/${item.userName}`;
 
   const updateUserName = (e) => {
     if (!isSameUser) {
@@ -76,7 +78,9 @@ const SocialLinkCard = ({ item, USERNAME }) => {
         )}
 
         <Link href={link} target="_blank">
-          <button className="absolute bottom-5 h-fit left-5   text-[0.75rem] leading-4 font-bold py-[7px] px-[21px] rounded-md bg-slate-300">
+          <button
+            className={`absolute bottom-5 h-fit left-5   text-[0.75rem] leading-4 font-bold py-[7px] px-[21px] rounded-md bg-slate-300`}
+            style={{ backgroundColor: item.bgColor }}>
             Follow
           </button>
         </Link>

@@ -14,6 +14,9 @@ const verifyUsernameMatch = async (token, urlUsername) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const jwtUsername = decoded.username;
 
+    console.log('JWT username:', jwtUsername);
+    console.log('URL username:', urlUsername);
+
     if (jwtUsername !== urlUsername) {
       throw new Error('Username mismatch');
     }
@@ -640,6 +643,70 @@ const resize = async (req, res) => {
   }
 };
 
+const removeObjectsOfType = async (req, res) => {
+  let { username } = req.params;
+  username = String(username);
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    await verifyUsernameMatch(token, username);
+
+    const user = await User.findOne({ username }).session(session);
+
+    if (!user) {
+      console.log('User not found:', username);
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const profile = await Profile.findOne({ user: user._id }).session(session);
+
+    if (!profile) {
+      await session.abortTransaction();
+      session.endSession();
+      return res
+        .status(404)
+        .json({ message: 'Profile not found for the user' });
+    }
+
+    // Filter out objects that match the types and conditions to remove
+    profile.profiles = profile.profiles.filter((obj) => {
+      switch (obj.type) {
+        case 'image':
+          return !(obj.imgUrl === 'null');
+        case 'text':
+          return !(obj.content === null);
+        case 'map':
+          return !(
+            obj.location.latitude === null && obj.location.longitude === null
+          );
+        default:
+          return true;
+      }
+    });
+
+    // Save the updated profile
+    await profile.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    console.log('Objects removed successfully');
+    res.status(200).json({ message: 'Objects removed successfully', profile });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    console.error('Remove objects error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 module.exports = {
   addProfileObject,
   getAllProfileObjects,
@@ -651,4 +718,5 @@ module.exports = {
   updateBio,
   uploadAvatar,
   resize,
+  removeObjectsOfType,
 };
