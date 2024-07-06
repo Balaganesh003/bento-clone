@@ -170,15 +170,24 @@ export default function Home({ data }) {
       dispatch(
         profileActions.setProfileDetails([...profileDetails, ...InitialData])
       );
-      InitialData.map(async (item) => {
-        const res = await axiosWithToken.post(
-          `${API_URL}/profile/${USERNAME}`,
-          {
-            ...item,
-          }
+
+      try {
+        await Promise.all(
+          InitialData.map(async (item) => {
+            const res = await axiosWithToken.post(
+              `${API_URL}/profile/${USERNAME}`,
+              {
+                ...item,
+              }
+            );
+            console.log(res);
+          })
         );
-        console.log(res);
-      });
+      } catch (error) {
+        console.error('Error adding profile objects:', error);
+        // Handle specific errors, like WriteConflict, here if needed
+        // Retry logic or alternative handling can be implemented
+      }
     }
   };
 
