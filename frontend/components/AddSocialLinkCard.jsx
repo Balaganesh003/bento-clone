@@ -51,7 +51,7 @@ const AddSocialLinkCard = ({
     dispatch(profileActions.removeItem(link.id));
 
     const res = axiosWithToken.delete(
-      `http://localhost:5000/profile/abc/${link.id}`
+      `http://localhost:5000/profile/${USERNAME}/${link.id}`
     );
 
     console.log(res.data);
@@ -209,7 +209,7 @@ const AddSocialLinkCard = ({
             <button
               style={{ zIndex: 20000 }}
               onClick={handelOnPaste}
-              className="bg-[#fafafa] shadow-sm border group-hover:block z-50 text-black px-3 py-1 rounded-lg hover:bg-[#f7f7f7] transition-colors duration-150 h-fit text-[14px]">
+              className="bg-[#fafafa] hidden shadow-sm border group-hover:block z-50 text-black px-3 py-1 rounded-lg hover:bg-[#f7f7f7] transition-colors duration-150 h-fit text-[14px]">
               Paste
             </button>
           )}
