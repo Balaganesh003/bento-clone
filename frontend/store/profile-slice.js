@@ -104,9 +104,9 @@ const profileSlice = createSlice({
     removeSuggestion(state, action) {
       state.profileDetails = state.profileDetails.filter(
         (item) =>
-          item?.content !== null &&
-          item?.userName !== null &&
-          item?.location !== null &&
+          item?.content !== null ||
+          item?.userName !== null ||
+          item?.location.latitude !== null ||
           item?.imgUrl !== null
       );
     },

@@ -34,6 +34,7 @@ import { axiosWithToken } from '@/utils/axiosjwt';
 import { uiActions } from '@/store/ui-slice';
 import { defaultSocialLinks } from '@/constant';
 import { Toaster, toast } from 'react-hot-toast';
+import a from 'react-map-gl-geocoder';
 
 axios.defaults.withCredentials = true;
 
@@ -351,8 +352,12 @@ export default function Home({ data }) {
     }
   };
 
-  const removeSuggestion = () => {
+  const removeSuggestion = async () => {
+    if (USERNAME === undefined) return;
+    console.log('Removing suggestions for:', USERNAME);
+    const res = await axiosWithToken.delete(`${API_URL}/profile/${USERNAME}`);
     dispatch(profileActions.removeSuggestion());
+
     setRemoveSuggestions(false);
   };
 
