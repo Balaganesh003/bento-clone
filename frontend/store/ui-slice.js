@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  isfirstTime: true,
+  isfirstTime: false,
   isSameUser: false,
+  isSuggestionsOpen: false,
 };
 
 const uiSlice = createSlice({
@@ -14,6 +15,9 @@ const uiSlice = createSlice({
     },
     setSameUser(state, action) {
       state.isSameUser = action.payload;
+    },
+    setSuggestionsOpen(state, action) {
+      state.isSuggestionsOpen = action.payload;
     },
   },
 });

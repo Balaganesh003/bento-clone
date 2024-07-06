@@ -34,7 +34,6 @@ import { axiosWithToken } from '@/utils/axiosjwt';
 import { uiActions } from '@/store/ui-slice';
 import { defaultSocialLinks } from '@/constant';
 import { Toaster, toast } from 'react-hot-toast';
-import a from 'react-map-gl-geocoder';
 
 axios.defaults.withCredentials = true;
 
@@ -47,11 +46,12 @@ const InitialData = [
     id: uuidv4(),
     type: 'image',
     imgUrl: 'null',
-    width: 5,
-    height: 5,
+    width: 1,
+    height: 1,
   },
   {
     id: uuidv4(),
+
     type: 'text',
     content: null,
     width: 1,
@@ -72,13 +72,13 @@ export default function Home({ data }) {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const isFirst = useSelector((state) => state.ui.isfirstTime);
-  const [removeSuggestions, setRemoveSuggestions] = useState(true);
   const { profileDetails } = useSelector((state) => state.profile);
+  const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
+
   const { isSameUser } = useSelector((state) => state.ui);
   const [isLaptop, setIsLaptop] = useState(true);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [avatarSrc, setAvatarSrc] = useState('');
-  const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
   const [url, setUrl] = useState('');
   const [isUrlOpen, setIsUrlOpen] = useState(false);
 
@@ -105,6 +105,8 @@ export default function Home({ data }) {
         } else {
           dispatch(uiActions.setSameUser(false)); // Handle case where isSameUser is undefined
         }
+
+        checkSuggestions(profile.profiles); // Call checkSuggestions with fetched data
       } catch (error) {
         console.error('Profile data fetch error:', error);
 
@@ -120,6 +122,28 @@ export default function Home({ data }) {
       getData();
     }
   }, [USERNAME, router.query.id]);
+
+  const checkSuggestions = (profiles) => {
+    let suggestionsFound = false;
+
+    for (const item of profiles) {
+      // Check for null or undefined values in the relevant properties
+      if (
+        (item.type === 'text' && !item.content) ||
+        (item.type === 'image' && !item.imgUrl) ||
+        (item.type === 'map' &&
+          (!item.location?.latitude || !item.location?.longitude)) ||
+        (item.type === 'links' && !item.userName) ||
+        (item.type === 'title' && !item.content)
+      ) {
+        suggestionsFound = true;
+        break;
+      }
+    }
+
+    setIsSuggestionsOpen(suggestionsFound);
+    console.log('Suggestions found:', suggestionsFound);
+  };
 
   const handelFirstTime = () => {
     dispatch(uiActions.setFirstTime(false));
@@ -167,26 +191,20 @@ export default function Home({ data }) {
 
     if (index >= 0 && !isSuggestionsOpen) {
       setIsSuggestionsOpen(true);
-      dispatch(
-        profileActions.setProfileDetails([...profileDetails, ...InitialData])
-      );
 
       try {
-        await Promise.all(
-          InitialData.map(async (item) => {
-            const res = await axiosWithToken.post(
-              `${API_URL}/profile/${USERNAME}`,
-              {
-                ...item,
-              }
-            );
-            console.log(res);
-          })
+        const res = await axiosWithToken.put(
+          `${API_URL}/profile/replace/${USERNAME}`,
+          {
+            profileDetails: [...profileDetails, ...InitialData],
+          }
+        );
+        dispatch(
+          profileActions.setProfileDetails([...profileDetails, ...InitialData])
         );
       } catch (error) {
         console.error('Error adding profile objects:', error);
-        // Handle specific errors, like WriteConflict, here if needed
-        // Retry logic or alternative handling can be implemented
+        toast.error('Error adding profile objects');
       }
     }
   };
@@ -362,12 +380,27 @@ export default function Home({ data }) {
   };
 
   const removeSuggestion = async () => {
-    if (USERNAME === undefined) return;
-    console.log('Removing suggestions for:', USERNAME);
-    const res = await axiosWithToken.delete(`${API_URL}/profile/${USERNAME}`);
-    dispatch(profileActions.removeSuggestion());
+    if (!USERNAME) return;
+    try {
+      console.log('Removing suggestions for:', USERNAME);
+      const res = await axiosWithToken.delete(`${API_URL}/profile/${USERNAME}`);
 
-    setRemoveSuggestions(false);
+      if (res.status === 200) {
+        dispatch(profileActions.removeSuggestion());
+        setIsSuggestionsOpen(false);
+        console.log('Suggestions removed successfully');
+      } else {
+        console.error(
+          'Failed to remove suggestions:',
+          res.status,
+          res.statusText
+        );
+      }
+    } catch (error) {
+      console.error('Error removing suggestions:', error);
+      // Optionally, you can show an error notification to the user
+      toast.error('Failed to remove suggestions. Please try again.');
+    }
   };
 
   return (
@@ -643,7 +676,7 @@ export default function Home({ data }) {
       )}
 
       {/* Remove suggestions */}
-      {removeSuggestions && !isFirst && isSameUser && (
+      {isSuggestionsOpen && (
         <div
           onClick={removeSuggestion}
           className="fixed right-5 bottom-[5rem] shadow-lg flex gap-2 items-center rounded-lg bg-white border p-2 text-[14px] font-bold cursor-pointer">
