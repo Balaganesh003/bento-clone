@@ -32,6 +32,8 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { axiosWithToken } from '@/utils/axiosjwt';
 import { uiActions } from '@/store/ui-slice';
+import { defaultSocialLinks } from '@/constant';
+import { Toaster, toast } from 'react-hot-toast';
 
 axios.defaults.withCredentials = true;
 
@@ -70,7 +72,7 @@ export default function Home({ data }) {
   const [direction, setDirection] = useState(1);
   const isFirst = useSelector((state) => state.ui.isfirstTime);
   const [removeSuggestions, setRemoveSuggestions] = useState(true);
-  const { profileDetails, socialLinks } = useSelector((state) => state.profile);
+  const { profileDetails } = useSelector((state) => state.profile);
   const { isSameUser } = useSelector((state) => state.ui);
   const [isLaptop, setIsLaptop] = useState(true);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -80,8 +82,6 @@ export default function Home({ data }) {
   const [isUrlOpen, setIsUrlOpen] = useState(false);
 
   let USERNAME = router.query?.id[0];
-
-  console.log('USERNAME', API_URL, USERNAME);
 
   useEffect(() => {
     const getData = async () => {
@@ -265,48 +265,37 @@ export default function Home({ data }) {
 
   const handelLink = async (text) => {
     const url = new URL(text);
-    if (!url) return;
+
     const { hostname } = url;
-    const path = url.pathname.split('/');
-    const userName = path[1];
-    const baseUrl = hostname.split('.')[0];
-    const logo = '';
+    const path = url.pathname.split('/').filter(Boolean);
+    if (path.length === 0) return;
 
-    const allSocialLinks = socialLinks.map((link) => link.id);
+    const userName = path[path.length - 1];
 
-    if (allSocialLinks.includes(baseUrl)) {
-      const link = socialLinks.find((link) => link.id === baseUrl);
+    const hostnameParts = hostname.split('.');
+    const baseUrlKey = hostnameParts.includes('www')
+      ? hostnameParts[1]
+      : hostnameParts[0];
 
-      const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
-        ...link,
-        userName: userName,
-        isAdded: true,
-        width: 1,
-        height: 1,
-      });
+    const baseUrlData = defaultSocialLinks[baseUrlKey];
 
-      dispatch(
-        profileActions.addItem({
-          ...res.data.addedObject,
-          isAdded: true,
-        })
-      );
+    if (!baseUrlData) {
+      console.log('Unsupported social media platform:', baseUrlKey);
 
-      dispatch(
-        profileActions.updateSocialLinks({
-          ...res.data.addedObject,
-          isAdded: true,
-        })
-      );
-    } else {
+      const { hostname } = url;
+      const path = url.pathname.split('/');
+      const userName = path[1];
+      const baseUrl = hostname.split('.')[0];
+      const logo = '';
+
       const linkObj = {
         id: uuidv4(),
         type: 'links',
-        userName,
+        userName: userName,
         link: text,
         logo,
         hostname,
-        baseUrl,
+        baseUrl: baseUrl,
         width: 1,
         height: 1,
       };
@@ -315,13 +304,28 @@ export default function Home({ data }) {
         ...linkObj,
       });
 
+      dispatch(profileActions.addItem([res.data.addedObject]));
+      toast.success('Link added successfully.');
+      setIsUrlOpen(false);
+    } else {
+      const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
+        id: uuidv4(),
+        ...baseUrlData,
+        logo: baseUrlData.logo,
+        baseUrl: baseUrlData.baseUrl,
+        userName: userName,
+        width: 1,
+        height: 1,
+      });
+
       dispatch(
-        profileActions.setProfileDetails([
-          ...profileDetails,
-          res.data.addedObject,
-        ])
+        profileActions.addItem({
+          ...res.data.addedObject,
+        })
       );
+      toast.success('Link added successfully.');
     }
+
     setUrl('');
     setIsUrlOpen(false);
   };
@@ -355,6 +359,7 @@ export default function Home({ data }) {
   return (
     <main
       className={`${inter.className} overflow-x-hidden flex justify-center xl:justify-normal`}>
+      <Toaster />
       <div className=" xl:max-w-none max-w-[428px] xl:w-full flex-col xl:flex-row flex xl:gap-[2.5rem] xl:p-[4rem] ">
         <div className="flex xl:min-w-[278px] xl:max-w-[calc(100vw-64rem)]   xl:max-h-[calc(100vh-8rem)] flex-1 flex-col px-6 pt-12 xl:p-0 ">
           {!isFirst && (
