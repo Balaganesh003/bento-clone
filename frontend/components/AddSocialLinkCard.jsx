@@ -4,6 +4,8 @@ import crosslogo from '@/assets/whitecloselogo.svg';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import { axiosWithToken } from '@/utils/axiosjwt';
+import { defaultSocialLinks } from '@/constant';
+import toast from 'react-hot-toast';
 
 const AddSocialLinkCard = ({
   link,
@@ -25,23 +27,20 @@ const AddSocialLinkCard = ({
     const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
       ...link,
       userName: linkValue,
-      isAdded: true,
+      width: 1,
+      height: 1,
     });
 
     dispatch(
       profileActions.addItem({
-        ...link,
-        userName: linkValue,
+        ...res.data.addedObject,
         isAdded: true,
       })
     );
 
-    console.log(res.data.addedObject.id);
-
     dispatch(
       profileActions.updateSocialLinks({
-        ...link,
-        userName: linkValue,
+        ...res.data.addedObject,
         isAdded: true,
       })
     );
@@ -51,8 +50,9 @@ const AddSocialLinkCard = ({
   const removeLink = () => {
     dispatch(profileActions.removeItem(link.id));
 
-    // fix this
-    // const res = axios.delete(`http://localhost:5000/profile/abc/${link.id}`);
+    const res = axiosWithToken.delete(
+      `http://localhost:5000/profile/abc/${link.id}`
+    );
 
     console.log(res.data);
 
@@ -68,32 +68,43 @@ const AddSocialLinkCard = ({
 
   const handelLink = async (paste) => {
     const url = new URL(paste);
-    if (!url) return;
+
     const { hostname } = url;
-    const path = url.pathname.split('/');
-    const userName = path[1];
-    const baseUrl = hostname.split('.')[0];
+    const path = url.pathname.split('/').filter(Boolean);
+    if (path.length === 0) return;
+
+    const userName = path[path.length - 1];
+
+    const hostnameParts = hostname.split('.');
+    const baseUrlKey = hostnameParts.includes('www')
+      ? hostnameParts[1]
+      : hostnameParts[0];
+
+    const baseUrlData = defaultSocialLinks[baseUrlKey];
+
+    if (link.id !== baseUrlData.baseUrl) {
+      toast.error('Invalid link provided!');
+      return;
+    }
 
     const res = await axiosWithToken.post(`${API_URL}/profile/${USERNAME}`, {
       ...link,
-      userName,
+      userName: userName,
       isAdded: true,
+      height: 1,
+      width: 1,
     });
-
-    console.log(res.data.addedObject);
 
     dispatch(
       profileActions.updateSocialLinks({
-        ...link,
-        userName,
+        ...res.data.addedObject,
         isAdded: true,
       })
     );
 
     dispatch(
       profileActions.addItem({
-        ...link,
-        userName,
+        ...res.data.addedObject,
         isAdded: true,
       })
     );
@@ -104,11 +115,13 @@ const AddSocialLinkCard = ({
     if (e.clipboardData?.files?.length > 0) {
       const paste = e.clipboardData.getData('text');
       if (paste.includes('http') || paste.includes('https')) {
+        console.log(paste);
         handelLink(paste);
       }
     } else {
       const paste = await navigator.clipboard.readText();
       if (paste.includes('http') || paste.includes('https')) {
+        console.log(paste);
         handelLink(paste);
       }
     }
@@ -134,8 +147,9 @@ const AddSocialLinkCard = ({
       )}
 
       <div
+        style={{ backgroundColor: isAdded && bgColor }}
         className={`flex h-[44px] w-[280px] items-center gap-1 ${
-          isAdded ? bgColor : 'border'
+          isAdded ? 'border-transparent' : 'border'
         }  rounded-lg pl-3  text-white  flex z-[50]`}>
         {isAdded ? (
           <div className="w-[14px] h-[14px] mt-1">
@@ -169,7 +183,8 @@ const AddSocialLinkCard = ({
           onChange={handelChange}
           contentEditable="true"
           suppressContentEditableWarning={true}
-          className={`flex-1 ${isAdded && bgColor}  ${
+          style={{ backgroundColor: isAdded && bgColor }}
+          className={`flex-1   ${
             isAdded ? 'text-white' : 'text-black'
           }  whitespace-nowrap focus:outline-none font-medium  text-[20px] text-ellipsis  focus:text-clip truncate focus:overflow-y-clip focus:text-start leading-6 w-[5rem]`}
         />
@@ -192,8 +207,9 @@ const AddSocialLinkCard = ({
           )}
           {!isAdded && linkValue?.length == 0 && (
             <button
+              style={{ zIndex: 20000 }}
               onClick={handelOnPaste}
-              className="bg-[#fafafa] shadow-sm border group-hover:block  hidden text-black px-3 py-1 rounded-lg hover:bg-[#f7f7f7] transition-colors duration-150 h-fit text-[14px]">
+              className="bg-[#fafafa] shadow-sm border group-hover:block z-50 text-black px-3 py-1 rounded-lg hover:bg-[#f7f7f7] transition-colors duration-150 h-fit text-[14px]">
               Paste
             </button>
           )}
