@@ -9,7 +9,7 @@ const initialState = {
       baseUrl: 'twitter',
       userName: '',
       logo: 'https://res.cloudinary.com/dqlj6jlir/image/upload/v1715698990/logo/twitter_leayqs.svg',
-      bgColor: 'bg-[#55ACEE]',
+      bgColor: '#55ACEE',
       isAdded: false,
     },
     {
@@ -18,7 +18,7 @@ const initialState = {
       baseUrl: 'instagram',
       userName: '',
       logo: 'https://res.cloudinary.com/dqlj6jlir/image/upload/v1715698960/logo/instagram_psrjkv.svg',
-      bgColor: 'bg-[#CE3B9F]',
+      bgColor: '#CE3B9F',
       isAdded: false,
     },
     {
@@ -27,7 +27,7 @@ const initialState = {
       type: 'socialLink',
       userName: '',
       logo: 'https://res.cloudinary.com/dqlj6jlir/image/upload/v1715698955/logo/github_bpmxzd.svg',
-      bgColor: 'bg-[#181717]',
+      bgColor: '#181717',
       isAdded: false,
     },
     {
@@ -36,7 +36,7 @@ const initialState = {
       type: 'socialLink',
       userName: '',
       logo: 'https://res.cloudinary.com/dqlj6jlir/image/upload/v1715698975/logo/linkedin_dmyqon.svg',
-      bgColor: 'bg-[#007EBB]',
+      bgColor: '#007EBB',
       isAdded: false,
     },
     {
@@ -45,7 +45,7 @@ const initialState = {
       type: 'socialLink',
       userName: '',
       logo: 'https://res.cloudinary.com/dqlj6jlir/image/upload/v1715699056/logo/dribble_wx1hht.svg',
-      bgColor: 'bg-[#D15584]',
+      bgColor: '#D15584',
       isAdded: false,
     },
     {
@@ -54,7 +54,7 @@ const initialState = {
       type: 'socialLink',
       userName: '',
       logo: 'https://res.cloudinary.com/dqlj6jlir/image/upload/v1715699053/logo/coffee_eerped.svg',
-      bgColor: 'bg-[#FFDD06]',
+      bgColor: '#FFDD06',
       isAdded: false,
     },
   ],
@@ -104,9 +104,9 @@ const profileSlice = createSlice({
     removeSuggestion(state, action) {
       state.profileDetails = state.profileDetails.filter(
         (item) =>
-          item?.content !== null &&
-          item?.userName !== null &&
-          item?.location !== null &&
+          item?.content !== null ||
+          item?.userName !== null ||
+          item?.location.latitude !== null ||
           item?.imgUrl !== null
       );
     },

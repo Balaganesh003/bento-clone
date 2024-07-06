@@ -113,7 +113,7 @@ const ImageCard = ({ item, USERNAME }) => {
               className={`
                    w-[1.5rem] h-[1.5rem] rounded-md `}
             />
-            <p className={`mt-1 font-bold text-[14px] `}>Add Text</p>
+            <p className={`mt-1 font-bold text-[14px] `}>Add Image</p>
             <input
               type="file"
               id="resumeInput"
