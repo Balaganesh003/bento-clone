@@ -79,7 +79,7 @@ const SocialLinkCard = ({ item, USERNAME }) => {
 
         <Link href={link} target="_blank">
           <button
-            className={`absolute bottom-5 h-fit left-5   text-[0.75rem] leading-4 font-bold py-[7px] px-[21px] rounded-md bg-slate-300`}
+            className={`absolute bottom-5 h-fit left-5 text-[#f5f5f5]  text-[0.75rem] leading-4 font-bold py-[7px] px-[21px] rounded-md`}
             style={{ backgroundColor: item.bgColor }}>
             Follow
           </button>
