@@ -76,7 +76,7 @@ export default function Home({ data }) {
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
 
   const { isSameUser } = useSelector((state) => state.ui);
-  const [isLaptop, setIsLaptop] = useState(false);
+  const [isLaptop, setIsLaptop] = useState(true);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [avatarSrc, setAvatarSrc] = useState('');
   const [url, setUrl] = useState('');
@@ -418,21 +418,34 @@ export default function Home({ data }) {
 
   return (
     <main
-      className={`${inter.className} overflow-x-hidden flex justify-center xl:justify-normal`}>
+      className={`${inter.className}  overflow-x-hidden flex justify-center ${
+        isLaptop && 'xl:justify-normal'
+      }`}>
       <Toaster />
       <div
-        className={` xl:max-w-none max-w-[428px] xl:w-full flex-col xl:flex-row flex xl:gap-[2.5rem] xl:p-[4rem]  `}>
-        <div className="flex xl:min-w-[278px] xl:max-w-[calc(100vw-64rem)]   xl:max-h-[calc(100vh-8rem)] flex-1 flex-col px-6 pt-12 xl:p-0 ">
+        className={`  max-w-[428px] flex-col  flex  ${
+          isLaptop &&
+          'xl:max-w-none  xl:w-full xl:flex-row xl:gap-[2.5rem] xl:p-[4rem]'
+        } `}>
+        <div
+          className={`flex  flex-1 flex-col px-6 pt-12  ${
+            isLaptop &&
+            'xl:min-w-[278px] xl:max-w-[calc(100vw-64rem)] xl:p-0  xl:max-h-[calc(100vh-8rem)]'
+          }`}>
           {!isFirst && (
-            <div className="px-4 xl:p-0 ">
+            <div className={`px-4 ${isLaptop && 'xl:p-0'}  `}>
               <div className="flex justify-between w-full ">
                 <Avatar
+                  isLaptop={isLaptop}
                   avatarSrc={avatarSrc}
                   setAvatarSrc={setAvatarSrc}
                   username={USERNAME}
                   isSameUser={isSameUser}
                 />
-                <div className="flex h-fit xl:hidden rounded-lg mt-2 border shadow-sm  items-center justify-center">
+                <div
+                  className={`flex h-fit  rounded-lg mt-2 border shadow-sm  items-center justify-center ${
+                    isLaptop && 'xl:hidden'
+                  }`}>
                   <button
                     onClick={copyUrlToClipboard}
                     className="text-[0.87rem] transition-all duration-200 font-bold w-full py-2 px-[10px] hover:bg-[#FBFBFB]">
@@ -441,7 +454,7 @@ export default function Home({ data }) {
                 </div>
               </div>
               <div className="mt-8 ml-2 ">
-                <NameBio USERNAME={USERNAME} />
+                <NameBio USERNAME={USERNAME} isLaptop={isLaptop} />
               </div>
             </div>
           )}
@@ -486,11 +499,18 @@ export default function Home({ data }) {
 
         {isSameUser ? (
           <DragDropContext onDragEnd={onDragEnd}>
-            <div className="xl:max-w-[820px]  xl:min-w-[820px] xl:w-[820px] px-6 pb-6 pt-12 xl:p-0 xl:min-h-[calc(100vh-8rem)] w-full h-full flex">
+            <div
+              className={` px-6 pb-6 pt-12  w-full h-full flex ${
+                isLaptop &&
+                'xl:max-w-[820px]  xl:min-w-[820px] xl:w-[820px] xl:p-0 xl:min-h-[calc(100vh-8rem)]'
+              }`}>
               <Droppable droppableId="ROOT" type="group">
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef}>
-                    <div className=" flex  gap-[24px] xl:gap-[39px]  flex-wrap last:pb-[6rem]">
+                    <div
+                      className={`flex  gap-[24px] ${
+                        isLaptop && 'xl:gap-[39px]'
+                      }  flex-wrap last:pb-[6rem]`}>
                       {profileDetails.map((item, index) => (
                         <Draggable
                           key={item.id}
@@ -572,7 +592,7 @@ export default function Home({ data }) {
       </div>
       {/* Fixed bar */}
       {isSameUser && (
-        <div className="fixed bottom-[2.5rem]  backdrop-blur-lg  bg-blend-multiply  bg-white/50  left-1/2 -translate-x-1/2 p-3 rounded-2xl flex items-center shadow-xl  ">
+        <div className="fixed bottom-[2.5rem]  backdrop-blur-lg  bg-blend-multiply  bg-white/50  left-1/2 -translate-x-1/2 p-3 rounded-2xl flex items-center shadow-xl z-[10000] ">
           <div className="h-[33px] hidden xl:flex rounded-md w-[127px] bg-green-500 text-white  items-center justify-center">
             <button
               onClick={copyUrlToClipboard}
@@ -627,7 +647,7 @@ export default function Home({ data }) {
               <div className="cursor-pointer rounded-md flex items-center justify-center border hover:shadow-xl">
                 <Image
                   src={ImageLogo}
-                  className=" rounded-md object-cover w-[24px] h-[24px]"
+                  className=" rounded-md object-cover  w-[24px] h-[24px]"
                   alt="image"
                 />
               </div>
