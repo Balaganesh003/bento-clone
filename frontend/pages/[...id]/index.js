@@ -581,7 +581,11 @@ export default function Home({ data }) {
                                     />
                                   )}
                                   {item.type === 'title' && (
-                                    <TitleBox item={item} USERNAME={USERNAME} />
+                                    <TitleBox
+                                      item={item}
+                                      USERNAME={USERNAME}
+                                      isLaptop={isLaptop}
+                                    />
                                   )}
                                 </div>
                               </div>
