@@ -191,21 +191,25 @@ export default function Home({ data }) {
 
     if (index >= 0 && !isSuggestionsOpen) {
       setIsSuggestionsOpen(true);
+      await addSuggestions();
+    }
+  };
 
-      try {
-        const res = await axiosWithToken.put(
-          `${API_URL}/profile/replace/${USERNAME}`,
-          {
-            profileDetails: [...profileDetails, ...InitialData],
-          }
-        );
-        dispatch(
-          profileActions.setProfileDetails([...profileDetails, ...InitialData])
-        );
-      } catch (error) {
-        console.error('Error adding profile objects:', error);
-        toast.error('Error adding profile objects');
-      }
+  const addSuggestions = async () => {
+    if (!USERNAME) return;
+    try {
+      const res = await axiosWithToken.put(
+        `${API_URL}/profile/replace/${USERNAME}`,
+        {
+          profileDetails: [...profileDetails, ...InitialData],
+        }
+      );
+      dispatch(
+        profileActions.setProfileDetails([...profileDetails, ...InitialData])
+      );
+    } catch (error) {
+      console.error('Error adding profile objects:', error);
+      toast.error('Error adding profile objects');
     }
   };
 
@@ -385,8 +389,14 @@ export default function Home({ data }) {
       console.log('Removing suggestions for:', USERNAME);
       const res = await axiosWithToken.delete(`${API_URL}/profile/${USERNAME}`);
 
+      console.log(
+        'Remove suggestions response:',
+        res.status,
+        res.data.ProfileObject
+      );
+
       if (res.status === 200) {
-        dispatch(profileActions.removeSuggestion());
+        dispatch(profileActions.setProfileDetails(res.data.ProfileObject));
         setIsSuggestionsOpen(false);
         console.log('Suggestions removed successfully');
       } else {
@@ -398,7 +408,6 @@ export default function Home({ data }) {
       }
     } catch (error) {
       console.error('Error removing suggestions:', error);
-      // Optionally, you can show an error notification to the user
       toast.error('Failed to remove suggestions. Please try again.');
     }
   };
@@ -458,7 +467,7 @@ export default function Home({ data }) {
                     </span>
                   </button>
                   <button
-                    onClick={() => handelFirstTime()}
+                    onClick={() => [handelFirstTime(), addSuggestions()]}
                     className="w-[100px] h-[41px] hover:bg-[#f7f7f7] rounded-lg flex items-center justify-center transition-colors duration-150">
                     Skip
                   </button>
