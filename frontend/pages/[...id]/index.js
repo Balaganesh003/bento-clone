@@ -76,7 +76,7 @@ export default function Home({ data }) {
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
 
   const { isSameUser } = useSelector((state) => state.ui);
-  const [isLaptop, setIsLaptop] = useState(true);
+  const [isLaptop, setIsLaptop] = useState(false);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [avatarSrc, setAvatarSrc] = useState('');
   const [url, setUrl] = useState('');
@@ -129,12 +129,10 @@ export default function Home({ data }) {
     for (const item of profiles) {
       // Check for null or undefined values in the relevant properties
       if (
-        (item.type === 'text' && !item.content) ||
-        (item.type === 'image' && !item.imgUrl) ||
+        (item.type === 'text' && item.content == null) ||
+        (item.type === 'image' && item.imgUrl == null) ||
         (item.type === 'map' &&
-          (!item.location?.latitude || !item.location?.longitude)) ||
-        (item.type === 'links' && !item.userName) ||
-        (item.type === 'title' && !item.content)
+          (!item.location?.latitude || !item.location?.longitude))
       ) {
         suggestionsFound = true;
         break;
@@ -416,7 +414,8 @@ export default function Home({ data }) {
     <main
       className={`${inter.className} overflow-x-hidden flex justify-center xl:justify-normal`}>
       <Toaster />
-      <div className=" xl:max-w-none max-w-[428px] xl:w-full flex-col xl:flex-row flex xl:gap-[2.5rem] xl:p-[4rem] ">
+      <div
+        className={` xl:max-w-none max-w-[428px] xl:w-full flex-col xl:flex-row flex xl:gap-[2.5rem] xl:p-[4rem]  `}>
         <div className="flex xl:min-w-[278px] xl:max-w-[calc(100vw-64rem)]   xl:max-h-[calc(100vh-8rem)] flex-1 flex-col px-6 pt-12 xl:p-0 ">
           {!isFirst && (
             <div className="px-4 xl:p-0 ">
