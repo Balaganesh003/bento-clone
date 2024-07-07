@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 
-const Avatar = ({ username }) => {
+const Avatar = ({ username, isLaptop }) => {
   const { avatar } = useSelector((state) => state.profile);
   const { isSameUser } = useSelector((state) => state.ui);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -48,7 +48,9 @@ const Avatar = ({ username }) => {
 
   return (
     <div
-      className={`flex-shrink-0 border-gray-border w-[7.5rem] h-[7.5rem] xl:w-[11.5rem] xl:h-[11.5rem]  text-center ${
+      className={`flex-shrink-0 border-gray-border w-[7.5rem] h-[7.5rem] ${
+        isLaptop && 'xl:w-[11.5rem] xl:h-[11.5rem]'
+      }   text-center ${
         isSameUser && 'cursor-pointer'
       }  relative rounded-full border-dashed ${
         !avatar && 'border-2'

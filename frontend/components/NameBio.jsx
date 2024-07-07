@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 
-const NameBio = ({ USERNAME }) => {
+const NameBio = ({ USERNAME, isLaptop }) => {
   const dispatch = useDispatch();
   const nameRef = useRef(null);
   const bioRef = useRef(null);
@@ -61,12 +61,16 @@ const NameBio = ({ USERNAME }) => {
           ref={nameRef}
           contentEditable
           suppressContentEditableWarning
-          className={`relative tracking-[-2px] text-[32px] xl:text-[44px] font-bold focus:outline-none leading-[120%] text-[#565656]`}>
+          className={`relative tracking-[-2px] text-[32px] ${
+            isLaptop && 'xl:text-[44px]'
+          } font-bold focus:outline-none leading-[120%] text-[#565656]`}>
           {isNamePlaceholder ? 'Your Name' : name}
         </div>
       ) : (
         <div
-          className={`relative tracking-[-2px] text-[32px] xl:text-[44px] font-bold focus:outline-none leading-[120%] text-[#565656] ${
+          className={`relative tracking-[-2px] text-[32px] ${
+            isLaptop && 'xl:text-[44px]'
+          } font-bold focus:outline-none leading-[120%] text-[#565656] ${
             name.length === 0 && 'hidden'
           }`}>
           {isNamePlaceholder ? 'Your Name' : name}
@@ -80,12 +84,16 @@ const NameBio = ({ USERNAME }) => {
           ref={bioRef}
           contentEditable
           suppressContentEditableWarning
-          className="mt-3 xl:text-xl focus:outline-none relative text-[#565656]">
+          className={`mt-3 ${
+            isLaptop && 'xl:text-xl'
+          } focus:outline-none relative text-[#565656]`}>
           {isBioPlaceholder ? 'Your Bio' : bio}
         </div>
       ) : (
         <div
-          className={`mt-3 xl:text-xl focus:outline-none relative text-[#565656] ${
+          className={`mt-3 ${
+            isLaptop && 'xl:text-xl'
+          } focus:outline-none relative text-[#565656] ${
             bio.length === 0 && 'hidden'
           } `}>
           {isBioPlaceholder ? 'Your Bio' : bio}
