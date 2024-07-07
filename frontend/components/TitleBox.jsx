@@ -5,7 +5,7 @@ import { profileActions } from '@/store/profile-slice';
 import { axiosWithToken } from '@/utils/axiosjwt';
 import { useSelector } from 'react-redux';
 
-const TitleBox = ({ item, USERNAME }) => {
+const TitleBox = ({ item, USERNAME, isLaptop }) => {
   const dispatch = useDispatch();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const { isSameUser } = useSelector((state) => state.ui);
@@ -76,7 +76,9 @@ const TitleBox = ({ item, USERNAME }) => {
 
   return (
     <div
-      className={`w-[375px] xl:w-[820px]  rounded-[16px] p-2 relative border border-transparent  group bg-white transition-all duration-200 ease-in-out ${
+      className={`w-[375px]  ${
+        isLaptop && 'xl:w-[820px]'
+      }  rounded-[16px] p-2 relative border border-transparent  group bg-white transition-all duration-200 ease-in-out ${
         isSameUser && 'hover:shadow-lg hover:border-[#e3e3e3]'
       }`}>
       {isSameUser ? (
@@ -85,14 +87,18 @@ const TitleBox = ({ item, USERNAME }) => {
           onBlur={handlePlaceholder}
           contentEditable="true"
           suppressContentEditableWarning={true}
-          className="max-w-[790px] min-w-[10rem] truncate text-ellipsis focus:text-clip h-[44px] cursor-text w-fit pl-4 pr-8 py-2 text-xl  bg-transparent outline-none rounded-lg transition-all duration-200 ease-in-out text-[#000] font-bold text-[24px] hover:bg-[#f5f5f5]"
+          className={`${
+            isLaptop && 'xl:max-w-[790px]'
+          } xl:min-w-[10rem] max-w-[355px] truncate text-ellipsis focus:text-clip h-[44px] cursor-text w-fit pl-4 pr-8 py-2 text-xl  bg-transparent outline-none rounded-lg transition-all duration-200 ease-in-out text-[#000] font-bold text-[24px] hover:bg-[#f5f5f5]`}
           placeholder="Title">
           {item.content}
         </div>
       ) : (
         <div
           ref={titleRef}
-          className={`max-w-[790px] min-w-[10rem] truncate text-ellipsis focus:text-clip h-[44px] cursor-text w-fit pl-4 pr-8 py-2 text-xl  bg-transparent outline-none rounded-lg transition-all duration-200 ease-in-out text-[#000] font-bold text-[24px]  ${
+          className={`${
+            isLaptop && 'xl:max-w-[790px]'
+          } xl:max-w-[355px] min-w-[10rem]  text-ellipsis focus:text-clip h-[44px] cursor-text w-fit pl-4 pr-8 py-2 text-xl  bg-transparent outline-none rounded-lg transition-all duration-200 ease-in-out truncate text-[#000] font-bold text-[24px]  ${
             isSameUser && 'hover:bg-[#f5f5f5]'
           }`}
           placeholder="Title">
