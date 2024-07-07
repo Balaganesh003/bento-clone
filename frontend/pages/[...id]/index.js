@@ -34,6 +34,7 @@ import { axiosWithToken } from '@/utils/axiosjwt';
 import { uiActions } from '@/store/ui-slice';
 import { defaultSocialLinks } from '@/constant';
 import { Toaster, toast } from 'react-hot-toast';
+import Head from 'next/head';
 
 axios.defaults.withCredentials = true;
 
@@ -72,7 +73,9 @@ export default function Home({ data }) {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const isFirst = useSelector((state) => state.ui.isfirstTime);
-  const { profileDetails } = useSelector((state) => state.profile);
+  const { profileDetails, avatar, name, bio } = useSelector(
+    (state) => state.profile
+  );
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
 
   const { isSameUser } = useSelector((state) => state.ui);
@@ -417,312 +420,347 @@ export default function Home({ data }) {
   };
 
   return (
-    <main
-      className={`${inter.className}  overflow-x-hidden flex justify-center ${
-        isLaptop && 'xl:justify-normal'
-      }`}>
-      <Toaster />
-      <div
-        className={`  max-w-[428px] flex-col  flex  ${
-          isLaptop &&
-          'xl:max-w-none  xl:w-full xl:flex-row xl:gap-[2.5rem] xl:p-[4rem]'
-        } `}>
+    <>
+      <Head>
+        <title>{`${name}`}</title>
+        <link rel="icon" href={avatar} />
+        <meta
+          name="description"
+          content={`Check out ${name}'s profile. ${bio.substring(0, 150)}...`}
+        />
+        <meta
+          name="keywords"
+          content="profile, social media, networking, bento"
+        />
+        <meta property="og:type" content="profile" />
+        <meta property="og:title" content={`${name}'s Profile | Bento Clone`} />
+        <meta property="og:description" content={bio} />
+        <meta property="og:image" content={avatar} />
+        <meta
+          property="og:url"
+          content={`https://bento-clone.vercel.app/${USERNAME}`}
+        />
+        <link
+          rel="canonical"
+          href={`https://bento-clone.vercel.app/${USERNAME}`}
+        />
+      </Head>
+      <main
+        className={`${inter.className}  overflow-x-hidden flex justify-center ${
+          isLaptop && 'xl:justify-normal'
+        }`}>
+        <Toaster />
         <div
-          className={`flex  flex-1 flex-col px-6 pt-12  ${
+          className={`  max-w-[428px] flex-col  flex  ${
             isLaptop &&
-            'xl:min-w-[278px] xl:max-w-[calc(100vw-64rem)] xl:p-0  xl:max-h-[calc(100vh-8rem)]'
-          }`}>
-          {!isFirst && (
-            <div className={`px-4 ${isLaptop && 'xl:p-0'}  `}>
-              <div className="flex justify-between w-full ">
-                <Avatar
-                  isLaptop={isLaptop}
-                  avatarSrc={avatarSrc}
-                  setAvatarSrc={setAvatarSrc}
-                  username={USERNAME}
-                  isSameUser={isSameUser}
-                />
-                <div
-                  className={`flex h-fit  rounded-lg mt-2 border shadow-sm  items-center justify-center ${
-                    isLaptop && 'xl:hidden'
-                  }`}>
-                  <button
-                    onClick={copyUrlToClipboard}
-                    className="text-[0.87rem] transition-all duration-200 font-bold w-full py-2 px-[10px] hover:bg-[#FBFBFB]">
-                    Share my Bento
-                  </button>
+            'xl:max-w-none  xl:w-full xl:flex-row xl:gap-[2.5rem] xl:p-[4rem]'
+          } `}>
+          <div
+            className={`flex  flex-1 flex-col px-6 pt-12  ${
+              isLaptop &&
+              'xl:min-w-[278px] xl:max-w-[calc(100vw-64rem)] xl:p-0  xl:max-h-[calc(100vh-8rem)]'
+            }`}>
+            {!isFirst && (
+              <div className={`px-4 ${isLaptop && 'xl:p-0'}  `}>
+                <div className="flex justify-between w-full ">
+                  <Avatar
+                    isLaptop={isLaptop}
+                    avatarSrc={avatarSrc}
+                    setAvatarSrc={setAvatarSrc}
+                    username={USERNAME}
+                    isSameUser={isSameUser}
+                  />
+                  <div
+                    className={`flex h-fit  rounded-lg mt-2 border shadow-sm  items-center justify-center ${
+                      isLaptop && 'xl:hidden'
+                    }`}>
+                    <button
+                      onClick={copyUrlToClipboard}
+                      className="text-[0.87rem] transition-all duration-200 font-bold w-full py-2 px-[10px] hover:bg-[#FBFBFB]">
+                      Share my Bento
+                    </button>
+                  </div>
+                </div>
+                <div className="mt-8 ml-2 ">
+                  <NameBio USERNAME={USERNAME} isLaptop={isLaptop} />
                 </div>
               </div>
-              <div className="mt-8 ml-2 ">
-                <NameBio USERNAME={USERNAME} isLaptop={isLaptop} />
+            )}
+            {isFirst && (
+              <AnimatePresence initial={false} custom={index} mode={`wait`}>
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: 100 * direction }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.4 }}>
+                  {index === 0 && <AddSocialLinks USERNAME={USERNAME} />}
+                  {index === 1 && (
+                    <AddOtherDetails
+                      prevPanel={prevPanel}
+                      USERNAME={USERNAME}
+                    />
+                  )}
+                  {index === 2 && (
+                    <GotoProfile
+                      setIsFirst={handelFirstTime}
+                      USERNAME={USERNAME}
+                    />
+                  )}
+                </motion.div>
+                {index < 2 && (
+                  <div className="flex mt-10 gap-3">
+                    <button
+                      onClick={nextPanel}
+                      className="bg-black text-white px-[10px] py-2 rounded-lg w-[190px] h-[41px] hover:bg-black/[85%] transition-colors duration-150">
+                      <span className="inline-block w-[170px] h-[25px] ">
+                        Next
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => [handelFirstTime(), addSuggestions()]}
+                      className="w-[100px] h-[41px] hover:bg-[#f7f7f7] rounded-lg flex items-center justify-center transition-colors duration-150">
+                      Skip
+                    </button>
+                  </div>
+                )}
+              </AnimatePresence>
+            )}
+          </div>
+
+          {isSameUser ? (
+            <DragDropContext onDragEnd={onDragEnd}>
+              <div
+                className={` px-6 pb-6 pt-12  w-full h-full flex ${
+                  isLaptop &&
+                  'xl:max-w-[820px]  xl:min-w-[820px] xl:w-[820px] xl:p-0 xl:min-h-[calc(100vh-8rem)]'
+                }`}>
+                <Droppable droppableId="ROOT" type="group">
+                  {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                      <div
+                        className={`flex  gap-[24px] ${
+                          isLaptop && 'xl:gap-[39px]'
+                        }  flex-wrap last:pb-[6rem]`}>
+                        {profileDetails.map((item, index) => (
+                          <Draggable
+                            key={item.id}
+                            draggableId={item.id}
+                            index={index}>
+                            {(provided) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.dragHandleProps}
+                                {...provided.draggableProps}>
+                                <div className="w-full">
+                                  {item.type === 'socialLink' && (
+                                    <SocialLinkCard
+                                      item={item}
+                                      USERNAME={USERNAME}
+                                    />
+                                  )}
+                                  {item.type === 'image' && (
+                                    <ImageCard
+                                      item={item}
+                                      USERNAME={USERNAME}
+                                    />
+                                  )}
+                                  {item.type === 'text' && (
+                                    <TextBox item={item} USERNAME={USERNAME} />
+                                  )}
+                                  {item.type === 'map' && (
+                                    <MapboxMap
+                                      item={item}
+                                      USERNAME={USERNAME}
+                                    />
+                                  )}
+                                  {item.type === 'links' && (
+                                    <OtherLinkCard
+                                      item={item}
+                                      USERNAME={USERNAME}
+                                    />
+                                  )}
+                                  {item.type === 'title' && (
+                                    <TitleBox item={item} USERNAME={USERNAME} />
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </Droppable>
+              </div>
+            </DragDropContext>
+          ) : (
+            <div className="xl:max-w-[820px]  xl:min-w-[820px] xl:w-[820px] px-6 pb-6 pt-12 xl:p-0 xl:min-h-[calc(100vh-8rem)] w-full h-full flex">
+              <div>
+                <div className=" flex  gap-[24px] xl:gap-[39px]  flex-wrap last:pb-[6rem]">
+                  {profileDetails.map((item, index) => (
+                    <div key={item._id}>
+                      <div className="w-full">
+                        {item.type === 'socialLink' && (
+                          <SocialLinkCard item={item} USERNAME={USERNAME} />
+                        )}
+                        {item.type === 'image' && (
+                          <ImageCard item={item} USERNAME={USERNAME} />
+                        )}
+                        {item.type === 'text' && (
+                          <TextBox item={item} USERNAME={USERNAME} />
+                        )}
+                        {item.type === 'map' && (
+                          <MapboxMap item={item} USERNAME={USERNAME} />
+                        )}
+                        {item.type === 'links' && (
+                          <OtherLinkCard item={item} USERNAME={USERNAME} />
+                        )}
+                        {item.type === 'title' && (
+                          <TitleBox item={item} USERNAME={USERNAME} />
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          )}
-          {isFirst && (
-            <AnimatePresence initial={false} custom={index} mode={`wait`}>
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: 100 * direction }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}>
-                {index === 0 && <AddSocialLinks USERNAME={USERNAME} />}
-                {index === 1 && (
-                  <AddOtherDetails prevPanel={prevPanel} USERNAME={USERNAME} />
-                )}
-                {index === 2 && (
-                  <GotoProfile
-                    setIsFirst={handelFirstTime}
-                    USERNAME={USERNAME}
-                  />
-                )}
-              </motion.div>
-              {index < 2 && (
-                <div className="flex mt-10 gap-3">
-                  <button
-                    onClick={nextPanel}
-                    className="bg-black text-white px-[10px] py-2 rounded-lg w-[190px] h-[41px] hover:bg-black/[85%] transition-colors duration-150">
-                    <span className="inline-block w-[170px] h-[25px] ">
-                      Next
-                    </span>
-                  </button>
-                  <button
-                    onClick={() => [handelFirstTime(), addSuggestions()]}
-                    className="w-[100px] h-[41px] hover:bg-[#f7f7f7] rounded-lg flex items-center justify-center transition-colors duration-150">
-                    Skip
-                  </button>
-                </div>
-              )}
-            </AnimatePresence>
           )}
         </div>
-
-        {isSameUser ? (
-          <DragDropContext onDragEnd={onDragEnd}>
+        {/* Fixed bar */}
+        {isSameUser && (
+          <div className="fixed bottom-[2.5rem]  backdrop-blur-lg  bg-blend-multiply  bg-white/50  left-1/2 -translate-x-1/2 p-3 rounded-2xl flex items-center shadow-xl z-[10000] ">
+            <div className="h-[33px] hidden xl:flex rounded-md w-[127px] bg-green-500 text-white  items-center justify-center">
+              <button
+                onClick={copyUrlToClipboard}
+                className="text-[0.87rem] font-bold w-full">
+                Share my Bento
+              </button>
+            </div>
+            <div className="mx-4 w-[2px] h-[16px] bg-gray-300 hidden xl:block"></div>
             <div
-              className={` px-6 pb-6 pt-12  w-full h-full flex ${
-                isLaptop &&
-                'xl:max-w-[820px]  xl:min-w-[820px] xl:w-[820px] xl:p-0 xl:min-h-[calc(100vh-8rem)]'
-              }`}>
-              <Droppable droppableId="ROOT" type="group">
-                {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef}>
-                    <div
-                      className={`flex  gap-[24px] ${
-                        isLaptop && 'xl:gap-[39px]'
-                      }  flex-wrap last:pb-[6rem]`}>
-                      {profileDetails.map((item, index) => (
-                        <Draggable
-                          key={item.id}
-                          draggableId={item.id}
-                          index={index}>
-                          {(provided) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.dragHandleProps}
-                              {...provided.draggableProps}>
-                              <div className="w-full">
-                                {item.type === 'socialLink' && (
-                                  <SocialLinkCard
-                                    item={item}
-                                    USERNAME={USERNAME}
-                                  />
-                                )}
-                                {item.type === 'image' && (
-                                  <ImageCard item={item} USERNAME={USERNAME} />
-                                )}
-                                {item.type === 'text' && (
-                                  <TextBox item={item} USERNAME={USERNAME} />
-                                )}
-                                {item.type === 'map' && (
-                                  <MapboxMap item={item} USERNAME={USERNAME} />
-                                )}
-                                {item.type === 'links' && (
-                                  <OtherLinkCard
-                                    item={item}
-                                    USERNAME={USERNAME}
-                                  />
-                                )}
-                                {item.type === 'title' && (
-                                  <TitleBox item={item} USERNAME={USERNAME} />
-                                )}
-                              </div>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
+              onBlur={() => setIsUrlOpen(false)}
+              className="h-[32px] flex gap-3 xl:gap-1  mix-blend-none">
+              <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer relative">
+                <div
+                  onClick={() => setIsUrlOpen(!isUrlOpen)}
+                  className="w-[24px] h-[24px] rounded-md flex items-center justify-center border hover:shadow-xl">
+                  <Image
+                    src={LinkLogo}
+                    alt="link"
+                    className="rounded-md object-cover"
+                  />
+                </div>
+                {/* Add Link */}
+                {isUrlOpen && (
+                  <div className="h-10 w-[16rem] bg-white border absolute bottom-[3rem] shadow-lg rounded-lg left-[-4rem] cursor-text  ">
+                    <div className="h-full w-full flex gap-2 items-center px-1 group">
+                      <input
+                        onPaste={handelOnPaste}
+                        type="text"
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
+                        placeholder="Enter link"
+                        className="w-full h-full bg-transparent px-1 py-1 text-black focus:outline-none "
+                      />
+                      {url.length > 0 ? (
+                        <button
+                          onClick={handleUrl}
+                          className="bg-green-500 cursor-pointer text-white px-3 py-1 rounded-lg hover:bg-green-600 transition-colors duration-150 h-fit text-[14px]">
+                          Add
+                        </button>
+                      ) : (
+                        <button
+                          onClick={handelOnPaste}
+                          className="bg-[#fafafa] shadow-sm border group-hover:opacity-[100%]  opacity-0 text-black px-3 py-1 rounded-lg hover:bg-[#f7f7f7] transition-colors duration-150 h-fit text-[14px]">
+                          Paste
+                        </button>
+                      )}
                     </div>
                   </div>
                 )}
-              </Droppable>
-            </div>
-          </DragDropContext>
-        ) : (
-          <div className="xl:max-w-[820px]  xl:min-w-[820px] xl:w-[820px] px-6 pb-6 pt-12 xl:p-0 xl:min-h-[calc(100vh-8rem)] w-full h-full flex">
-            <div>
-              <div className=" flex  gap-[24px] xl:gap-[39px]  flex-wrap last:pb-[6rem]">
-                {profileDetails.map((item, index) => (
-                  <div key={item._id}>
-                    <div className="w-full">
-                      {item.type === 'socialLink' && (
-                        <SocialLinkCard item={item} USERNAME={USERNAME} />
-                      )}
-                      {item.type === 'image' && (
-                        <ImageCard item={item} USERNAME={USERNAME} />
-                      )}
-                      {item.type === 'text' && (
-                        <TextBox item={item} USERNAME={USERNAME} />
-                      )}
-                      {item.type === 'map' && (
-                        <MapboxMap item={item} USERNAME={USERNAME} />
-                      )}
-                      {item.type === 'links' && (
-                        <OtherLinkCard item={item} USERNAME={USERNAME} />
-                      )}
-                      {item.type === 'title' && (
-                        <TitleBox item={item} USERNAME={USERNAME} />
-                      )}
-                    </div>
-                  </div>
-                ))}
               </div>
+              <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer relative">
+                <div className="cursor-pointer rounded-md flex items-center justify-center border hover:shadow-xl">
+                  <Image
+                    src={ImageLogo}
+                    className=" rounded-md object-cover  w-[24px] h-[24px]"
+                    alt="image"
+                  />
+                </div>
+                <div className="absolute opacity-0 top-0 left-0 cursor-pointer  w-[28px] h-[28px] rounded-lg">
+                  <input
+                    type="file"
+                    onChange={addImage}
+                    className="w-full h-full  cursor-pointer"
+                  />
+                </div>
+              </div>
+              <div
+                onClick={addNote}
+                className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
+                <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
+                  <Image
+                    src={TextLogo}
+                    className="rounded-md object-cover w-[24px] h-[24px]"
+                    alt="text"
+                  />
+                </div>
+              </div>
+              <div
+                onClick={addMap}
+                className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
+                <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
+                  <Image
+                    src={MapLogo}
+                    className="object-cover rounded-md w-[24px] h-[24px]"
+                    alt="text"
+                  />
+                </div>
+              </div>
+              <div
+                onClick={addTitle}
+                className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
+                <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
+                  <Image
+                    src={TitleLogo}
+                    className="object-cover rounded-md w-[24px] h-[24px]"
+                    alt="text"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="mx-4 w-[2px] h-[16px] bg-gray-300 hidden xl:block"></div>
+            <div className="h-[33px] w-[104px]  gap-1 hidden xl:flex">
+              <button
+                onClick={() => setIsLaptop(true)}
+                className={`px-[10px] py-2 w-[50px] ${
+                  isLaptop ? 'bg-black' : 'bg-white'
+                } flex items-center justify-center rounded-md`}>
+                <Image src={isLaptop ? Laptop : LaptopBlack} alt="laptop" />
+              </button>
+              <button
+                onClick={() => setIsLaptop(false)}
+                className={`px-[10px] py-2 w-[50px]  ${
+                  isLaptop ? 'bg-white' : 'bg-black'
+                } flex items-center justify-center rounded-md`}>
+                <Image src={isLaptop ? Mobile : MobileWhite} alt="laptop" />
+              </button>
             </div>
           </div>
         )}
-      </div>
-      {/* Fixed bar */}
-      {isSameUser && (
-        <div className="fixed bottom-[2.5rem]  backdrop-blur-lg  bg-blend-multiply  bg-white/50  left-1/2 -translate-x-1/2 p-3 rounded-2xl flex items-center shadow-xl z-[10000] ">
-          <div className="h-[33px] hidden xl:flex rounded-md w-[127px] bg-green-500 text-white  items-center justify-center">
-            <button
-              onClick={copyUrlToClipboard}
-              className="text-[0.87rem] font-bold w-full">
-              Share my Bento
-            </button>
-          </div>
-          <div className="mx-4 w-[2px] h-[16px] bg-gray-300 hidden xl:block"></div>
-          <div
-            onBlur={() => setIsUrlOpen(false)}
-            className="h-[32px] flex gap-3 xl:gap-1  mix-blend-none">
-            <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer relative">
-              <div
-                onClick={() => setIsUrlOpen(!isUrlOpen)}
-                className="w-[24px] h-[24px] rounded-md flex items-center justify-center border hover:shadow-xl">
-                <Image
-                  src={LinkLogo}
-                  alt="link"
-                  className="rounded-md object-cover"
-                />
-              </div>
-              {/* Add Link */}
-              {isUrlOpen && (
-                <div className="h-10 w-[16rem] bg-white border absolute bottom-[3rem] shadow-lg rounded-lg left-[-4rem] cursor-text  ">
-                  <div className="h-full w-full flex gap-2 items-center px-1 group">
-                    <input
-                      onPaste={handelOnPaste}
-                      type="text"
-                      value={url}
-                      onChange={(e) => setUrl(e.target.value)}
-                      placeholder="Enter link"
-                      className="w-full h-full bg-transparent px-1 py-1 text-black focus:outline-none "
-                    />
-                    {url.length > 0 ? (
-                      <button
-                        onClick={handleUrl}
-                        className="bg-green-500 cursor-pointer text-white px-3 py-1 rounded-lg hover:bg-green-600 transition-colors duration-150 h-fit text-[14px]">
-                        Add
-                      </button>
-                    ) : (
-                      <button
-                        onClick={handelOnPaste}
-                        className="bg-[#fafafa] shadow-sm border group-hover:opacity-[100%]  opacity-0 text-black px-3 py-1 rounded-lg hover:bg-[#f7f7f7] transition-colors duration-150 h-fit text-[14px]">
-                        Paste
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer relative">
-              <div className="cursor-pointer rounded-md flex items-center justify-center border hover:shadow-xl">
-                <Image
-                  src={ImageLogo}
-                  className=" rounded-md object-cover  w-[24px] h-[24px]"
-                  alt="image"
-                />
-              </div>
-              <div className="absolute opacity-0 top-0 left-0 cursor-pointer  w-[28px] h-[28px] rounded-lg">
-                <input
-                  type="file"
-                  onChange={addImage}
-                  className="w-full h-full  cursor-pointer"
-                />
-              </div>
-            </div>
-            <div
-              onClick={addNote}
-              className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
-              <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
-                <Image
-                  src={TextLogo}
-                  className="rounded-md object-cover w-[24px] h-[24px]"
-                  alt="text"
-                />
-              </div>
-            </div>
-            <div
-              onClick={addMap}
-              className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
-              <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
-                <Image
-                  src={MapLogo}
-                  className="object-cover rounded-md w-[24px] h-[24px]"
-                  alt="text"
-                />
-              </div>
-            </div>
-            <div
-              onClick={addTitle}
-              className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer">
-              <div className=" rounded-md flex items-center justify-center border hover:shadow-xl">
-                <Image
-                  src={TitleLogo}
-                  className="object-cover rounded-md w-[24px] h-[24px]"
-                  alt="text"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="mx-4 w-[2px] h-[16px] bg-gray-300 hidden xl:block"></div>
-          <div className="h-[33px] w-[104px]  gap-1 hidden xl:flex">
-            <button
-              onClick={() => setIsLaptop(true)}
-              className={`px-[10px] py-2 w-[50px] ${
-                isLaptop ? 'bg-black' : 'bg-white'
-              } flex items-center justify-center rounded-md`}>
-              <Image src={isLaptop ? Laptop : LaptopBlack} alt="laptop" />
-            </button>
-            <button
-              onClick={() => setIsLaptop(false)}
-              className={`px-[10px] py-2 w-[50px]  ${
-                isLaptop ? 'bg-white' : 'bg-black'
-              } flex items-center justify-center rounded-md`}>
-              <Image src={isLaptop ? Mobile : MobileWhite} alt="laptop" />
-            </button>
-          </div>
-        </div>
-      )}
 
-      {/* Remove suggestions */}
-      {isSuggestionsOpen && isSameUser && (
-        <div
-          onClick={removeSuggestion}
-          className="fixed right-5 bottom-[5rem] shadow-lg flex gap-2 items-center rounded-lg bg-white border p-2 text-[14px] font-bold cursor-pointer">
-          <MdOutlineDelete className="ml-2 cursor-pointer text-xl" />
-          Remove suggestions
-        </div>
-      )}
-    </main>
+        {/* Remove suggestions */}
+        {isSuggestionsOpen && isSameUser && (
+          <div
+            onClick={removeSuggestion}
+            className="fixed right-5 bottom-[5rem] shadow-lg flex gap-2 items-center rounded-lg bg-white border p-2 text-[14px] font-bold cursor-pointer">
+            <MdOutlineDelete className="ml-2 cursor-pointer text-xl" />
+            Remove suggestions
+          </div>
+        )}
+      </main>
+    </>
   );
 }
 
