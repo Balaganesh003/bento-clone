@@ -5,7 +5,7 @@ const cloudinary = require('../services/cloudinary');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const verifyUsernameMatch = async (token, urlUsername) => {
+const verifyUsernameMatch = async (token, urlusername) => {
   try {
     if (!token) {
       throw new Error('Authorization token not found');
@@ -15,9 +15,9 @@ const verifyUsernameMatch = async (token, urlUsername) => {
     const jwtUsername = decoded.username;
 
     console.log('JWT username:', jwtUsername);
-    console.log('URL username:', urlUsername);
+    console.log('URL username:', urlusername);
 
-    if (jwtUsername !== urlUsername) {
+    if (jwtUsername !== urlusername) {
       throw new Error('Username mismatch');
     }
   } catch (error) {
@@ -644,8 +644,9 @@ const resize = async (req, res) => {
 };
 
 const removeObjectsOfType = async (req, res) => {
-  let { username } = req.params;
-  username = String(username);
+  const { username } = req.params;
+
+  console.log('Remove objects of type:', username);
 
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -675,7 +676,6 @@ const removeObjectsOfType = async (req, res) => {
         .json({ message: 'Profile not found for the user' });
     }
 
-    // Filter out objects that match the types and conditions to remove
     profile.profiles = profile.profiles.filter((obj) => {
       switch (obj.type) {
         case 'image':
@@ -691,14 +691,16 @@ const removeObjectsOfType = async (req, res) => {
       }
     });
 
-    // Save the updated profile
     await profile.save({ session });
 
     await session.commitTransaction();
     session.endSession();
 
     console.log('Objects removed successfully');
-    res.status(200).json({ message: 'Objects removed successfully', profile });
+    res.status(200).json({
+      message: 'Objects removed successfully',
+      ProfileObject: profile.profiles,
+    });
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
