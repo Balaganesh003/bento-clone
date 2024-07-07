@@ -428,19 +428,18 @@ export default function Home({ data }) {
           name="description"
           content={`Check out ${name}'s profile. ${bio.substring(0, 150)}...`}
         />
-        <meta name="keywords" content="profile, social media, networking" />
-        <meta property="og:type" content="profile" />
         <meta
-          property="og:title"
-          content={`${name}'s Profile | Your Site Name`}
+          name="keywords"
+          content="profile, social media, networking, bento"
         />
+        <meta property="og:type" content="profile" />
+        <meta property="og:title" content={`${name}'s Profile | Bento Clone`} />
         <meta property="og:description" content={bio} />
         <meta property="og:image" content={avatar} />
         <meta
           property="og:url"
           content={`https://bento-clone.vercel.app/${USERNAME}`}
         />
-        <meta name="twitter:card" content="summary_large_image" />
         <link
           rel="canonical"
           href={`https://bento-clone.vercel.app/${USERNAME}`}
