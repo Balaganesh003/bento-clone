@@ -36,7 +36,7 @@ import { defaultSocialLinks } from '@/constant';
 import { Toaster, toast } from 'react-hot-toast';
 import Head from 'next/head';
 import LogoutIcon from '@/assets/logout.svg';
-import LogoutWhite from '@/assets/logoutwhite.svg';
+import LogoutWhite from '@/assets/logoutWhite.svg';
 import Cookies from 'js-cookie';
 
 axios.defaults.withCredentials = true;
