@@ -476,7 +476,7 @@ export default function Home({ data }) {
                     isLaptop={isLaptop}
                     avatarSrc={avatarSrc}
                     setAvatarSrc={setAvatarSrc}
-                    username={USERNAME}
+                    USERNAME={USERNAME}
                     isSameUser={isSameUser}
                   />
                   <div

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import { BiUpArrowCircle } from 'react-icons/bi';
 import { axiosWithToken } from '@/utils/axiosjwt';
@@ -6,12 +6,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import DeleteIcon from '@/assets/delete.svg';
 
-const Avatar = ({ username, isLaptop }) => {
+const Avatar = ({ USERNAME, isLaptop }) => {
   const { avatar } = useSelector((state) => state.profile);
   const { isSameUser } = useSelector((state) => state.ui);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleFileSelect = async (e) => {
     if (!isSameUser) {
@@ -27,7 +28,7 @@ const Avatar = ({ username, isLaptop }) => {
 
       try {
         const response = await axiosWithToken.post(
-          `${API_URL}/profile/avatar/${username}`,
+          `${API_URL}/profile/avatar/${USERNAME}`,
           {
             avatar: fileDataUrl,
           }
@@ -47,6 +48,24 @@ const Avatar = ({ username, isLaptop }) => {
 
   const handleButtonClick = () => {
     fileInputRef.current.click();
+  };
+
+  const handleDeleteAvatar = async () => {
+    setIsDeleting(true);
+    try {
+      const response = await axiosWithToken.put(
+        `${API_URL}/profile/avatar/${USERNAME}`
+      );
+      const { profile } = response.data;
+      if (profile) {
+        dispatch(profileActions.updateAvatar(null));
+      }
+    } catch (error) {
+      console.error('Avatar delete error:', error);
+      // Optionally, show an error message to the user
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   if (!avatar && !isSameUser) return null;
@@ -96,13 +115,15 @@ const Avatar = ({ username, isLaptop }) => {
             fill="none"
             xmlns="http://www.w3.org/2000/svg">
             <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
+              fillRule="evenodd"
+              clipRule="evenodd"
               d="M9 16C5.13401 16 2 12.866 2 9C2 5.13401 5.13401 2 9 2C12.866 2 16 5.13401 16 9C16 12.866 12.866 16 9 16ZM0 9C0 4.02944 4.02944 0 9 0C13.9706 0 18 4.02944 18 9C18 13.9706 13.9706 18 9 18C4.02944 18 0 13.9706 0 9ZM9 5C9.28141 5 9.53568 5.11624 9.7174 5.30333L12.7071 8.29304C13.0976 8.68357 13.0976 9.31673 12.7071 9.70726C12.3166 10.0978 11.6834 10.0978 11.2929 9.70726L10 8.41436V12C10 12.5523 9.55228 13 9 13C8.44772 13 8 12.5523 8 12V8.41436L6.70711 9.70726C6.31658 10.0978 5.68342 10.0978 5.29289 9.70726C4.90237 9.31673 4.90237 8.68357 5.29289 8.29304L8.2826 5.30333C8.46432 5.11624 8.71859 5 9 5Z"
               fill="#000"></path>
           </svg>
         </button>
         <button
+          onClick={handleDeleteAvatar}
+          disabled={isDeleting}
           className={`absolute ${
             isLaptop &&
             isSameUser &&
