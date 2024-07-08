@@ -5,6 +5,8 @@ import { profileActions } from '@/store/profile-slice';
 import { BiSearch } from 'react-icons/bi';
 import { axiosWithToken } from '@/utils/axiosjwt';
 import { useSelector } from 'react-redux';
+import DeleteIcon from '@/assets/delete.svg';
+import Image from 'next/image';
 
 const ResizingContainer = ({
   children,
@@ -100,7 +102,8 @@ const ResizingContainer = ({
         <div
           onClick={handelDelete}
           className="absolute hidden group-hover:flex  items-center justify-center -top-4 -left-4 w-9 h-9 rounded-full bg-white shadow-lg  cursor-pointer hover:bg-gray-100">
-          <AiOutlineDelete className="w-5 h-5 text-black" />
+          {/* <AiOutlineDelete className="w-5 h-5 text-black" /> */}
+          <Image src={DeleteIcon} alt="delete" />
         </div>
       )}
 

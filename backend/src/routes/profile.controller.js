@@ -579,6 +579,68 @@ const uploadAvatar = async (req, res) => {
   }
 };
 
+const deleteAvatar = async (req, res) => {
+  let { username } = req.params;
+  username = String(username);
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    await verifyUsernameMatch(token, username);
+
+    const user = await User.findOne({ username }).session(session);
+
+    if (!user) {
+      console.log('User not found:', username);
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const profile = await Profile.findOne({ user: user._id }).session(session);
+
+    if (!profile) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(404).json({ message: 'Profile not found' });
+    }
+
+    if (profile.avatar) {
+      // Extract public_id from the avatar URL
+      const publicId = profile.avatar
+        .split('/')
+        .slice(-2)
+        .join('/')
+        .split('.')[0];
+
+      // Delete the image from Cloudinary
+      await cloudinary.uploader.destroy(publicId);
+
+      // Remove the avatar URL from the profile
+      profile.avatar = '';
+      await profile.save({ session });
+    }
+
+    await session.commitTransaction();
+    session.endSession();
+
+    console.log('Avatar deleted successfully');
+    res.status(200).json({
+      message: 'Avatar deleted successfully',
+      profile,
+    });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    console.error('Avatar deletion error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 const resize = async (req, res) => {
   const { username, objectId, height, width } = req.params;
 
@@ -721,4 +783,5 @@ module.exports = {
   uploadAvatar,
   resize,
   removeObjectsOfType,
+  deleteAvatar,
 };
