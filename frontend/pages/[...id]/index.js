@@ -35,6 +35,9 @@ import { uiActions } from '@/store/ui-slice';
 import { defaultSocialLinks } from '@/constant';
 import { Toaster, toast } from 'react-hot-toast';
 import Head from 'next/head';
+import LogoutIcon from '@/assets/logout.svg';
+import LogoutWhite from '@/assets/logoutwhite.svg';
+import Cookies from 'js-cookie';
 
 axios.defaults.withCredentials = true;
 
@@ -77,7 +80,7 @@ export default function Home({ data }) {
     (state) => state.profile
   );
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
-
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const { isSameUser } = useSelector((state) => state.ui);
   const [isLaptop, setIsLaptop] = useState(true);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -419,6 +422,12 @@ export default function Home({ data }) {
     toast.success('Link copied to clipboard');
   };
 
+  const handleLogout = () => {
+    const res = axiosWithToken.get(`${API_URL}/auth/signout`);
+    Cookies.remove('jwt');
+    dispatch(uiActions.setSameUser(false));
+  };
+
   return (
     <>
       <Head>
@@ -749,6 +758,30 @@ export default function Home({ data }) {
                   isLaptop ? 'bg-white' : 'bg-black'
                 } flex items-center justify-center rounded-md`}>
                 <Image src={isLaptop ? Mobile : MobileWhite} alt="laptop" />
+              </button>
+            </div>
+            <div className="mx-4 w-[2px] h-[16px] bg-gray-300 hidden xl:block"></div>
+
+            <div className="px-[10px] xl:pr-[10px]  rounded h-[33px] flex items-center justify-center">
+              <button
+                onClick={handleLogout}
+                className={` flex items-center justify-center rounded-md`}>
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M16 13V11H8V8L4 12L8 16V13H16ZM20 3H10C8.9 3 8 3.9 8 5V7H10V5H20V19H10V17H8V19C8 20.1 8.9 21 10 21H20C21.1 21 22 20.1 22 19V5C22 3.9 21.1 3 20 3Z"
+                    fill="currentColor"
+                  />
+                </svg>
+
+                {/* <Image
+                  src={isLogoutOpen ? LogoutWhite : LogoutIcon}
+                  alt="laptop"
+                /> */}
               </button>
             </div>
           </div>
