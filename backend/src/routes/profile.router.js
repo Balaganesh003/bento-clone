@@ -19,5 +19,6 @@ router.put(
 );
 router.delete('/:username/:objectId', profileController.deleteProfileObject);
 router.delete('/:username', profileController.removeObjectsOfType);
+router.put('/avatar/:username', profileController.deleteAvatar);
 
 module.exports = router;
