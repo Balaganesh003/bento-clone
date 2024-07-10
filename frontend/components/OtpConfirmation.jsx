@@ -1,5 +1,3 @@
-import Link from 'next/link';
-import { FaGoogle } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import React from 'react';
