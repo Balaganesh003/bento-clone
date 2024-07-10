@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import axios from 'axios';
 
-const SetNewPassword = ({ nextPanel }) => {
+const SetNewPassword = ({ nextPanel, otp, email }) => {
+  const router = useRouter();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     validatePasswords();
@@ -23,12 +27,18 @@ const SetNewPassword = ({ nextPanel }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isValid) {
-      // Here you would typically send the new password to your backend
-      // For now, we'll just call nextPanel
-      nextPanel();
+      const res = await axios.post(`${API_URL}/auth/reset-password`, {
+        otp,
+        email,
+        newPassword: password,
+      });
+
+      if (res.status === 200) {
+        router.push('/login');
+      }
     }
   };
 

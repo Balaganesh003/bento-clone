@@ -20,6 +20,8 @@ const ResetForm = () => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
   const [showPassword, setShowPassword1] = useState(false);
 
   const [otp, setOtp] = useState('');
@@ -67,16 +69,13 @@ const ResetForm = () => {
               prevPanel={prevPanel}
               nextPanel={nextPanel}
               otp={otp}
+              email={email}
               setOtp={setOtp}
             />
           )}
 
           {index === 2 && (
-            <SetNewPassword
-              nextPanel={nextPanel}
-              password={password}
-              setPassword={setPassword}
-            />
+            <SetNewPassword nextPanel={nextPanel} otp={otp} email={email} />
           )}
         </motion.div>
       </AnimatePresence>

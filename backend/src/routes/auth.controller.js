@@ -170,7 +170,7 @@ const forgotPassword = async (req, res) => {
     // Send email
     await sendEmail(
       email,
-      'Password Reset OTP',
+      'Bento Password Reset OTP',
       `Your OTP for password reset is: ${otp}. This OTP is valid for 10 minutes.`
     );
 

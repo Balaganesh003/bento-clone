@@ -19,11 +19,11 @@ const ResetPassword = ({ email, setEmail, nextPanel }) => {
     e.preventDefault();
     if (isValidEmail) {
       try {
-        const response = await axios.post(`${API_URL}/auth/send-reset-otp`, {
+        const response = await axios.post(`${API_URL}/auth/forgot-password`, {
           email,
         });
         if (response.status === 200) {
-          nextPanel(); // Move to OTP entry screen
+          nextPanel(e); // Move to OTP entry screen
         }
       } catch (error) {
         if (error.response) {
@@ -68,7 +68,7 @@ const ResetPassword = ({ email, setEmail, nextPanel }) => {
         )}
         <div className="mt-4 h-[58px] sm:h-[48px]">
           <button
-            onClick={(e) => nextPanel(e)}
+            onClick={(e) => handleSubmit(e)}
             type="submit"
             disabled={!isValidEmail}
             className={`transition-all duration-150 text-[0.875rem] leading-[1.25rem] font-bold text-white h-full w-full py-2 px-[0.625rem] rounded-xl ${

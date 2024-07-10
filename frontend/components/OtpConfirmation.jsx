@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import React from 'react';
 
-const OtpConfirmation = ({ otp, setOtp, nextPanel }) => {
+const OtpConfirmation = ({ otp, setOtp, nextPanel, email }) => {
   const [isValid, setIsValid] = useState(false);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -13,12 +13,17 @@ const OtpConfirmation = ({ otp, setOtp, nextPanel }) => {
     setIsValid(otp.length === 6 && /^\d+$/.test(otp));
   }, [otp]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isValid) {
-      // Here you would typically verify the OTP with your backend
-      // For now, we'll just call nextPanel
-      nextPanel();
+      const res = await axios.post(`${API_URL}/auth/verify-reset-otp`, {
+        otp,
+        email,
+      });
+
+      if (res.status === 200) {
+        nextPanel(e);
+      }
     }
   };
 

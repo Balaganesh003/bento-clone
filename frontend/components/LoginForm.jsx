@@ -88,9 +88,11 @@ const LoginForm = () => {
             </div>
           </div>
         </div>
-        <div className="mt-3 ml-[2px] text-[13px] leading-[1rem] underline text-[#768CFF] ">
+        <Link
+          href="/reset-password"
+          className="mt-3 ml-[2px] text-[13px] leading-[1rem] underline text-[#768CFF] ">
           Reset Password
-        </div>
+        </Link>
         <div className="ml-[0.125rem] h-[64px] flex items-center text-sm leading-6 font-bold">
           OR
         </div>
