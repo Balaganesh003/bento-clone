@@ -23,6 +23,8 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Profile',
   },
+  resetPasswordOTP: String,
+  resetPasswordOTPExpiry: Date,
 });
 
 const User = mongoose.model('User', userSchema);

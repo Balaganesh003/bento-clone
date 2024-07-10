@@ -10,6 +10,10 @@ authRouter.post('/signup', authController.register);
 authRouter.post('/signin', authController.login);
 authRouter.get('/signout', authController.logout);
 
+authRouter.post('/forgot-password', authController.forgotPassword);
+authRouter.post('/verify-reset-otp', authController.verifyResetOTP);
+authRouter.post('/reset-password', authController.resetPassword);
+
 authRouter.get(
   '/google/callback',
   passport.authenticate('google', {
