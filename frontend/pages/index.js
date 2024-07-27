@@ -4,7 +4,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
-import { useInView } from 'react-intersection-observer';
 import axios from 'axios';
 import { CgGitFork } from 'react-icons/cg';
 import { AiFillStar } from 'react-icons/ai';
@@ -115,7 +114,24 @@ export default function LandingPage() {
         <title>Bento - Elevate Your Online Presence</title>
         <meta
           name="description"
-          content="Bento - Showcase your profile with custom links"
+          content="Bento - Showcase your profile with custom links. Increase engagement by up to 60% with our powerful link-in-bio platform."
+        />
+        <meta
+          property="og:title"
+          content="Bento - Elevate Your Online Presence"
+        />
+        <meta
+          property="og:description"
+          content="Bento - Showcase your profile with custom links. Increase engagement by up to 60% with our powerful link-in-bio platform."
+        />
+        <meta property="og:url" content="https://bento-clone-app.vercel.app/" />
+        <meta
+          name="twitter:title"
+          content="Bento - Elevate Your Online Presence"
+        />
+        <meta
+          name="twitter:description"
+          content="Bento - Showcase your profile with custom links. Increase engagement by up to 60% with our powerful link-in-bio platform."
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -147,7 +163,7 @@ const HeroSection = React.forwardRef((props, ref) => {
             Elevate Your <span className="text-blue-600">Online Presence</span>
           </h1>
           <p className="max-w-[600px] mx-auto text-lg sm:text-xl text-gray-700 md:text-2xl">
-            Bento+ is a powerful link-in-bio platform that helps you showcase
+            Bento is a powerful link-in-bio platform that helps you showcase
             your best self online. Increase engagement by up to 60%.
           </p>
           <div className="flex flex-col gap-4 xs:flex-row justify-center">
@@ -184,7 +200,7 @@ const FeaturesSection = React.forwardRef((props, ref) => {
       icon: UsersIcon,
       title: 'Customizable Profiles',
       description:
-        'Personalize your Bento+ profile with your own branding, colors, and layout to make it truly your own.',
+        'Personalize your Bento profile with your own branding, colors, and layout to make it truly your own.',
     },
     {
       icon: VideoIcon,
@@ -196,7 +212,7 @@ const FeaturesSection = React.forwardRef((props, ref) => {
       icon: BadgeIcon,
       title: 'Professional Branding',
       description:
-        "Elevate your online presence with Bento+'s professional branding tools, helping you make a lasting impression.",
+        "Elevate your online presence with Bento's professional branding tools, helping you make a lasting impression.",
     },
   ];
 
@@ -231,14 +247,14 @@ const TestimonialsSection = React.forwardRef((props, ref) => {
   const testimonials = [
     {
       quote:
-        "Bento+ has completely transformed how I showcase my work online. It's professional, sleek, and incredibly easy to use.",
+        "Bento has completely transformed how I showcase my work online. It's professional, sleek, and incredibly easy to use.",
       author: 'Amanda Smith',
       role: 'Photographer',
       avatar: 'https://randomuser.me/api/portraits/women/65.jpg',
     },
     {
       quote:
-        "I've seen a 50% increase in engagement since using Bento+. It's the perfect tool for anyone serious about their online presence.",
+        "I've seen a 50% increase in engagement since using Bento. It's the perfect tool for anyone serious about their online presence.",
       author: 'John Doe',
       role: 'Content Creator',
       avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
@@ -326,12 +342,12 @@ function Footer() {
         <div className="flex items-center gap-4">
           <OrigamiIcon
             className="h-8 w-8 text-blue-950"
-            aria-label="Bento+ logo"
+            aria-label="Bento logo"
           />
           <span className="text-xl font-semibold text-blue-950">Bento</span>
         </div>
         <p className="text-lg  text-center max-w-[600px]">
-          Bento+ is a powerful platform to showcase your best self online.
+          Bento is a powerful platform to showcase your best self online.
           Connect with your audience and elevate your online presence today.
         </p>
         <div className="flex flex-wrap justify-center gap-6 mt-6">
@@ -345,7 +361,9 @@ function Footer() {
             Cookie Policy
           </Link>
         </div>
-        <p className=" mt-6">&copy; 2024 Bento+. All rights reserved.</p>
+        <p className=" mt-6">
+          &copy; {new Date().getFullYear()} Bento. All rights reserved.
+        </p>
       </div>
     </footer>
   );
@@ -429,8 +447,6 @@ function FloatingIcons() {
   );
 }
 
-// Include the icon components (BadgeIcon, MenuIcon, OrigamiIcon, UsersIcon, VideoIcon) here...
-
 function BadgeIcon(props) {
   return (
     <svg
@@ -445,26 +461,6 @@ function BadgeIcon(props) {
       strokeLinecap="round"
       strokeLinejoin="round">
       <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
-    </svg>
-  );
-}
-
-function MenuIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round">
-      <line x1="4" x2="20" y1="12" y2="12" />
-      <line x1="4" x2="20" y1="6" y2="6" />
-      <line x1="4" x2="20" y1="18" y2="18" />
     </svg>
   );
 }
