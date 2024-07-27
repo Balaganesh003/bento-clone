@@ -524,6 +524,7 @@ export async function getStaticProps() {
       props: {
         forks: 0,
         stars: 0,
+        revalidate: 60 * 60 * 24, // 24 hours
       },
     };
   }
