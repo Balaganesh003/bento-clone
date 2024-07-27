@@ -18,7 +18,7 @@ import instagram from '@/assets/instagram.svg';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function LandingPage() {
+export default function LandingPage({ forks, stars }) {
   const heroRef = useRef(null);
   const featuresRef = useRef(null);
   const testimonialsRef = useRef(null);
@@ -142,7 +142,7 @@ export default function LandingPage() {
         <TestimonialsSection ref={testimonialsRef} />
         <CTASection ref={ctaRef} />
         <Footer />
-        <ForkStar />
+        <ForkStar forks={forks} stars={stars} />
       </main>
     </div>
   );
@@ -369,36 +369,16 @@ function Footer() {
   );
 }
 
-function ForkStar() {
-  const [forks, setForks] = useState(null);
-  const [stars, setStars] = useState(null);
-
-  useEffect(() => {
-    async function fetchRepoData() {
-      try {
-        const response = await axios.get(
-          `https://api.github.com/repos/Balaganesh003/bento-clone`
-        );
-        setForks(response.data.forks_count);
-        setStars(response.data.stargazers_count);
-      } catch (error) {
-        console.error('Error fetching repo data:', error);
-      }
-    }
-    fetchRepoData();
-  }, []);
-
+function ForkStar({ forks, stars }) {
   return (
-    <div className="w-full bg-gray-800 p-4  flex flex-col items-center space-y-4">
+    <div className="w-full bg-gray-800 p-4 flex flex-col items-center space-y-4">
       <div className="flex items-center space-x-4">
         <Link
           href="https://github.com/Balaganesh003/bento-clone"
           target="_blank">
           <div className="flex items-center bg-gray-700 text-white py-1 px-3 rounded-lg shadow-sm hover:bg-gray-600 transition-colors">
             <CgGitFork className="text-xl mr-1" />
-            <span className="text-sm">
-              {forks !== null ? forks : 'Loading...'}
-            </span>
+            <span className="text-sm">{forks}</span>
           </div>
         </Link>
         <Link
@@ -406,9 +386,7 @@ function ForkStar() {
           target="_blank">
           <div className="flex items-center bg-gray-700 text-white py-1 px-3 rounded-lg shadow-sm hover:bg-gray-600 transition-colors">
             <AiFillStar className="text-xl mr-1" />
-            <span className="text-sm">
-              {stars !== null ? stars : 'Loading...'}
-            </span>
+            <span className="text-sm">{stars}</span>
           </div>
         </Link>
       </div>
@@ -523,4 +501,30 @@ function VideoIcon(props) {
       <rect x="2" y="6" width="14" height="12" rx="2" />
     </svg>
   );
+}
+
+export async function getStaticProps() {
+  try {
+    const response = await axios.get(
+      'https://api.github.com/repos/Balaganesh003/bento-clone'
+    );
+    const forks = response.data.forks_count;
+    const stars = response.data.stargazers_count;
+
+    return {
+      props: {
+        forks,
+        stars,
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching repo data:', error);
+
+    return {
+      props: {
+        forks: 0,
+        stars: 0,
+      },
+    };
+  }
 }
