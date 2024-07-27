@@ -11,6 +11,7 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
+const session = require('express-session');
 dotenv.config();
 require('./utils/passport.js');
 
@@ -43,15 +44,21 @@ app.use(
 
 // Middleware for handling sessions with cookies
 app.use(
-  cookieSession({
-    name: 'session',
-    keys: [process.env.SESSION_SECRET],
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    secure: process.env.NODE_ENV === 'production', // Secure cookies in production
-    httpOnly: true, // HTTP only, prevents JavaScript cookie access
-    sameSite: 'none', // SameSite attribute for CSRF protection
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+      sameSite: 'none',
+    },
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Fix for potential issues with cookie-session in some environments
 app.use((req, res, next) => {
