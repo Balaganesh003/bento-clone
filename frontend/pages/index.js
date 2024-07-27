@@ -1,10 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { useInView } from 'react-intersection-observer';
+import axios from 'axios';
+import { CgGitFork } from 'react-icons/cg';
+import { AiFillStar } from 'react-icons/ai';
 
 import coffee from '@/assets/coffee.svg';
 import dribble from '@/assets/dribble.svg';
@@ -123,6 +126,7 @@ export default function LandingPage() {
         <TestimonialsSection ref={testimonialsRef} />
         <CTASection ref={ctaRef} />
         <Footer />
+        <ForkStar />
       </main>
     </div>
   );
@@ -293,8 +297,22 @@ const CTASection = React.forwardRef((props, ref) => {
         </h2>
         <Link
           href={'/signup'}
-          className="inline-block px-8 py-4 font-semibold text-lg leading-6 text-blue-600 bg-white rounded-full shadow-lg cursor-pointer transition-all duration-300 hover:bg-gray-100 hover:shadow-xl hover:scale-105">
-          Create your Bento
+          className="relative inline-block p-px font-semibold leading-6 text-blue-600 no-underline bg-white shadow-2xl  cursor-pointer group rounded-xl shadow-blue-500 ">
+          <div class="relative z-10 flex items-center px-6 py-3 space-x-2 rounded-xl bg-white justify-center ">
+            <span className="">Create your Bento</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+              data-slot="icon"
+              class="w-6 h-6">
+              <path
+                fill-rule="evenodd"
+                d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+                clip-rule="evenodd"></path>
+            </svg>
+          </div>
         </Link>
       </div>
     </section>
@@ -303,41 +321,83 @@ const CTASection = React.forwardRef((props, ref) => {
 
 function Footer() {
   return (
-    <footer className="w-full bg-gray-900 py-12">
+    <footer className="w-full bg-gray-50 text-blue-950 py-12">
       <div className="container mx-auto flex flex-col items-center justify-center gap-6 px-4 md:px-8">
         <div className="flex items-center gap-4">
           <OrigamiIcon
-            className="h-8 w-8 text-white"
+            className="h-8 w-8 text-blue-950"
             aria-label="Bento+ logo"
           />
-          <span className="text-xl font-semibold text-white">Bento</span>
+          <span className="text-xl font-semibold text-blue-950">Bento</span>
         </div>
-        <p className="text-lg text-gray-300 text-center max-w-[600px]">
+        <p className="text-lg  text-center max-w-[600px]">
           Bento+ is a powerful platform to showcase your best self online.
           Connect with your audience and elevate your online presence today.
         </p>
         <div className="flex flex-wrap justify-center gap-6 mt-6">
-          <Link
-            href="#"
-            className="text-gray-300 hover:text-white transition-colors">
+          <Link href="#" className=" hover:underline ">
             Privacy Policy
           </Link>
-          <Link
-            href="#"
-            className="text-gray-300 hover:text-white transition-colors">
+          <Link href="#" className=" hover:underline">
             Terms of Service
           </Link>
-          <Link
-            href="#"
-            className="text-gray-300 hover:text-white transition-colors">
+          <Link href="#" className=" hover:underline">
             Cookie Policy
           </Link>
         </div>
-        <p className="text-gray-400 mt-6">
-          &copy; 2024 Bento+. All rights reserved.
-        </p>
+        <p className=" mt-6">&copy; 2024 Bento+. All rights reserved.</p>
       </div>
     </footer>
+  );
+}
+
+function ForkStar() {
+  const [forks, setForks] = useState(null);
+  const [stars, setStars] = useState(null);
+
+  useEffect(() => {
+    async function fetchRepoData() {
+      try {
+        const response = await axios.get(
+          `https://api.github.com/repos/Balaganesh003/bento-clone`
+        );
+        setForks(response.data.forks_count);
+        setStars(response.data.stargazers_count);
+      } catch (error) {
+        console.error('Error fetching repo data:', error);
+      }
+    }
+    fetchRepoData();
+  }, []);
+
+  return (
+    <div className="w-full bg-gray-800 p-4  flex flex-col items-center space-y-4">
+      <div className="flex items-center space-x-4">
+        <Link
+          href="https://github.com/Balaganesh003/bento-clone"
+          target="_blank">
+          <div className="flex items-center bg-gray-700 text-white py-1 px-3 rounded-lg shadow-sm hover:bg-gray-600 transition-colors">
+            <CgGitFork className="text-xl mr-1" />
+            <span className="text-sm">
+              {forks !== null ? forks : 'Loading...'}
+            </span>
+          </div>
+        </Link>
+        <Link
+          href="https://github.com/Balaganesh003/bento-clone"
+          target="_blank">
+          <div className="flex items-center bg-gray-700 text-white py-1 px-3 rounded-lg shadow-sm hover:bg-gray-600 transition-colors">
+            <AiFillStar className="text-xl mr-1" />
+            <span className="text-sm">
+              {stars !== null ? stars : 'Loading...'}
+            </span>
+          </div>
+        </Link>
+      </div>
+      <p className="text-gray-400 text-xs mt-2">
+        Made with <span className="text-red-500">❤</span> by Balaganesh
+      </p>
+    </div>
   );
 }
 
