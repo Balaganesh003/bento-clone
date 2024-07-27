@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { profileActions } from '@/store/profile-slice';
 import { uiActions } from '@/store/ui-slice';
 import Cookies from 'js-cookie';
+import { useEffect } from 'react';
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,6 +17,31 @@ const LoginForm = () => {
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    console.log(token);
+    if (token) {
+      handleGoogleLoginSuccess(token);
+    }
+  }, []);
+
+  const handleGoogleLoginSuccess = (token) => {
+    Cookies.set('jwt', token, {
+      expires: 15,
+      path: '/',
+      secure: true,
+      sameSite: 'None',
+    });
+
+    toast.success('Logged in successfully with Google');
+    dispatch(uiActions.setFirstTime(false));
+    dispatch(profileActions.setFirstTime(false));
+
+    // Fetch user data or redirect to profile page
+    router.push('/profile');
+  };
 
   const handelLogin = async (e) => {
     e.preventDefault();
@@ -49,6 +75,11 @@ const LoginForm = () => {
       toast.error(error.response.data.message || 'Server error ');
       console.log(error);
     }
+  };
+
+  const handleGoogleLogin = (e) => {
+    e.preventDefault(); // Prevent default form submission
+    window.location.href = `${API_URL}/auth/google`;
   };
 
   return (
@@ -104,7 +135,9 @@ const LoginForm = () => {
               Log in
             </button>
           ) : (
-            <button className="hover:shadow-lg transition-all duration-150 text-[14px] leading-[1.25rem] font-bold text-white bg-[#1D9BF0] h-full w-full py-2 px-[0.625rem] rounded-xl flex items-center justify-center">
+            <button
+              onClick={(e) => handleGoogleLogin(e)}
+              className="hover:shadow-lg transition-all duration-150 text-[14px] leading-[1.25rem] font-bold text-white bg-[#1D9BF0] h-full w-full py-2 px-[0.625rem] rounded-xl flex items-center justify-center">
               <FaGoogle className="inline-block mr-2 text-[16px]" />
               Sign in with Google
             </button>

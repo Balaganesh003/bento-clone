@@ -1,6 +1,7 @@
 const passport = require('passport');
 const { Strategy: GoogleStrategy } = require('passport-google-oauth20');
 const User = require('../models/user.model.js');
+const Profile = require('../models/porfile.model.js');
 
 passport.use(
   new GoogleStrategy(
@@ -11,17 +12,25 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       const email = profile.emails[0].value;
-      const googleId = profile.id; // Extract Google ID from profile
+      const googleId = profile.id;
 
       try {
-        // Check if the user already exists in the database
         let user = await User.findOne({ email });
 
         if (!user) {
-          // Create a new user with email and Google ID
-          user = await User.create({ email, googleId });
+          const username = email.split('@')[0];
+          user = await User.create({ email, googleId, username });
+
+          // Create initial profile
+          const newProfile = await Profile.create({
+            user: user._id,
+            displayName: profile.displayName || username,
+            profiles: [],
+          });
+
+          user.profileDetails = newProfile._id;
+          await user.save();
         } else if (!user.googleId) {
-          // If user exists but does not have a Google ID, update the Google ID
           user.googleId = googleId;
           await user.save();
         }
@@ -39,8 +48,11 @@ passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-  User.findById(id, (err, user) => {
-    done(err, user);
-  });
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
 });
