@@ -6,6 +6,8 @@ const authController = require('./auth.controller.js');
 const jwt = require('jsonwebtoken');
 dotenv.config();
 
+const temporaryNameStorage = new Map();
+
 authRouter.get('/checkusername/:username', authController.checkUsername);
 authRouter.post('/signup', authController.register);
 authRouter.post('/signin', authController.login);
@@ -17,12 +19,27 @@ authRouter.post('/reset-password', authController.resetPassword);
 
 authRouter.get(
   '/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] })
+  (req, res, next) => {
+    const signupName = req.cookies.name;
+
+    if (signupName) {
+      req.session.signupName = signupName;
+    }
+    console.log('session before', req.sessionID, signupName);
+    next();
+  },
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],
+    session: true,
+  })
 );
 
 authRouter.get(
   '/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login/failed' }),
+  passport.authenticate('google', {
+    failureRedirect: '/login/failed',
+    session: true,
+  }),
   (req, res) => {
     if (req.user) {
       const token = jwt.sign(
@@ -35,8 +52,11 @@ authRouter.get(
         maxAge: 1000 * 60 * 60 * 24 * 15,
         secure: process.env.NODE_ENV === 'production',
       });
+
+      const signupName = req.session.signupName;
+      console.log('session after', req.sessionID, signupName);
+
       res.redirect(`${process.env.CLIENT_URL}/${req.user.username}`);
-      // res.redirect(process.env.CLIENT_URL + '/login/success?token=' + token);
     } else {
       res.redirect('/login/failed');
     }
@@ -44,3 +64,4 @@ authRouter.get(
 );
 
 module.exports = authRouter;
+module.exports.temporaryNameStorage = temporaryNameStorage;

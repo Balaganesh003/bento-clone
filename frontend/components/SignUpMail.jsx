@@ -17,6 +17,7 @@ export default function SignUpMail({
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const handelGoogleSignIn = async () => {
+    document.cookie = `name=${name}`;
     window.location.href = `${API_URL}/auth/google`;
   };
 
