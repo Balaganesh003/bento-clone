@@ -124,6 +124,7 @@ export default function Home({ data }) {
 
     if (router.query.id?.length > 1) {
       router.push(`/${router.query.id[0]}`);
+      Cookies.remove('name');
     } else if (USERNAME) {
       getData();
     }
