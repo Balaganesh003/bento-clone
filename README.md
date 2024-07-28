@@ -5,7 +5,7 @@ A sophisticated clone of the Bento application, showcasing modern web developmen
 ## Features
 
 - **User Authentication:** Secure sign-up and login functionality.
-- **Responsive UI:** Adaptive design built with SCSS.
+- **Responsive UI:** Adaptive design built with TailwindCSS.
 - **Dynamic Data:** API integration for real-time data updates.
 - **Deployment:** Seamlessly deployed on Vercel.
 
