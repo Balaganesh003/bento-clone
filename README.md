@@ -5,26 +5,21 @@ A sophisticated clone of the Bento application, showcasing modern web developmen
 ## Features
 
 - **User Authentication:** Secure sign-up and login functionality.
-- **Responsive UI:** Adaptive design built with TailwindCSS.
+- **Responsive UI:** Adaptive design built with SCSS.
 - **Dynamic Data:** API integration for real-time data updates.
 - **Deployment:** Seamlessly deployed on Vercel.
 
 ## Technologies Used
 
 ### Frontend
-- NextJS
-- TailwindCSS
-- Axios
-- Redux
+
+![NextJS](https://img.shields.io/badge/NextJS-000000?style=for-the-badge&logo=next.js&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white) ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white) ![Redux](https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=redux&logoColor=white) 
 
 ### Backend
-- Node.js
-- Express
-- MongoDB
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white) ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white) ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white) 
 
 ### Deployment
-- Vercel (Frontend)
-- Render (Backend)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white) ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 
 ## Live Demo
 
@@ -73,7 +68,7 @@ Follow these steps to set up the project locally:
     - **Frontend**
         ```sh
         cd frontend
-        npm run dev
+        npm start
         ```
 
 ## Usage
