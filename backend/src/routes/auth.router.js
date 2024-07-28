@@ -6,8 +6,6 @@ const authController = require('./auth.controller.js');
 const jwt = require('jsonwebtoken');
 dotenv.config();
 
-const temporaryNameStorage = new Map();
-
 authRouter.get('/checkusername/:username', authController.checkUsername);
 authRouter.post('/signup', authController.register);
 authRouter.post('/signin', authController.login);
@@ -25,7 +23,6 @@ authRouter.get(
     if (signupName) {
       req.session.signupName = signupName;
     }
-    console.log('session before', req.sessionID, signupName);
     next();
   },
   passport.authenticate('google', {
@@ -64,4 +61,3 @@ authRouter.get(
 );
 
 module.exports = authRouter;
-module.exports.temporaryNameStorage = temporaryNameStorage;

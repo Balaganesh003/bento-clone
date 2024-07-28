@@ -2,7 +2,6 @@ const passport = require('passport');
 const { Strategy: GoogleStrategy } = require('passport-google-oauth20');
 const User = require('../models/user.model.js');
 const Profile = require('../models/porfile.model.js');
-const { temporaryNameStorage } = require('../routes/auth.router.js'); // Adjust the path as needed
 
 passport.use(
   new GoogleStrategy(
@@ -17,8 +16,6 @@ passport.use(
       const googleId = profile.id;
       const sessionId = req.sessionID;
       const signupName = req.session.signupName;
-
-      console.log('session after:', sessionId, signupName);
 
       try {
         let user = await User.findOne({ email });
