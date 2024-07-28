@@ -35,8 +35,8 @@ authRouter.get(
         maxAge: 1000 * 60 * 60 * 24 * 15,
         secure: process.env.NODE_ENV === 'production',
       });
-
-      res.redirect(process.env.CLIENT_URL + '/login/success?token=' + token);
+      res.redirect(`${process.env.CLIENT_URL}/${req.user.username}`);
+      // res.redirect(process.env.CLIENT_URL + '/login/success?token=' + token);
     } else {
       res.redirect('/login/failed');
     }
