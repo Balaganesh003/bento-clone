@@ -18,30 +18,33 @@ const LoginForm = () => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
-    console.log(token);
-    if (token) {
-      handleGoogleLoginSuccess(token);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   const token = urlParams.get('token');
+  //   console.log(token);
+  //   if (token) {
+  //     handleGoogleLoginSuccess(token);
+  //   }
+  // }, []);
 
-  const handleGoogleLoginSuccess = (token) => {
-    Cookies.set('jwt', token, {
-      expires: 15,
-      path: '/',
-      secure: true,
-      sameSite: 'None',
-    });
+  // const handleGoogleLoginSuccess = (token) => {
+  //   Cookies.set('jwt', token, {
+  //     expires: 15,
+  //     path: '/',
+  //     secure: true,
+  //     sameSite: 'None',
+  //   });
 
-    toast.success('Logged in successfully with Google');
-    dispatch(uiActions.setFirstTime(false));
-    dispatch(profileActions.setFirstTime(false));
+  //   toast.success('Logged in successfully with Google');
+  //   dispatch(uiActions.setFirstTime(false));
+  //   dispatch(profileActions.setFirstTime(false));
 
-    // Fetch user data or redirect to profile page
-    router.push('/profile');
-  };
+  //   // Extract username from the token
+  //   const { username } = jwt.decode(token);
+
+  //   // Redirect to dynamic username route
+  //   router.push(`/${username}`);
+  // };
 
   const handelLogin = async (e) => {
     e.preventDefault();
@@ -78,7 +81,7 @@ const LoginForm = () => {
   };
 
   const handleGoogleLogin = (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     window.location.href = `${API_URL}/auth/google`;
   };
 
