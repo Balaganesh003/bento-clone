@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
+const { setInitialProfile } = require('./profile.controller');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 require('dotenv').config();
